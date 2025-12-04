@@ -1,0 +1,284 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+@layer base {
+  :root {
+    /* Cyberpunk Dark Theme */
+    --background: 227 17% 6%;
+    --foreground: 189 100% 85%;
+
+    --card: 227 20% 8%;
+    --card-foreground: 189 100% 85%;
+
+    --popover: 227 20% 8%;
+    --popover-foreground: 189 100% 85%;
+
+    --primary: 189 100% 60%;
+    --primary-foreground: 227 17% 6%;
+    --primary-glow: 189 100% 70%;
+
+    --secondary: 276 83% 55%;
+    --secondary-foreground: 227 17% 6%;
+    --secondary-glow: 276 83% 70%;
+
+    --muted: 227 20% 12%;
+    --muted-foreground: 189 30% 65%;
+
+    --accent: 84 100% 55%;
+    --accent-foreground: 227 17% 6%;
+    --accent-glow: 84 100% 70%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 227 20% 15%;
+    --input: 227 20% 12%;
+    --ring: 189 100% 60%;
+
+    --radius: 0.75rem;
+
+    /* Cyberpunk Effects */
+    --neon-cyan: 189 100% 60%;
+    --neon-purple: 276 83% 55%;
+    --neon-green: 84 100% 55%;
+    --dark-surface: 227 20% 8%;
+    --darker-surface: 227 17% 6%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-glow)));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-glow)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--background)), hsl(var(--dark-surface)));
+
+    /* Shadows & Glows */
+    --shadow-neon-cyan: 0 0 30px hsl(var(--neon-cyan) / 0.5);
+    --shadow-neon-purple: 0 0 30px hsl(var(--neon-purple) / 0.5);
+    --shadow-neon-green: 0 0 30px hsl(var(--neon-green) / 0.5);
+    --shadow-elevated: 0 25px 50px -12px hsl(var(--background) / 0.8);
+
+    /* Animations */
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Scrollbar Colors (HSL components) */
+    --scrollbar-start: 276 83% 55%;
+    --scrollbar-end: 276 83% 55%;
+
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground overflow-x-hidden;
+    font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', 'monospace';
+  }
+
+  /* Prevent double scrollbars */
+  .overflow-hidden {
+    overflow: hidden !important;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--scrollbar-start)),
+      hsl(var(--scrollbar-end))
+    );
+    border-radius: 6px;
+    border: 2px solid hsl(var(--background));
+    box-shadow: 0 0 12px hsl(var(--scrollbar-end) / 0.4);
+    transition: filter 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    filter: brightness(1.15);
+    box-shadow: 0 0 18px hsl(var(--scrollbar-end) / 0.6);
+  }
+
+  /* Firefox Scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--scrollbar-start)) hsl(var(--background));
+  }
+
+  /* Ensure smooth scrolling */
+  * {
+    scroll-behavior: smooth;
+  }
+
+  /* Ensure sections don't create their own scroll contexts */
+  section {
+    overflow: visible !important;
+  }
+
+  /* Ensure main container doesn't create scroll context */
+  main {
+    overflow: visible !important;
+  }
+}
+
+@layer utilities {
+  .text-glow-cyan {
+    text-shadow: 0 0 20px hsl(var(--neon-cyan) / 0.8);
+  }
+  
+  .text-glow-purple {
+    text-shadow: 0 0 20px hsl(var(--neon-purple) / 0.8);
+  }
+  
+  .text-glow-green {
+    text-shadow: 0 0 20px hsl(var(--neon-green) / 0.8);
+  }
+
+  .border-glow-cyan {
+    border-color: hsl(var(--neon-cyan));
+    box-shadow: 0 0 20px hsl(var(--neon-cyan) / 0.3);
+  }
+
+  .border-glow-purple {
+    border-color: hsl(var(--neon-purple));
+    box-shadow: 0 0 20px hsl(var(--neon-purple) / 0.3);
+  }
+
+  .bg-glow-cyan {
+    background: hsl(var(--neon-cyan));
+    box-shadow: var(--shadow-neon-cyan);
+  }
+
+  .bg-glow-purple {
+    background: hsl(var(--neon-purple));
+    box-shadow: var(--shadow-neon-purple);
+  }
+
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+    will-change: box-shadow;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.8s ease-out;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+  }
+
+  .animate-cyber-scan {
+    animation: cyber-scan 3s linear infinite;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  .cyber-grid {
+    background-image: 
+      linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .neon-grid {
+    background-image: 
+      linear-gradient(hsl(var(--neon-cyan) / 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--neon-cyan) / 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    will-change: opacity;
+  }
+
+  .performance-optimized {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .custom-scroll {
+    scrollbar-color: currentColor transparent;
+  }
+
+  /* Frame rate optimization */
+  .smooth-60fps {
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-fill-mode: both;
+  }
+
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-pulse,
+    .animate-float,
+    .animate-pulse-glow,
+    .animate-cyber-scan {
+      animation: none;
+    }
+    
+    .performance-optimized {
+      will-change: auto;
+    }
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse-glow {
+  from { box-shadow: 0 0 20px hsl(var(--neon-cyan) / 0.4); }
+  to { box-shadow: 0 0 40px hsl(var(--neon-cyan) / 0.8); }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cyber-scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

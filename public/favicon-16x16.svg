@@ -1,0 +1,30 @@
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Cyberpunk gradient definitions -->
+    <linearGradient id="cyberGradient16" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glow filter -->
+    <filter id="glow16" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="0.5" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- JR Text with cyberpunk styling - no background -->
+  <text x="8" y="11" 
+        font-family="monospace" 
+        font-size="7" 
+        font-weight="bold" 
+        text-anchor="middle" 
+        fill="url(#cyberGradient16)"
+        filter="url(#glow16)">
+    JR
+  </text>
+</svg> 
