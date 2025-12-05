@@ -9,6 +9,8 @@ import ProjectsSection from "@/components/ProjectsSection"
 import SkillsSection from "@/components/SkillsSection"
 import ContactSection from "@/components/ContactSection"
 import Footer from "@/components/Footer"
+import CursorTrail from "@/components/CursorTrail"
+import ScrollProgress from "@/components/ScrollProgress"
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -19,6 +21,14 @@ const sectionColorStops: Record<string, { start: string; end: string }> = {
     skills: { start: "84 100% 55%", end: "189 100% 60%" },
     projects: { start: "276 83% 55%", end: "189 100% 60%" },
     contact: { start: "189 100% 60%", end: "276 83% 55%" },
+};
+
+const sectionAccentColors: Record<string, string> = {
+    home: "276 83% 55%", // neon purple
+    about: "189 100% 60%", // neon cyan
+    skills: "84 100% 55%", // neon green
+    projects: "276 83% 55%", // neon purple
+    contact: "189 100% 60%", // neon cyan
 };
 
 const Index = () => {
@@ -74,13 +84,14 @@ const Index = () => {
         const trackedSections = Object.entries(sectionColorStops)
             .map(([id, colors]) => {
                 const element = document.getElementById(id);
-                return element ? { element, colors } : null;
+                return element ? { id, element, colors } : null;
             })
-            .filter((item): item is { element: HTMLElement; colors: { start: string; end: string } } => Boolean(item));
+            .filter((item): item is { id: string; element: HTMLElement; colors: { start: string; end: string } } => Boolean(item));
 
         if (!trackedSections.length) return;
 
         let lastStart = "";
+        let lastSection = "";
 
         const updateScrollbar = () => {
             const midPoint = window.scrollY + window.innerHeight / 2;
@@ -99,10 +110,20 @@ const Index = () => {
                 }
             });
 
-            if (closest && closest.colors.start !== lastStart) {
+            if (!closest) return;
+
+            if (closest.colors.start !== lastStart) {
                 root.style.setProperty("--scrollbar-start", closest.colors.start);
                 root.style.setProperty("--scrollbar-end", closest.colors.end);
                 lastStart = closest.colors.start;
+            }
+
+            if (closest.id !== lastSection) {
+                const accent = sectionAccentColors[closest.id];
+                if (accent) {
+                    root.style.setProperty("--cursor-color", accent);
+                }
+                lastSection = closest.id;
             }
         };
 
@@ -118,6 +139,8 @@ const Index = () => {
 
     return (
         <div className="relative bg-background text-foreground overflow-x-hidden min-h-screen">
+            <CursorTrail />
+            <ScrollProgress />
             {/* Navigation */}
             <Navigation />
             

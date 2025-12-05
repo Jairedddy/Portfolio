@@ -69,6 +69,7 @@ All colors MUST be HSL.
     /* Scrollbar Colors (HSL components) */
     --scrollbar-start: 276 83% 55%;
     --scrollbar-end: 276 83% 55%;
+    --cursor-color: 189 100% 60%;
 
   }
 }
@@ -81,6 +82,18 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground overflow-x-hidden;
     font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  body.custom-cursor-hidden,
+  body.custom-cursor-hidden * {
+    cursor: none !important;
+  }
+
+  @media (pointer: coarse) {
+    body.custom-cursor-hidden,
+    body.custom-cursor-hidden * {
+      cursor: auto;
+    }
   }
 
   html {
@@ -249,6 +262,64 @@ All colors MUST be HSL.
     .performance-optimized {
       will-change: auto;
     }
+  }
+}
+
+.cursor-layer {
+  mix-blend-mode: screen;
+}
+
+.cursor-dot,
+.cursor-trail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 9999px;
+  will-change: transform, opacity;
+  transform: translate3d(-50%, -50%, 0);
+  pointer-events: none;
+  transition: width 0.2s ease, height 0.2s ease, border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+}
+
+.cursor-dot {
+  width: 20px;
+  height: 20px;
+  border: 2px solid hsl(var(--cursor-color));
+  box-shadow:
+    0 0 25px hsl(var(--cursor-color) / 0.7),
+    inset 0 0 10px hsl(var(--cursor-color) / 0.8);
+  background: hsl(var(--cursor-color) / 0.15);
+}
+
+.cursor-trail {
+  width: 14px;
+  height: 14px;
+  background: hsl(var(--cursor-color) / 0.6);
+  box-shadow: 0 0 20px hsl(var(--cursor-color) / 0.5);
+  opacity: 0;
+}
+
+.cursor-layer.cursor-interactive .cursor-dot {
+  width: 30px;
+  height: 30px;
+  border-width: 1px;
+  background: hsl(var(--cursor-color) / 0.25);
+  box-shadow:
+    0 0 30px hsl(var(--cursor-color) / 0.8),
+    inset 0 0 15px hsl(var(--cursor-color) / 0.9);
+}
+
+.cursor-layer.cursor-interactive .cursor-trail {
+  width: 18px;
+  height: 18px;
+  opacity: 1;
+  background: hsl(var(--cursor-color));
+  box-shadow: 0 0 35px hsl(var(--cursor-color) / 0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-layer {
+    display: none;
   }
 }
 

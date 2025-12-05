@@ -77,7 +77,6 @@ export const skillCategories = [
     color: "neon-orange",
     skills: [
       { name: "GPT-4/5", level: 99 },
-      { name: "OpenAI API", level: 95 },
       { name: "Gemini", level: 95 },
       { name: "Claude", level: 95 },
       { name: "NumPy", level: 85 },

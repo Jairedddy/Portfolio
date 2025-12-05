@@ -425,7 +425,7 @@ const ContactSection = () => {
                   </p>
                 </div>
                 <a
-                  href="https://www.buymeacoffee.com/jaishukreddy"
+                  href="https://buymeacoffee.com/jairedddy"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-5 py-3 text-sm font-semibold text-background shadow-neon-cyan transition-all duration-300 hover:brightness-110"
