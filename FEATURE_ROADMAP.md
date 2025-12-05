@@ -1,3 +1,5 @@
+## 🎨 Animation & Interaction
+
 ### 2. Scroll Progress Indicator
 - **Description:** Add an animated progress bar at the top of the page that shows scroll percentage. The bar should morph into section names as you scroll through different sections, providing visual feedback about page position.
 - **Implementation Guide:**
@@ -69,9 +71,161 @@
 
 ---
 
+### 6. Smooth Link Hover Underlines
+- [ ] **Status:** Not Started
+- **Description:** Add elegant animated underlines to navigation links and text links that draw from left to right on hover, creating a polished, professional feel.
+- **Implementation Guide:**
+  - Use CSS `::after` pseudo-element for underline
+  - Set `width: 0%` initially, `width: 100%` on hover
+  - Add `transition: width 0.3s ease` for smooth animation
+  - Use `transform: scaleX()` for better performance
+  - Apply gradient color matching cyberpunk theme
+  - Add subtle glow effect on hover
+  - Ensure underline doesn't interfere with text readability
+- **Dependencies:** None (CSS only)
+- **Files to Modify:** `src/components/Navigation.tsx`, `src/index.css`
+
+---
+
+### 7. Subtle Image Zoom on Hover
+- [ ] **Status:** Not Started
+- **Description:** Add a gentle zoom effect to project images and profile pictures on hover, creating depth and drawing attention without being distracting.
+- **Implementation Guide:**
+  - Apply `transform: scale(1.05)` on hover
+  - Use `transition: transform 0.4s ease-out` for smooth animation
+  - Add `overflow: hidden` to container to prevent image overflow
+  - Include subtle shadow increase on hover for depth
+  - Apply to project cards in ProjectsSection
+  - Keep zoom subtle (5-8% max) to avoid motion sickness
+- **Dependencies:** None (CSS only)
+- **Files to Modify:** `src/components/ProjectsSection.tsx`, `src/components/AboutSection.tsx`
+
+---
+
+### 8. Smooth Focus Ring Animations
+- [ ] **Status:** Not Started
+- **Description:** Replace default browser focus outlines with animated, cyberpunk-styled focus rings that pulse gently when elements receive focus, improving accessibility and visual appeal.
+- **Implementation Guide:**
+  - Remove default outline: `outline: none`
+  - Create custom focus ring with `box-shadow` or `border`
+  - Use CSS `@keyframes` for pulsing animation
+  - Apply to buttons, inputs, and interactive elements
+  - Use cyberpunk colors (purple/cyan) for focus ring
+  - Ensure high contrast for accessibility
+  - Add smooth transition: `transition: box-shadow 0.3s ease`
+- **Dependencies:** None (CSS only)
+- **Files to Modify:** `src/index.css`, form components, button components
+
+---
+
+### 9. Icon Morphing on Hover
+- [ ] **Status:** Not Started
+- **Description:** Add smooth icon transformations on hover (e.g., arrow rotates, plus becomes checkmark, envelope opens slightly) creating delightful micro-interactions.
+- **Implementation Guide:**
+  - Use Framer Motion for icon animations
+  - Create variants for different icon states
+  - Apply `rotate`, `scale`, or path morphing animations
+  - Keep animations quick (0.2-0.3s) and subtle
+  - Apply to social icons, navigation icons, and CTA buttons
+  - Use `whileHover` prop for hover animations
+- **Dependencies:** Framer Motion (already installed)
+- **Files to Modify:** `src/components/Navigation.tsx`, `src/components/HeroSection.tsx`
+
+---
+
+### 10. Smooth Scroll Snap Points
+- [ ] **Status:** Not Started
+- **Description:** Implement CSS scroll snap to create smooth section-to-section navigation, making the portfolio feel more like a cohesive presentation.
+- **Implementation Guide:**
+  - Add `scroll-snap-type: y mandatory` to main container
+  - Add `scroll-snap-align: start` to each section
+  - Use `scroll-padding-top` to account for fixed navbar
+  - Ensure smooth scrolling: `scroll-behavior: smooth`
+  - Test on mobile devices for touch scrolling
+  - Add fallback for browsers without scroll snap support
+- **Dependencies:** None (CSS only)
+- **Files to Modify:** `src/pages/Index.tsx`, `src/index.css`
+
+---
+
+### 11. Subtle Text Selection Styling
+- [ ] **Status:** Not Started
+- **Description:** Customize text selection colors to match the cyberpunk theme, making selected text stand out beautifully with neon colors.
+- **Implementation Guide:**
+  - Use `::selection` pseudo-element
+  - Set background color: `background: rgba(168, 85, 247, 0.3)`
+  - Set text color: `color: #ffffff`
+  - Add subtle glow effect with `text-shadow`
+  - Apply to all text elements globally
+  - Ensure good contrast for readability
+- **Dependencies:** None (CSS only)
+- **Files to Modify:** `src/index.css`
+
+---
+
+### 12. Button Loading States
+- [ ] **Status:** Not Started
+- **Description:** Add elegant loading animations to buttons (especially contact form submit) with animated spinners or progress bars that match the cyberpunk aesthetic.
+- **Implementation Guide:**
+  - Create loading spinner component with cyberpunk styling
+  - Use CSS `@keyframes` for rotation animation
+  - Show spinner when button is in loading state
+  - Disable button during loading to prevent double submissions
+  - Add smooth transition between normal and loading states
+  - Use neon colors for spinner (purple/cyan)
+- **Dependencies:** None (CSS/React state)
+- **Files to Create:** `src/components/LoadingSpinner.tsx`
+- **Files to Modify:** `src/components/ContactSection.tsx`, button components
+
+---
+
+### 13. Smooth Modal/Dialog Animations
+- [ ] **Status:** Not Started
+- **Description:** Enhance modal and dialog components with smooth scale and fade animations, making them feel more polished and less jarring.
+- **Implementation Guide:**
+  - Use Framer Motion `AnimatePresence` for modal animations
+  - Add scale animation: `initial={{ scale: 0.9 }}`, `animate={{ scale: 1 }}`
+  - Include fade animation: `initial={{ opacity: 0 }}`
+  - Add backdrop fade animation
+  - Use spring animations for natural feel
+  - Keep animation duration short (0.2-0.3s)
+- **Dependencies:** Framer Motion (already installed)
+- **Files to Modify:** Modal/dialog components in `src/components/ui/`
+
+---
+
+### 14. Subtle Pulse on Important Elements
+- [ ] **Status:** Not Started
+- **Description:** Add a gentle, continuous pulse animation to important call-to-action buttons or notification badges, drawing attention without being annoying.
+- **Implementation Guide:**
+  - Use CSS `@keyframes` for pulse animation
+  - Apply subtle scale change: `scale(1)` to `scale(1.02)`
+  - Add opacity variation for glow effect
+  - Use long duration (2-3 seconds) for subtlety
+  - Apply to CTA buttons, notification badges, or "New" labels
+  - Make animation optional or pause on hover
+- **Dependencies:** None (CSS only)
+- **Files to Modify:** `src/components/HeroSection.tsx`, `src/index.css`
+
+---
+
+### 15. Smooth Color Transitions
+- [ ] **Status:** Not Started
+- **Description:** Add smooth color transitions to buttons, links, and interactive elements when their state changes, creating a cohesive and polished feel.
+- **Implementation Guide:**
+  - Add `transition: color 0.3s ease, background-color 0.3s ease` to interactive elements
+  - Apply to buttons, links, and hover states
+  - Include border color transitions
+  - Use consistent transition timing across the app
+  - Test with theme changes for smooth color shifts
+- **Dependencies:** None (CSS only)
+- **Files to Modify:** `src/index.css`, all interactive components
+
+---
+
 ## 🎨 Visual Enhancements
 
-### 6. 3D Project Cards
+### 16. 3D Project Cards
 - [ ] **Status:** Not Started
 - **Description:** Transform project cards with 3D tilt effects on hover using CSS transforms. Add depth with shadows and perspective to create a modern, interactive card design.
 - **Implementation Guide:**
@@ -89,7 +243,7 @@
 
 ---
 
-### 7. Animated Gradient Backgrounds
+### 17. Animated Gradient Backgrounds
 - [ ] **Status:** Not Started
 - **Description:** Create section backgrounds that shift colors smoothly on scroll. Use GSAP to animate CSS custom properties, creating dynamic gradient transitions between sections.
 - **Implementation Guide:**
@@ -106,7 +260,7 @@
 
 ---
 
-### 8. Glassmorphism Depth
+### 18. Glassmorphism Depth
 - [ ] **Status:** Not Started
 - **Description:** Implement layered glass cards with varying blur and opacity levels. Add subtle parallax between layers to create depth and a modern glassmorphism aesthetic.
 - **Implementation Guide:**
@@ -123,7 +277,7 @@
 
 ---
 
-### 9. Animated Skill Icons
+### 19. Animated Skill Icons
 - [ ] **Status:** Not Started
 - **Description:** Add animations to skill icons when they scroll into view. Implement SVG path drawing animations for tech logos, creating an engaging reveal effect.
 - **Implementation Guide:**
@@ -140,7 +294,7 @@
 
 ---
 
-### 10. Code Terminal Effect
+### 20. Code Terminal Effect
 - [ ] **Status:** Not Started
 - **Description:** Add a terminal-style code snippet in the hero or about section with a typing animation showing your favorite tech stack. Create an authentic terminal aesthetic.
 - **Implementation Guide:**
@@ -161,7 +315,7 @@
 
 ## 🎯 Interactive Features
 
-### 11. Dark/Light Theme Toggle
+### 21. Dark/Light Theme Toggle
 - [ ] **Status:** Not Started
 - **Description:** Implement a theme switcher that toggles between dark and light modes with smooth transitions. Persist user preference in localStorage for consistent experience across sessions.
 - **Implementation Guide:**
@@ -180,7 +334,7 @@
 
 ---
 
-### 12. Project Filter Animations
+### 22. Project Filter Animations
 - [ ] **Status:** Not Started
 - **Description:** Enhance project filtering with smooth transitions when switching categories. Cards should morph and reorganize with elegant animations using anime.js or GSAP.
 - **Implementation Guide:**
@@ -197,7 +351,7 @@
 
 ---
 
-### 13. Interactive Timeline
+### 23. Interactive Timeline
 - [ ] **Status:** Not Started
 - **Description:** Make timeline items in the About section clickable and expandable. Add smooth accordion animations to show more details when items are clicked.
 - **Implementation Guide:**
@@ -215,7 +369,7 @@
 
 ---
 
-### 14. Live Coding Demo
+### 24. Live Coding Demo
 - [ ] **Status:** Not Started
 - **Description:** Add a mini code editor component showing a live example of your work. Include syntax highlighting with Monaco Editor or Prism for an authentic coding experience.
 - **Implementation Guide:**
@@ -234,7 +388,7 @@
 
 ---
 
-### 15. Skill Radar Chart
+### 25. Skill Radar Chart
 - [ ] **Status:** Not Started
 - **Description:** Create an interactive radar/spider chart for skills comparison. Add animated transitions when switching between skill categories, providing a visual representation of expertise levels.
 - **Implementation Guide:**
@@ -255,7 +409,7 @@
 
 ## ⚡ Performance & Polish
 
-### 16. Page Transitions
+### 26. Page Transitions
 - [ ] **Status:** Not Started
 - **Description:** Implement smooth page transitions between routes using Framer Motion. Create elegant fade, slide, or morph transitions when navigating between pages.
 - **Implementation Guide:**
@@ -272,7 +426,7 @@
 
 ---
 
-### 17. Loading Animations
+### 27. Loading Animations
 - [ ] **Status:** Not Started
 - **Description:** Create a custom loading screen with your branding. Include an animated logo or particle system that displays while the application loads.
 - **Implementation Guide:**
@@ -289,7 +443,7 @@
 
 ---
 
-### 18. Micro-interactions
+### 28. Micro-interactions
 - [ ] **Status:** Not Started
 - **Description:** Add subtle micro-interactions throughout the application: button ripple effects on click, input field focus animations with neon glow, and custom checkbox/radio animations.
 - **Implementation Guide:**
@@ -313,7 +467,7 @@
 
 ---
 
-### 19. Scroll-triggered Reveals
+### 29. Scroll-triggered Reveals
 - [ ] **Status:** Not Started
 - **Description:** Implement elements that reveal with different effects (fade, slide, scale, rotate) when scrolled into view. Add staggered animations for lists to create a polished, professional feel.
 - **Implementation Guide:**
@@ -331,7 +485,7 @@
 
 ---
 
-### 20. Parallax Sections
+### 30. Parallax Sections
 - [ ] **Status:** Not Started
 - **Description:** Create parallax effects with background elements moving at different speeds. Add depth with layered parallax to create an immersive scrolling experience.
 - **Implementation Guide:**
@@ -350,7 +504,7 @@
 
 ## 📊 Data Visualization
 
-### 21. GitHub Stats Widget
+### 31. GitHub Stats Widget
 - [ ] **Status:** Not Started
 - **Description:** Integrate a live GitHub contribution graph and animated statistics (repositories, commits, stars) to showcase your coding activity and contributions.
 - **Implementation Guide:**
@@ -369,7 +523,7 @@
 
 ---
 
-### 22. Activity Heatmap
+### 32. Activity Heatmap
 - [ ] **Status:** Not Started
 - **Description:** Create a visual representation of your coding activity similar to GitHub's contribution graph. Display daily activity levels with color-coded heatmap cells.
 - **Implementation Guide:**
@@ -387,7 +541,7 @@
 
 ---
 
-### 23. Tech Stack Visualization
+### 33. Tech Stack Visualization
 - [ ] **Status:** Not Started
 - **Description:** Build an interactive 3D network graph of technologies showing connections between related technologies. Create an engaging visual representation of your tech ecosystem.
 - **Implementation Guide:**
@@ -408,7 +562,7 @@
 
 ## 🎮 Gamification
 
-### 24. Achievement Badges
+### 34. Achievement Badges
 - [ ] **Status:** Not Started
 - **Description:** Implement unlockable badges for visiting different sections of the portfolio. Store achievements in localStorage and display a badge collection section.
 - **Implementation Guide:**
@@ -427,7 +581,7 @@
 
 ---
 
-### 25. Easter Eggs
+### 35. Easter Eggs
 - [ ] **Status:** Not Started
 - **Description:** Add hidden interactions like the Konami code or secret key combinations that trigger special animations or messages. Create delightful surprises for curious visitors.
 - **Implementation Guide:**
@@ -448,7 +602,7 @@
 
 ## 💬 Social Proof
 
-### 26. Testimonials Carousel
+### 36. Testimonials Carousel
 - [ ] **Status:** Not Started
 - **Description:** Create an animated testimonials section with smooth transitions. Include auto-rotating testimonials that pause on hover, showcasing client or colleague feedback.
 - **Implementation Guide:**
@@ -467,7 +621,7 @@
 
 ---
 
-### 27. Live Visitor Counter
+### 37. Live Visitor Counter
 - [ ] **Status:** Not Started
 - **Description:** Display a real-time visitor count (requires backend) with an animated counter. Add confetti animation on milestone numbers (100, 500, 1000, etc.).
 - **Implementation Guide:**
@@ -488,7 +642,7 @@
 
 ## 🎭 Advanced Animations
 
-### 28. Morphing Shapes
+### 38. Morphing Shapes
 - [ ] **Status:** Not Started
 - **Description:** Create background shapes that morph between different forms as you scroll through sections. Use anime.js or GSAP morphing to create fluid, organic transitions.
 - **Implementation Guide:**
@@ -507,7 +661,7 @@
 
 ---
 
-### 29. Particle Connections
+### 39. Particle Connections
 - [ ] **Status:** Not Started
 - **Description:** Enhance particles to connect with lines when they are close together. Create an interactive network visualization that responds to mouse movement.
 - **Implementation Guide:**
@@ -525,7 +679,7 @@
 
 ---
 
-### 30. Scroll-triggered 3D Transforms
+### 40. Scroll-triggered 3D Transforms
 - [ ] **Status:** Not Started
 - **Description:** Implement elements that rotate in 3D space as you scroll. Use CSS transforms with scroll progress to create immersive 3D effects.
 - **Implementation Guide:**
@@ -544,7 +698,7 @@
 
 ## ⚡ Quick Wins (Easy to Implement)
 
-### 31. Back to Top Button
+### 41. Back to Top Button
 - [ ] **Status:** Not Started
 - **Description:** Add a floating "Back to Top" button that appears on scroll and smoothly scrolls to the top when clicked.
 - **Implementation Guide:**
@@ -558,7 +712,7 @@
 
 ---
 
-### 32. Keyboard Navigation
+### 42. Keyboard Navigation
 - [ ] **Status:** Not Started
 - **Description:** Implement keyboard navigation allowing users to navigate sections with arrow keys, providing an accessible and efficient browsing experience.
 - **Implementation Guide:**
@@ -572,7 +726,7 @@
 
 ---
 
-### 33. Sound Effects
+### 43. Sound Effects
 - [ ] **Status:** Not Started
 - **Description:** Add subtle sound effects for button clicks and hovers. Keep sounds minimal and optional to avoid annoyance.
 - **Implementation Guide:**
@@ -587,7 +741,7 @@
 
 ---
 
-### 34. Currently Working On Section
+### 44. Currently Working On Section
 - [ ] **Status:** Not Started
 - **Description:** Add a section showing current projects or learning activities with animated status indicators.
 - **Implementation Guide:**
@@ -601,7 +755,7 @@
 
 ---
 
-### 35. Blog Section
+### 45. Blog Section
 - [ ] **Status:** Not Started
 - **Description:** Add a blog section with animated post cards showcasing your articles or thoughts.
 - **Implementation Guide:**
@@ -615,7 +769,7 @@
 
 ---
 
-### 36. Search Feature
+### 46. Search Feature
 - [ ] **Status:** Not Started
 - **Description:** Implement a search feature allowing users to search through projects, skills, and content.
 - **Implementation Guide:**
@@ -630,7 +784,7 @@
 
 ---
 
-### 37. Project Tags with Filtering
+### 47. Project Tags with Filtering
 - [ ] **Status:** Not Started
 - **Description:** Add tags to projects with animated filtering functionality for better project organization.
 - **Implementation Guide:**
@@ -644,7 +798,7 @@
 
 ---
 
-### 38. Skills Cloud
+### 48. Skills Cloud
 - [ ] **Status:** Not Started
 - **Description:** Create an animated word cloud visualization of skills with varying sizes based on proficiency.
 - **Implementation Guide:**
@@ -659,7 +813,7 @@
 
 ---
 
-### 39. Fun Facts Section
+### 49. Fun Facts Section
 - [ ] **Status:** Not Started
 - **Description:** Add a "Fun Facts" section with animated counters showing interesting statistics about yourself.
 - **Implementation Guide:**
@@ -673,7 +827,7 @@
 
 ---
 
-### 40. Contact Me Floating Action Button
+### 50. Contact Me Floating Action Button
 - [ ] **Status:** Not Started
 - **Description:** Add a floating action button (FAB) that links to the contact section, providing quick access to contact information.
 - **Implementation Guide:**
@@ -692,25 +846,31 @@
 
 ### High Priority (High Impact, Low-Medium Effort)
 1. ✅ Scroll progress indicator (#2)
-2. ✅ Magnetic buttons (#3)
-3. ✅ 3D project cards (#6)
-4. ✅ Interactive skill icons (#9)
-5. ✅ Theme toggle (#11)
-6. ✅ Back to Top button (#31)
-7. ✅ Micro-interactions (#18)
+2. ✅ Smooth link hover underlines (#6)
+3. ✅ Smooth focus ring animations (#8)
+4. ✅ Subtle text selection styling (#11)
+5. ✅ Smooth color transitions (#15)
+6. ✅ Magnetic buttons (#3)
+7. ✅ 3D project cards (#16)
+8. ✅ Interactive skill icons (#19)
+9. ✅ Theme toggle (#21)
+10. ✅ Back to Top button (#41)
+11. ✅ Micro-interactions (#28)
 
 ### Medium Priority (Good Impact, Medium Effort)
-8. ✅ Text reveal on scroll (#4)
-9. ✅ Project filter animations (#12)
-10. ✅ Scroll-triggered reveals (#19)
-11. ✅ Parallax sections (#20)
-12. ✅ Interactive timeline (#13)
+12. ✅ Text reveal on scroll (#4)
+13. ✅ Project filter animations (#22)
+14. ✅ Scroll-triggered reveals (#29)
+15. ✅ Parallax sections (#30)
+16. ✅ Interactive timeline (#23)
+17. ✅ Icon morphing on hover (#9)
+18. ✅ Button loading states (#12)
 
 ### Lower Priority (Nice to Have)
-13. ✅ Cursor trail effect (#1)
-14. ✅ Code terminal effect (#10)
-15. ✅ GitHub stats widget (#21)
-16. ✅ Achievement badges (#24)
+19. ✅ Cursor trail effect (#1)
+20. ✅ Code terminal effect (#20)
+21. ✅ GitHub stats widget (#31)
+22. ✅ Achievement badges (#34)
 
 ---
 
