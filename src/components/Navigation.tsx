@@ -1,11 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Menu, X, Github, Linkedin, Mail, Download, Home, User, Code, FolderOpen, MessageCircle } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Navigation Component with Smooth Scroll
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [scrollPercent, setScrollPercent] = useState(0);
+  const progressRef = useRef<HTMLDivElement | null>(null);
 
   const navItems = [
     { id: "home", label: "Home", icon: Home },
@@ -84,24 +90,59 @@ const Navigation = () => {
     setIsOpen(false);
   };
 
-  // Track active section on scroll
+  // Track scroll percentage
   useEffect(() => {
     const handleScroll = () => {
-      const sections = navItems.map(item => document.getElementById(item.id));
-      const scrollY = window.scrollY + 100;
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i];
-        if (section && section.offsetTop <= scrollY) {
-          setActiveSection(navItems[i].id);
-          break;
-        }
+      if (typeof window === "undefined") return;
+      const doc = document.documentElement;
+      const totalScrollable = doc.scrollHeight - window.innerHeight;
+      if (totalScrollable <= 0) {
+        setScrollPercent(0);
+        return;
       }
+      const percent = (window.scrollY / totalScrollable) * 100;
+      setScrollPercent(Math.min(Math.max(percent, 0), 100));
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, []);
+
+  // Animate progress bar
+  useEffect(() => {
+    if (!progressRef.current) return;
+    gsap.to(progressRef.current, {
+      width: `${scrollPercent}%`,
+      duration: 0.35,
+      ease: "power2.out",
+    });
+  }, [scrollPercent]);
+
+  // Track active section on scroll using GSAP ScrollTrigger
+  useEffect(() => {
+    const triggers = navItems.map((item) => {
+      const element = document.getElementById(item.id);
+      if (!element) return null;
+
+      return ScrollTrigger.create({
+        trigger: element,
+        start: "top center",
+        end: "bottom center",
+        onEnter: () => setActiveSection(item.id),
+        onEnterBack: () => setActiveSection(item.id),
+      });
+    }).filter((trigger) => trigger !== null);
+
+    return () => {
+      triggers.forEach((trigger) => trigger?.kill());
+    };
+  }, []);
+
 
   return (
     <motion.nav
@@ -148,6 +189,24 @@ const Navigation = () => {
                   </motion.button>
                 );
               })}
+            </div>
+
+            {/* Scroll Progress Bar - Between Nav Items and Social Icons */}
+            <div className="hidden lg:flex items-center mx-4">
+              <div className="flex items-center gap-3 min-w-[150px] max-w-[200px]">
+                {/* Progress Bar */}
+                <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div
+                    ref={progressRef}
+                    className="h-full rounded-full bg-gradient-to-r from-neon-purple via-neon-cyan to-neon-green shadow-[0_0_12px_rgba(56,189,248,0.4)]"
+                    style={{ width: "0%" }}
+                  />
+                </div>
+                {/* Percentage */}
+                <span className="font-cyber text-muted-foreground/70 text-xs">
+                  {Math.round(scrollPercent)}%
+                </span>
+              </div>
             </div>
 
             {/* Right Section: Social Icons + Resume Button + Mobile Menu */}

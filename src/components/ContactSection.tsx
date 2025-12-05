@@ -259,17 +259,17 @@ const ContactSection = () => {
 
   const processSteps = [
     {
-      title: "Discover",
+      title: "Research",
       icon: Search,
       description: "Research user flows, constraints, and success signals before we touch code."
     },
     {
-      title: "Prototype",
+      title: "Develop",
       icon: TimerReset,
       description: "Rapid motion-first experiments to validate interactions and tooling choices."
     },
     {
-      title: "Ship",
+      title: "Deploy",
       icon: Rocket,
       description: "Production build, polish, and launch with documentation and handoff."
     },

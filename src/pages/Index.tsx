@@ -10,7 +10,6 @@ import SkillsSection from "@/components/SkillsSection"
 import ContactSection from "@/components/ContactSection"
 import Footer from "@/components/Footer"
 import CursorTrail from "@/components/CursorTrail"
-import ScrollProgress from "@/components/ScrollProgress"
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -140,7 +139,6 @@ const Index = () => {
     return (
         <div className="relative bg-background text-foreground overflow-x-hidden min-h-screen">
             <CursorTrail />
-            <ScrollProgress />
             {/* Navigation */}
             <Navigation />
             

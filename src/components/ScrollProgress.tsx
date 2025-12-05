@@ -20,8 +20,8 @@ const SECTIONS: SectionMeta[] = [
 ];
 
 const EDGE_OFFSET = 12;
-const DEFAULT_POSITION = { x: EDGE_OFFSET, y: 96 };
-const NAV_MARGIN = 8;
+const DEFAULT_POSITION = { x: EDGE_OFFSET, y: 100 };
+const NAV_MARGIN = 10;
 
 const ScrollProgress = () => {
   const [scrollPercent, setScrollPercent] = useState(0);
@@ -58,7 +58,18 @@ const ScrollProgress = () => {
     const node = containerRef.current;
     if (!node) return;
     const navElement = document.querySelector("nav");
-    const navBottom = navElement?.getBoundingClientRect().bottom ?? 80;
+    if (!navElement) {
+      // Fallback if nav not found yet
+      const width = node.offsetWidth;
+      const defaultCoords = {
+        x: (window.innerWidth - width) / 2,
+        y: DEFAULT_POSITION.y,
+      };
+      setPosition(clampPosition(defaultCoords));
+      return;
+    }
+    const navRect = navElement.getBoundingClientRect();
+    const navBottom = navRect.bottom;
     const width = node.offsetWidth;
     const defaultCoords = {
       x: (window.innerWidth - width) / 2,
@@ -105,7 +116,11 @@ const ScrollProgress = () => {
   }, []);
 
   useEffect(() => {
-    setCenteredPosition();
+    // Wait for DOM to be ready, then set position
+    const timer = setTimeout(() => {
+      setCenteredPosition();
+    }, 100);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -190,7 +205,7 @@ const ScrollProgress = () => {
     <div
       ref={containerRef}
       onPointerDown={handlePointerDown}
-      className={`fixed z-[60] pointer-events-auto select-none transition-shadow touch-none ${
+      className={`fixed z-[45] pointer-events-auto select-none transition-shadow touch-none ${
         isDragging ? "cursor-grabbing shadow-[0_0_30px_rgba(139,92,246,0.45)]" : "cursor-grab"
       }`}
       style={{ left: position.x, top: position.y }}
