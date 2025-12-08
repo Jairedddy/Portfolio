@@ -4,6 +4,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Code, Zap, Users, Award } from 'lucide-react';
 import ParticleBackground from './ParticleBackground';
+import TextReveal from './TextReveal';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -172,9 +173,13 @@ const AboutSection = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-black font-orbitron mb-6 text-glow-cyan">
+          <TextReveal
+            as="h2"
+            className="text-4xl md:text-5xl font-black font-orbitron mb-6 text-glow-cyan"
+            revealDelay={80}
+          >
             &lt; ABOUT /&gt;
-          </h2>
+          </TextReveal>
           <div className="w-24 h-1 mx-auto bg-gradient-primary rounded-full shadow-neon-purple"></div>
         </motion.div>
 
@@ -188,9 +193,14 @@ const AboutSection = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <div className="bg-card p-6 rounded-2xl border border-border shadow-lg">
-              <h3 className="text-2xl font-orbitron font-bold mb-4 text-neon-purple">
+              <TextReveal
+                as="h3"
+                className="text-2xl font-orbitron font-bold mb-4 text-neon-purple"
+                revealDelay={120}
+                revealStagger={25}
+              >
                 BUilding Platforms for Businesses Since 2019
-              </h3>
+              </TextReveal>
               
               <div className="space-y-3 text-muted-foreground font-rajdhani text-base leading-relaxed">
                 <p>
@@ -246,9 +256,13 @@ const AboutSection = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
-          <h3 className="text-3xl font-orbitron font-bold text-center mb-8 text-neon-purple">
+          <TextReveal
+            as="h3"
+            className="text-3xl font-orbitron font-bold text-center mb-8 text-neon-purple"
+            revealDelay={100}
+          >
             My Journey
-          </h3>
+          </TextReveal>
           
           <div className="relative">
             {/* Timeline Line */}

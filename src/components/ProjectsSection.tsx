@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { animate } from "animejs";
 import { ExternalLink, Github, ChevronLeft, ChevronRight, Grid3x3, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ParticleBackground from "./ParticleBackground";
 import useEmblaCarousel from "embla-carousel-react";
+import TextReveal from "./TextReveal";
 
 // Projects Section with Interactive Cards
 const ProjectsSection = () => {
@@ -160,22 +160,14 @@ const ProjectsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-16"
-          onViewportEnter={() => {
-            const header = document.querySelector('#projects h2');
-            if (header) {
-              animate(header, {
-                opacity: [0, 1],
-                scale: [0.8, 1],
-                rotateX: [90, 0],
-                duration: 1000,
-                easing: 'easeOutExpo',
-              });
-            }
-          }}
         >
-          <h2 className="text-4xl md:text-5xl font-black font-cyber text-glow-purple mb-6 opacity-0">
+          <TextReveal
+            as="h2"
+            className="text-4xl md:text-5xl font-black font-cyber text-glow-purple mb-6"
+            revealDelay={80}
+          >
             &lt; PROJECTS /&gt;
-          </h2>
+          </TextReveal>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Explore my latest AI innovations and machine learning solutions
           </p>

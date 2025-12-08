@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import ParticleBackground from "./ParticleBackground";
+import TextReveal from "./TextReveal";
 import { skillCategories } from "@/data/skillCategories";
 
 // Skills Section with Tabbed Interface and Neon Progress Indicators
@@ -165,9 +166,13 @@ const SkillsSection = () => {
           viewport={{ once: true }}
           className="text-center mb-10"
         >
-          <h2 className="text-3xl md:text-4xl font-black font-cyber text-glow-green mb-4">
+          <TextReveal
+            as="h2"
+            className="text-3xl md:text-4xl font-black font-cyber text-glow-green mb-4"
+            revealDelay={80}
+          >
             &lt; SKILLS /&gt;
-          </h2>
+          </TextReveal>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Comprehensive expertise across the full development stack
           </p>
@@ -223,9 +228,13 @@ const SkillsSection = () => {
                 <div className="text-center mb-6">
                   <div className={`inline-flex items-center space-x-3 p-4 rounded-2xl ${colors.bg} ${colors.border} border shadow-lg shadow-${colors.text}/20`}>
                     <category.icon size={28} className={colors.text} />
-                    <h3 className={`text-2xl font-cyber font-bold ${colors.glow}`}>
+                    <TextReveal
+                      as="h3"
+                      className={`text-2xl font-cyber font-bold ${colors.glow}`}
+                      revealDelay={60}
+                    >
                       {category.title}
-                    </h3>
+                    </TextReveal>
                   </div>
                       </div>
 
