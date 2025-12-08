@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import type { CSSProperties, MouseEvent } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { ExternalLink, Github, ChevronLeft, ChevronRight, Grid3x3, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ParticleBackground from "./ParticleBackground";
@@ -24,6 +24,33 @@ type ColorClasses = {
   glow: string;
   shadow: string;
   bg: string;
+};
+
+const gridContainerVariants = {
+  initial: {},
+  animate: {
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.05,
+    },
+  },
+  exit: { opacity: 0 },
+};
+
+const gridItemVariants = {
+  initial: { opacity: 0, scale: 0.9, y: 30 },
+  animate: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.85,
+    y: -30,
+    transition: { duration: 0.3, ease: "easeIn" },
+  },
 };
 
 // Lightweight tilt controller that maps pointer position to 3D transforms.
@@ -171,6 +198,77 @@ const ProjectCard = ({ project, colors, isInteractive, className = "" }: Project
   );
 };
 
+const PROJECTS: Project[] = [
+  {
+    title: "Noir Ink Tattoo Studio",
+    description: "A sophisticated, monochrome tattoo studio and supply store featuring AI-powered design generation, comprehensive booking system, and educational resources.",
+    tech: ["React", "TypeScript", "Vite", "Tailwind CSS", "Lucide React", "Pollinations.ai"],
+    category: "Web Development",
+    color: "purple",
+    github: "https://github.com/Jairedddy/Noir-Ink-Tattoo-Studio",
+    live: "https://noir-ink.netlify.app/",
+    features: ["Model compression", "Hardware optimization", "Cross-platform"]
+  },
+  {
+    title: "Golden Barell Brewery",
+    description: "Golden Barrel’'?Ts modern, responsive brewery website built with React and TypeScript. It features rich content sections, production’'?`ready animations, and polished UI components tailored for a premium brewery brand.",
+    tech: ["React", "Vite", "Tailwind CSS", "Radix", "TanStack Query", "Lucide React"],
+    category: "Web Development",
+    color: "cyan",
+    github: "https://github.com/Jairedddy/Golden-Barell-Brewery",
+    live: "https://goldenbarell.netlify.app/",
+    features: ["React", "Vite", "Tailwind CSS", "Radix", "TanStack Query", "Lucide React"]
+  },
+  {
+    title: "Obsidian Eye",
+    description: "Dystopian surveillance simulator that lets operators aythor cinematic reconnaissance prompts, trigger AI-generated 'drone' captures, adn explore the world state throuh interactive lore. The experene mixed a control-roomm UI, batch scan tooling, HUD overlays and persistent operatore settings to mumic an active roecon terminal.",
+    tech: ["React", "Tailwind CSS", "lucide-react", "JSON and JS", "JSZip", "Pollinations.ai"],
+    category: "Imaginative AI",
+    color: "green",
+    github: "https://github.com/Jairedddy/Obsidian-Eye",
+    live: "https://obsidian-eye.netlify.app/",
+    features: ["Cyber Punk Theme", "AI-Generated Imagery", "Interactive UI", "Responsive Design", "Lore Exploration", "Operator Tools"]
+  },
+  {
+    title: "Code Nebula",
+    description: "Interactive 3D visualization tool that transforms GitHub repositories into stunning 'galaxy' visualizations. It empowers developers to explore codebases in an immersive, three-dimensional space, facilitating a deeper understanding of code structure, dependencies, and inter-file relationships.",
+    tech: ["React", "Vite", "Three.js", "D3-Force-3D", "Radix UI", "TanStack Query", "React Router", "Supabase", "Github API", "OpenAI API"],
+    category: "Web Development",
+    color: "purple",
+    github: "https://github.com/Jairedddy/CodeNebula",
+    live: "https://codenebulaa.netlify.app/",
+    features: ["Cyber Punk Theme", "3D Visualization", "Interactive UI", "Responsive Design", "AI Integration", "Repository Insights"]
+  },
+  {
+    title: "Spotify Dash-Bored",
+    description: "A comprehensive, interactive dashboard for visualizing your Spotify listening data with beautiful, data-driven insights and analytics.",
+    tech: ["Javascript", "React", "Tailwind CSS", "Spotify API"],
+    category: "Web Development",
+    color: "green",
+    github: "https://github.com/Jairedddy/Spotify-Dashboard",
+    live: "https://spotify-dashbored.netlify.app/",
+    features: ["Spotify API", "Data Visualization", "Responsive Design"]
+  },
+  {
+    title: "Amul Scraper",
+    description: "A sophisticated automation tool designed to monitor product availability on the official Amul e-commerce platform (shop.amul.com). This solution eliminates the need for manual, repetitive stock checks by automating the entire process through intelligent browser automation.",
+    tech: ["Python", "Selenium WebDriver", "Selenium Manager", "JSON", "ChromeDriver", "EdgeDriver", "FirefoxDriver"],
+    category: "Automation",
+    color: "cyan",
+    github: "https://github.com/Jairedddy/Amul-Scraper",
+    features: ["Multi-Browser Support", "Automatic Driver Management", "Product Management", "Intelligent Stock Detection", "Comprehensive Reporting", "Robust Error Handling"]
+  },
+  {
+    title: "Instagram Follower Tracker",
+    description: "Asophisticated automation tool designed to analyze your Instagram account and identify which accounts you follow that don't follow you back. This solution eliminates the need for manual checking by automating the entire process through intelligent browser automation.",
+    tech: ["Python", "Selenium WebDriver", "Selenium Manager", "ChromeDriver", "EdgeDriver", "FirefoxDriver", ],
+    category: "Automation",
+    color: "purple",
+    github: "https://github.com/Jairedddy/Instagram-Follower-Tracker",
+    features: ["Secure Login", "Real-Time Input Detection", "Smart Extraction Algorithm", "Intelligent Error Handling", "Performance Optimization", "Multi-Browser Support"]
+  }
+];
+
 // Projects Section with Interactive Cards
 const ProjectsSection = () => {
   const [isGridView, setIsGridView] = useState(false);
@@ -185,6 +283,9 @@ const ProjectsSection = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [filterPulse, setFilterPulse] = useState(0);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -210,66 +311,43 @@ const ProjectsSection = () => {
       emblaApi.off("select", onSelect);
     };
   }, [emblaApi, onSelect]);
-  const projects: Project[] = [
-    {
-      title: "Noir Ink Tattoo Studio",
-      description: "A sophisticated, monochrome tattoo studio and supply store featuring AI-powered design generation, comprehensive booking system, and educational resources.",
-      tech: ["React", "TypeScript", "Vite", "Tailwind CSS", "Lucide React", "Pollinations.ai"],
-      category: "Web Development",
-      color: "purple",
-      github: "https://github.com/Jairedddy/Noir-Ink-Tattoo-Studio",
-      live: "https://noir-ink.netlify.app/",
-      features: ["Model compression", "Hardware optimization", "Cross-platform"]
-    },
-    {
-      title: "Golden Barell Brewery",
-      description: "Golden Barrelƒ?Ts modern, responsive brewery website built with React and TypeScript. It features rich content sections, productionƒ?`ready animations, and polished UI components tailored for a premium brewery brand.",
-      tech: ["React", "Vite", "Tailwind CSS", "Radix", "TanStack Query", "Lucide React"],
-      category: "Web Development",
-      color: "cyan",
-      github: "https://github.com/Jairedddy/Golden-Barell-Brewery",
-      live: "https://goldenbarell.netlify.app/",
-      features: ["React", "Vite", "Tailwind CSS", "Radix", "TanStack Query", "Lucide React"]
-    },
-    {
-      title: "Code Nebula",
-      description: "Interactive 3D visualization tool that transforms GitHub repositories into stunning 'galaxy' visualizations. It empowers developers to explore codebases in an immersive, three-dimensional space, facilitating a deeper understanding of code structure, dependencies, and inter-file relationships.",
-      tech: ["React", "Vite", "Three.js", "D3-Force-3D", "Radix UI", "TanStack Query", "React Router", "Supabase", "Github API", "OpenAI API"],
-      category: "Web Development",
-      color: "purple",
-      github: "https://github.com/Jairedddy/CodeNebula",
-      live: "https://codenebulaa.netlify.app/",
-      features: ["Cyber Punk Theme", "3D Visualization", "Interactive UI", "Responsive Design", "AI Integration", "Repository Insights"]
-    },
-    {
-      title: "Spotify Dash-Bored",
-      description: "A comprehensive, interactive dashboard for visualizing your Spotify listening data with beautiful, data-driven insights and analytics.",
-      tech: ["Javascript", "React", "Tailwind CSS", "Spotify API"],
-      category: "Web Development",
-      color: "green",
-      github: "https://github.com/Jairedddy/Spotify-Dashboard",
-      live: "https://spotify-dashbored.netlify.app/",
-      features: ["Spotify API", "Data Visualization", "Responsive Design"]
-    },
-    {
-      title: "Amul Scraper",
-      description: "A sophisticated automation tool designed to monitor product availability on the official Amul e-commerce platform (shop.amul.com). This solution eliminates the need for manual, repetitive stock checks by automating the entire process through intelligent browser automation.",
-      tech: ["Python", "Selenium WebDriver", "Selenium Manager", "JSON", "ChromeDriver", "EdgeDriver", "FirefoxDriver"],
-      category: "Automation",
-      color: "cyan",
-      github: "https://github.com/Jairedddy/Amul-Scraper",
-      features: ["Multi-Browser Support", "Automatic Driver Management", "Product Management", "Intelligent Stock Detection", "Comprehensive Reporting", "Robust Error Handling"]
-    },
-    {
-      title: "Instagram Follower Tracker",
-      description: "Asophisticated automation tool designed to analyze your Instagram account and identify which accounts you follow that don't follow you back. This solution eliminates the need for manual checking by automating the entire process through intelligent browser automation.",
-      tech: ["Python", "Selenium WebDriver", "Selenium Manager", "ChromeDriver", "EdgeDriver", "FirefoxDriver", ],
-      category: "Automation",
-      color: "purple",
-      github: "https://github.com/Jairedddy/Instagram-Follower-Tracker",
-      features: ["Secure Login", "Real-Time Input Detection", "Smart Extraction Algorithm", "Intelligent Error Handling", "Performance Optimization", "Multi-Browser Support"]
+  
+  
+  const categories = useMemo(() => {
+    const uniqueCategories = Array.from(new Set(PROJECTS.map((project) => project.category)));
+    return ["All", ...uniqueCategories];
+  }, []);
+
+  const filteredProjects = useMemo(() => {
+    if (activeCategory === "All") return PROJECTS;
+    return PROJECTS.filter((project) => project.category === activeCategory);
+  }, [activeCategory]);
+
+  const handleCategoryChange = useCallback((category: string) => {
+    if (category === activeCategory) return;
+    setActiveCategory(category);
+    setSelectedIndex(0);
+    emblaApi?.scrollTo(0);
+    setFilterPulse(Date.now());
+  }, [activeCategory, emblaApi]);
+
+  useEffect(() => {
+    if (!filterPulse) return;
+    setIsFiltering(true);
+    const timeout = setTimeout(() => setIsFiltering(false), 450);
+    return () => clearTimeout(timeout);
+  }, [filterPulse]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.reInit();
+    const nextIndex = Math.min(selectedIndex, Math.max(filteredProjects.length - 1, 0));
+    if (nextIndex !== selectedIndex) {
+      setSelectedIndex(nextIndex);
     }
-  ];
+    setCanScrollPrev(emblaApi.canScrollPrev());
+    setCanScrollNext(emblaApi.canScrollNext());
+  }, [emblaApi, filteredProjects.length, selectedIndex]);
 
   const getColorClasses = (color: string): ColorClasses => {
     switch (color) {
@@ -339,8 +417,48 @@ const ProjectsSection = () => {
           <div className="w-24 h-1 bg-gradient-secondary mx-auto rounded-full mt-6" />
         </motion.div>
 
+        <motion.div
+          layout
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-12"
+        >
+          <LayoutGroup id="project-category-filter">
+            <div className="flex flex-wrap justify-center gap-3 md:gap-4">
+              {categories.map((category) => {
+                const isActiveCategory = category === activeCategory;
+                return (
+                  <motion.button
+                    key={category}
+                    type="button"
+                    layout="position"
+                    whileTap={{ scale: 0.96 }}
+                    onClick={() => handleCategoryChange(category)}
+                    disabled={isFiltering}
+                    className={`relative px-5 py-2 rounded-full border border-border/70 bg-card/60 uppercase tracking-[0.2em] text-[0.65rem] font-semibold transition-all duration-300 ${
+                      isActiveCategory ? "text-neon-cyan" : "text-muted-foreground hover:text-foreground"
+                    } ${isFiltering ? "cursor-wait" : ""}`}
+                    aria-pressed={isActiveCategory}
+                  >
+                    {isActiveCategory && (
+                      <motion.span
+                        layoutId="projects-active-category"
+                        className="absolute inset-0 rounded-full bg-glow-cyan/20 border border-glow-cyan/60 shadow-neon-cyan"
+                        transition={{ type: "spring", stiffness: 320, damping: 28 }}
+                      />
+                    )}
+                    <span className="relative z-10">{category}</span>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </LayoutGroup>
+        </motion.div>
+
         {/* Projects Display - Carousel or Grid */}
-        <AnimatePresence mode="wait">
+        <motion.div layout className="relative">
+          <AnimatePresence mode="wait">
           {!isGridView ? (
             <motion.div
               key="carousel"
@@ -354,36 +472,49 @@ const ProjectsSection = () => {
               <div 
                 className="relative overflow-hidden px-8 md:px-16"
               >
-                <div ref={emblaRef} className="overflow-hidden cursor-grab active:cursor-grabbing">
-                  <div className="flex gap-6">
-                    {projects.map((project, index) => {
-                      const colors = getColorClasses(project.color);
-                      const isActive = index === selectedIndex;
+                {filteredProjects.length > 0 ? (
+                  <div ref={emblaRef} className="overflow-hidden cursor-grab active:cursor-grabbing">
+                    <div className="flex gap-6">
+                      {filteredProjects.map((project, index) => {
+                        const colors = getColorClasses(project.color);
+                        const isActive = index === selectedIndex;
 
-                      return (
-                        <motion.div
-                          key={project.title}
-                          className={`flex-[0_0_85%] md:flex-[0_0_70%] lg:flex-[0_0_60%] min-w-0 px-2 transition-all duration-700 ease-out ${
-                            isActive ? "scale-100 opacity-100 z-10" : "scale-[0.85] opacity-50 z-0 cursor-pointer"
-                          }`}
-                          transition={{ duration: 0.5, ease: "easeInOut" }}
-                          onClick={() => {
-                            if (!isActive) {
-                              emblaApi?.scrollTo(index);
-                            }
-                          }}
-                        >
-                          <ProjectCard
-                            project={project}
-                            colors={colors}
-                            isInteractive={isActive}
-                            className="h-full"
-                          />
-                        </motion.div>
-                      );
-                    })}
+                        return (
+                          <motion.div
+                            key={project.title}
+                            layout
+                            className={`flex-[0_0_85%] md:flex-[0_0_70%] lg:flex-[0_0_60%] min-w-0 px-2 transition-all duration-700 ease-out ${
+                              isActive ? "scale-100 opacity-100 z-10" : "scale-[0.85] opacity-50 z-0 cursor-pointer"
+                            }`}
+                            transition={{ duration: 0.5, ease: "easeInOut" }}
+                            onClick={() => {
+                              if (!isActive) {
+                                emblaApi?.scrollTo(index);
+                              }
+                            }}
+                          >
+                            <ProjectCard
+                              project={project}
+                              colors={colors}
+                              isInteractive={isActive}
+                              className="h-full"
+                            />
+                          </motion.div>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex items-center justify-center py-16"
+                  >
+                    <p className="text-muted-foreground text-sm tracking-wider uppercase">
+                      No projects in this category yet.
+                    </p>
+                  </motion.div>
+                )}
 
                 {/* Navigation Arrows */}
                 <Button
@@ -410,20 +541,22 @@ const ProjectsSection = () => {
                 </Button>
 
                 {/* Carousel Indicators */}
-                <div className="flex justify-center gap-2 mt-8">
-                  {projects.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => emblaApi?.scrollTo(index)}
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        index === selectedIndex
-                          ? "w-8 bg-neon-cyan"
-                          : "w-2 bg-muted hover:bg-neon-cyan/50"
-                      }`}
-                      aria-label={`Go to slide ${index + 1}`}
-                    />
-                  ))}
-                </div>
+                {filteredProjects.length > 0 && (
+                  <div className="flex justify-center gap-2 mt-8">
+                    {filteredProjects.map((_, index) => (
+                      <button
+                        key={`${activeCategory}-${index}`}
+                        onClick={() => emblaApi?.scrollTo(index)}
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          index === selectedIndex
+                            ? "w-8 bg-neon-cyan"
+                            : "w-2 bg-muted hover:bg-neon-cyan/50"
+                        }`}
+                        aria-label={`Go to slide ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </motion.div>
           ) : (
@@ -433,31 +566,76 @@ const ProjectsSection = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+              className="relative"
             >
-              {projects.map((project, index) => {
-                const colors = getColorClasses(project.color);
-                
-                return (
-                  <motion.div
-                    key={project.title}
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05, duration: 0.4 }}
-                    whileHover={{ y: -10 }}
-                  >
-                    <ProjectCard
-                      project={project}
-                      colors={colors}
-                      isInteractive={true}
-                      className="h-full"
-                    />
-                  </motion.div>
-                );
-              })}
+              {filteredProjects.length > 0 ? (
+                <motion.div
+                  layout
+                  variants={gridContainerVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                >
+                  <AnimatePresence mode="sync" initial={false}>
+                    {filteredProjects.map((project) => {
+                      const colors = getColorClasses(project.color);
+
+                      return (
+                        <motion.div
+                          key={project.title}
+                          layout
+                          variants={gridItemVariants}
+                          whileHover={{ y: -10 }}
+                        >
+                          <ProjectCard
+                            project={project}
+                            colors={colors}
+                            isInteractive
+                            className="h-full"
+                          />
+                        </motion.div>
+                      );
+                    })}
+                  </AnimatePresence>
+                </motion.div>
+              ) : (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex items-center justify-center py-16 rounded-2xl border border-dashed border-border/60"
+                >
+                  <p className="text-muted-foreground text-sm tracking-widest uppercase">
+                    Nothing to show for this category yet.
+                  </p>
+                </motion.div>
+              )}
             </motion.div>
           )}
-        </AnimatePresence>
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {isFiltering && (
+              <motion.div
+                key="filter-loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 flex flex-col items-center justify-center rounded-[32px] bg-background/70 backdrop-blur-md pointer-events-auto z-20"
+              >
+                <motion.span
+                  className="h-12 w-12 rounded-full border-2 border-neon-cyan/20 border-t-neon-cyan mb-4"
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                />
+                <p className="text-xs uppercase tracking-[0.5em] text-muted-foreground">
+                  Recalibrating Grid
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
 
         {/* Toggle View Button */}
         <motion.div
