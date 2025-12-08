@@ -1,12 +1,16 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import ParticleBackground from "./ParticleBackground";
 import TextReveal from "./TextReveal";
 import { skillCategories } from "@/data/skillCategories";
+import { gsap } from "gsap";
+import { useGradientTheme } from "@/hooks/useGradientTheme";
 
 // Skills Section with Tabbed Interface and Neon Progress Indicators
 const SkillsSection = () => {
   const [activeTab, setActiveTab] = useState("web-dev");
+  const sectionRef = useRef<HTMLElement | null>(null);
+  useGradientTheme(sectionRef, "skills");
 
 
   const getColorClasses = (color: string) => {
@@ -18,7 +22,8 @@ const SkillsSection = () => {
           border: 'border-neon-cyan',
           bg: 'bg-neon-cyan/10',
           progress: 'stroke-neon-cyan',
-          progressBg: 'stroke-neon-cyan/20'
+          progressBg: 'stroke-neon-cyan/20',
+          hoverShadow: 'hover:shadow-[0_0_25px_rgba(79,209,197,0.45)]'
         };
       case 'neon-purple':
         return {
@@ -27,7 +32,8 @@ const SkillsSection = () => {
           border: 'border-neon-purple',
           bg: 'bg-neon-purple/10',
           progress: 'stroke-neon-purple',
-          progressBg: 'stroke-neon-purple/20'
+          progressBg: 'stroke-neon-purple/20',
+          hoverShadow: 'hover:shadow-[0_0_25px_rgba(192,132,252,0.45)]'
         };
       case 'neon-green':
         return {
@@ -36,7 +42,8 @@ const SkillsSection = () => {
           border: 'border-neon-green',
           bg: 'bg-neon-green/10',
           progress: 'stroke-neon-green',
-          progressBg: 'stroke-neon-green/20'
+          progressBg: 'stroke-neon-green/20',
+          hoverShadow: 'hover:shadow-[0_0_25px_rgba(163,230,53,0.45)]'
         };
       case 'neon-orange':
         return {
@@ -45,7 +52,8 @@ const SkillsSection = () => {
           border: 'border-orange-400',
           bg: 'bg-orange-400/10',
           progress: 'stroke-orange-400',
-          progressBg: 'stroke-orange-400/20'
+          progressBg: 'stroke-orange-400/20',
+          hoverShadow: 'hover:shadow-[0_0_25px_rgba(251,146,60,0.45)]'
         };
       case 'neon-pink':
         return {
@@ -54,7 +62,8 @@ const SkillsSection = () => {
           border: 'border-pink-400',
           bg: 'bg-pink-400/10',
           progress: 'stroke-pink-400',
-          progressBg: 'stroke-pink-400/20'
+          progressBg: 'stroke-pink-400/20',
+          hoverShadow: 'hover:shadow-[0_0_25px_rgba(244,114,182,0.45)]'
         };
       case 'neon-red':
         return {
@@ -63,7 +72,8 @@ const SkillsSection = () => {
           border: 'border-red-400',
           bg: 'bg-red-400/10',
           progress: 'stroke-red-400',
-          progressBg: 'stroke-red-400/20'
+          progressBg: 'stroke-red-400/20',
+          hoverShadow: 'hover:shadow-[0_0_25px_rgba(248,113,113,0.45)]'
         };
       case 'neon-yellow':
         return {
@@ -72,7 +82,8 @@ const SkillsSection = () => {
           border: 'border-yellow-400',
           bg: 'bg-yellow-400/10',
           progress: 'stroke-yellow-400',
-          progressBg: 'stroke-yellow-400/20'
+          progressBg: 'stroke-yellow-400/20',
+          hoverShadow: 'hover:shadow-[0_0_25px_rgba(250,204,21,0.45)]'
         };
       default:
         return {
@@ -81,25 +92,91 @@ const SkillsSection = () => {
           border: 'border-neon-cyan',
           bg: 'bg-neon-cyan/10',
           progress: 'stroke-neon-cyan',
-          progressBg: 'stroke-neon-cyan/20'
+          progressBg: 'stroke-neon-cyan/20',
+          hoverShadow: 'hover:shadow-[0_0_25px_rgba(79,209,197,0.45)]'
         };
     }
   };
 
   // Neon Progress Ring Component
-  const NeonProgressRing = ({ skill, color }: { skill: { name: string; level: number }, color: string }) => {
+  const NeonProgressRing = ({
+    skill,
+    color,
+    index,
+  }: {
+    skill: { name: string; level: number };
+    color: string;
+    index: number;
+  }) => {
     const colors = getColorClasses(color);
     const radius = 30;
     const circumference = 2 * Math.PI * radius;
     const strokeDasharray = circumference;
-    const strokeDashoffset = circumference - (skill.level / 100) * circumference;
+    const finalDashOffset = circumference - (skill.level / 100) * circumference;
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const progressRef = useRef<SVGCircleElement | null>(null);
+    const labelRef = useRef<HTMLSpanElement | null>(null);
+    const hasAnimated = useRef(false);
+
+    useEffect(() => {
+      const container = containerRef.current;
+      const progressCircle = progressRef.current;
+      const label = labelRef.current;
+      if (!container || !progressCircle) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !hasAnimated.current) {
+              hasAnimated.current = true;
+              gsap.set(progressCircle, { strokeDashoffset: circumference });
+              const tl = gsap.timeline({
+                delay: index * 0.1,
+                defaults: { ease: "power3.out" },
+              });
+
+              tl.fromTo(
+                container,
+                { opacity: 0, scale: 0.85, y: 20 },
+                { opacity: 1, scale: 1, y: 0, duration: 0.6 }
+              );
+
+              tl.to(
+                progressCircle,
+                {
+                  strokeDashoffset: finalDashOffset,
+                  duration: 1.2,
+                },
+                "<"
+              );
+
+              if (label) {
+                tl.fromTo(
+                  label,
+                  { opacity: 0, y: 6 },
+                  { opacity: 1, y: 0, duration: 0.4 },
+                  "-=0.4"
+                );
+              }
+
+              observer.unobserve(container);
+            }
+          });
+        },
+        { threshold: 0.35 }
+      );
+
+      observer.observe(container);
+      return () => observer.disconnect();
+    }, [circumference, finalDashOffset, index]);
 
     return (
       <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
+        ref={containerRef}
+        initial={{ opacity: 0, scale: 0.85 }}
         animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.05, y: -5 }}
-        className="relative group cursor-pointer"
+        whileHover={{ scale: 1.1, y: -6 }}
+        className={`relative group cursor-pointer rounded-2xl border border-border bg-card/60 p-4 transition-all duration-300 ${colors.hoverShadow}`}
       >
         <div className="relative w-20 h-20 mx-auto mb-3">
           <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
@@ -115,6 +192,7 @@ const SkillsSection = () => {
             />
             {/* Progress Ring */}
             <circle
+              ref={progressRef}
               cx="40"
               cy="40"
               r={radius}
@@ -124,30 +202,30 @@ const SkillsSection = () => {
               strokeLinecap="round"
               className={`${colors.progress} transition-colors duration-300`}
               strokeDasharray={strokeDasharray}
-              style={{ strokeDashoffset }}
+              style={{ strokeDashoffset: circumference }}
             />
           </svg>
           {/* Percentage Text */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className={`text-sm font-bold ${colors.text} font-cyber`}>
+            <span ref={labelRef} className={`text-sm font-bold ${colors.text} font-cyber`}>
               {skill.level}%
             </span>
           </div>
         </div>
         {/* Skill Name */}
         <div className="text-center">
-          <span className={`text-sm font-medium ${colors.text} group-hover:${colors.glow} transition-colors duration-300`}>
+          <span className={`text-sm font-medium ${colors.text} transition-colors duration-300 group-hover:${colors.glow}`}>
             {skill.name}
           </span>
         </div>
         {/* Glow Effect on Hover */}
-        <div className={`absolute inset-0 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${colors.bg}`} />
+        <div className={`absolute inset-0 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${colors.bg}`} />
       </motion.div>
     );
   };
 
   return (
-    <section id="skills" className="py-12 relative min-h-screen flex items-center">
+    <section ref={sectionRef} id="skills" className="py-12 relative min-h-screen flex items-center gradient-section">
       <ParticleBackground id="skills-particles" variant="skills" />
       
       {/* Animated Background Elements */}
@@ -241,7 +319,7 @@ const SkillsSection = () => {
                 {/* Skills Grid with Progress Rings */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                   {category.skills.map((skill, index) => (
-                    <NeonProgressRing key={skill.name} skill={skill} color={category.color} />
+                    <NeonProgressRing key={skill.name} skill={skill} color={category.color} index={index} />
                   ))}
                 </div>
 
