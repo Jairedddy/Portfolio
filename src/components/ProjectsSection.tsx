@@ -1,10 +1,175 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import type { CSSProperties, MouseEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, Github, ChevronLeft, ChevronRight, Grid3x3, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ParticleBackground from "./ParticleBackground";
-import useEmblaCarousel from "embla-carousel-react";
+import useEmblaCarousel, { type EmblaCarouselType } from "embla-carousel-react";
 import TextReveal from "./TextReveal";
+
+type Project = {
+  title: string;
+  description: string;
+  tech: string[];
+  category: string;
+  color: string;
+  github: string;
+  live?: string;
+  features: string[];
+};
+
+type ColorClasses = {
+  border: string;
+  text: string;
+  glow: string;
+  shadow: string;
+  bg: string;
+};
+
+// Lightweight tilt controller that maps pointer position to 3D transforms.
+const useTiltCard = (enabled: boolean) => {
+  const baseStyle = useMemo<CSSProperties>(() => ({
+    transform: "perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)",
+    boxShadow: "0 25px 55px rgba(8, 17, 41, 0.45)",
+  }), []);
+
+  const [style, setStyle] = useState<CSSProperties>(baseStyle);
+
+  const handleMouseMove = useCallback((event: MouseEvent<HTMLDivElement>) => {
+    if (!enabled) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -10;
+    const rotateY = ((x - centerX) / centerX) * 10;
+    const shadowOffsetX = rotateY * -2.5;
+    const shadowOffsetY = rotateX * -3;
+
+    setStyle({
+      transform: `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`,
+      boxShadow: `${shadowOffsetX}px ${shadowOffsetY}px 45px rgba(3, 7, 18, 0.55), 0 15px 35px rgba(79, 209, 197, 0.2)`,
+    });
+  }, [enabled]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (!enabled) return;
+    setStyle(baseStyle);
+  }, [enabled, baseStyle]);
+
+  useEffect(() => {
+    if (!enabled) {
+      setStyle(baseStyle);
+    }
+  }, [enabled, baseStyle]);
+
+  return {
+    tiltStyle: enabled ? style : baseStyle,
+    handleMouseMove: enabled ? handleMouseMove : undefined,
+    handleMouseLeave: enabled ? handleMouseLeave : undefined,
+  };
+};
+
+type ProjectCardProps = {
+  project: Project;
+  colors: ColorClasses;
+  isInteractive: boolean;
+  className?: string;
+};
+
+const ProjectCard = ({ project, colors, isInteractive, className = "" }: ProjectCardProps) => {
+  const { tiltStyle, handleMouseMove, handleMouseLeave } = useTiltCard(isInteractive);
+
+  return (
+    <div className={className} style={{ perspective: "1200px" }}>
+      <div
+        className={`bg-card rounded-lg border border-border shadow-lg hover:${colors.border} transition-all duration-300 group h-full`}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          transformStyle: "preserve-3d",
+          transition: "transform 0.15s ease-out, box-shadow 0.25s ease-out",
+          ...tiltStyle,
+        }}
+      >
+        <div className="p-6 space-y-4">
+          <div
+            className={`inline-block px-3 py-1 rounded-full text-xs font-cyber ${colors.text} bg-surface-darker/50 border ${colors.border} mb-2`}
+            style={{ transform: "translateZ(30px)" }}
+          >
+            {project.category}
+          </div>
+
+          <h3
+            className={`text-xl font-bold ${colors.glow} mb-2 group-hover:scale-105 transition-transform`}
+            style={{ transform: "translateZ(45px)" }}
+          >
+            {project.title}
+          </h3>
+
+          <p
+            className="text-muted-foreground text-sm leading-relaxed"
+            style={{ transform: "translateZ(20px)" }}
+          >
+            {project.description}
+          </p>
+
+          <div className="mb-2" style={{ transform: "translateZ(30px)" }}>
+            <div className="flex flex-wrap gap-2">
+              {project.features.map((feature) => (
+                <span
+                  key={feature}
+                  className="text-xs px-2 py-1 bg-muted rounded text-muted-foreground"
+                >
+                  {feature}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mb-4" style={{ transform: "translateZ(35px)" }}>
+            {project.tech.map((tech) => (
+              <span
+                key={tech}
+                className={`text-xs px-2 py-1 ${colors.text} bg-surface-darker/30 rounded border ${colors.border}`}
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          <div className="flex gap-3" style={{ transform: "translateZ(45px)" }}>
+            <Button
+              size="sm"
+              variant="outline"
+              className={`flex-1 ${colors.border} ${colors.text} hover:scale-105 ${colors.bg} hover:shadow-lg transition-all duration-300`}
+              asChild
+            >
+              <a href={project.github} target="_blank" rel="noopener noreferrer">
+                <Github size={16} className="mr-2" />
+                Code
+              </a>
+            </Button>
+            {project.live && (
+              <Button
+                size="sm"
+                className="flex-1 bg-gradient-primary hover:scale-105 hover:shadow-neon-cyan hover:brightness-110 transition-all duration-300"
+                asChild
+              >
+                <a href={project.live} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink size={16} className="mr-2" />
+                  Demo
+                </a>
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Projects Section with Interactive Cards
 const ProjectsSection = () => {
@@ -29,11 +194,11 @@ const ProjectsSection = () => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
-  const onSelect = useCallback((emblaApi: any) => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
+  const onSelect = useCallback((api: EmblaCarouselType | undefined) => {
+    if (!api) return;
+    setSelectedIndex(api.selectedScrollSnap());
+    setCanScrollPrev(api.canScrollPrev());
+    setCanScrollNext(api.canScrollNext());
   }, []);
 
   useEffect(() => {
@@ -45,7 +210,7 @@ const ProjectsSection = () => {
       emblaApi.off("select", onSelect);
     };
   }, [emblaApi, onSelect]);
-  const projects = [
+  const projects: Project[] = [
     {
       title: "Noir Ink Tattoo Studio",
       description: "A sophisticated, monochrome tattoo studio and supply store featuring AI-powered design generation, comprehensive booking system, and educational resources.",
@@ -106,7 +271,7 @@ const ProjectsSection = () => {
     }
   ];
 
-  const getColorClasses = (color: string) => {
+  const getColorClasses = (color: string): ColorClasses => {
     switch (color) {
       case 'cyan':
         return {
@@ -194,14 +359,13 @@ const ProjectsSection = () => {
                     {projects.map((project, index) => {
                       const colors = getColorClasses(project.color);
                       const isActive = index === selectedIndex;
-                      
+
                       return (
                         <motion.div
                           key={project.title}
                           className={`flex-[0_0_85%] md:flex-[0_0_70%] lg:flex-[0_0_60%] min-w-0 px-2 transition-all duration-700 ease-out ${
                             isActive ? "scale-100 opacity-100 z-10" : "scale-[0.85] opacity-50 z-0 cursor-pointer"
                           }`}
-                          whileHover={isActive ? { scale: 1.02, transition: { duration: 0.2 } } : {}}
                           transition={{ duration: 0.5, ease: "easeInOut" }}
                           onClick={() => {
                             if (!isActive) {
@@ -209,77 +373,12 @@ const ProjectsSection = () => {
                             }
                           }}
                         >
-                          <div className={`bg-card rounded-lg border border-border shadow-lg hover:${colors.border} transition-all duration-300 group h-full`}>
-                            <div className="p-6">
-                              {/* Category Badge */}
-                              <div className={`inline-block px-3 py-1 rounded-full text-xs font-cyber ${colors.text} bg-surface-darker/50 border ${colors.border} mb-4`}>
-                                {project.category}
-                              </div>
-
-                              {/* Project Title */}
-                              <h3 className={`text-xl font-bold ${colors.glow} mb-3 group-hover:scale-105 transition-transform`}>
-                                {project.title}
-                              </h3>
-
-                              {/* Description */}
-                              <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                                {project.description}
-                              </p>
-
-                              {/* Features */}
-                              <div className="mb-4">
-                                <div className="flex flex-wrap gap-2">
-                                  {project.features.map((feature) => (
-                                    <span
-                                      key={feature}
-                                      className="text-xs px-2 py-1 bg-muted rounded text-muted-foreground"
-                                    >
-                                      {feature}
-                                    </span>
-                                  ))}
-                                </div>
-                              </div>
-
-                              {/* Tech Stack */}
-                              <div className="flex flex-wrap gap-2 mb-6">
-                                {project.tech.map((tech) => (
-                                  <span
-                                    key={tech}
-                                    className={`text-xs px-2 py-1 ${colors.text} bg-surface-darker/30 rounded border ${colors.border}`}
-                                  >
-                                    {tech}
-                                  </span>
-                                ))}
-                              </div>
-
-                              {/* Action Buttons */}
-                              <div className="flex gap-3">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={`flex-1 ${colors.border} ${colors.text} hover:scale-105 ${colors.bg} hover:shadow-lg transition-all duration-300`}
-                                  asChild
-                                >
-                                  <a className="" href={project.github} target="_blank" rel="noopener noreferrer">
-                                    <Github size={16} className="mr-2" />
-                                    Code
-                                  </a>
-                                </Button>
-                                {project.live && (
-                                  <Button
-                                    size="sm"
-                                    className={`flex-1 bg-gradient-primary hover:scale-105 hover:shadow-neon-cyan hover:brightness-110 transition-all duration-300`}
-                                    asChild
-                                  >
-                                    <a className="" href={project.live} target="_blank" rel="noopener noreferrer">
-                                      <ExternalLink size={16} className="mr-2" />
-                                      Demo
-                                    </a>
-                                  </Button>
-                                )}
-                              </div>
-                            </div>
-                          </div>
+                          <ProjectCard
+                            project={project}
+                            colors={colors}
+                            isInteractive={isActive}
+                            className="h-full"
+                          />
                         </motion.div>
                       );
                     })}
@@ -345,78 +444,14 @@ const ProjectsSection = () => {
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05, duration: 0.4 }}
-                    whileHover={{ y: -10, scale: 1.02 }}
-                    className={`bg-card rounded-lg border border-border shadow-lg hover:${colors.border} transition-all duration-300 group`}
+                    whileHover={{ y: -10 }}
                   >
-                    <div className="p-6">
-                      {/* Category Badge */}
-                      <div className={`inline-block px-3 py-1 rounded-full text-xs font-cyber ${colors.text} bg-surface-darker/50 border ${colors.border} mb-4`}>
-                        {project.category}
-                      </div>
-
-                      {/* Project Title */}
-                      <h3 className={`text-xl font-bold ${colors.glow} mb-3 group-hover:scale-105 transition-transform`}>
-                        {project.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                        {project.description}
-                      </p>
-
-                      {/* Features */}
-                      <div className="mb-4">
-                        <div className="flex flex-wrap gap-2">
-                          {project.features.map((feature) => (
-                            <span
-                              key={feature}
-                              className="text-xs px-2 py-1 bg-muted rounded text-muted-foreground"
-                            >
-                              {feature}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Tech Stack */}
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {project.tech.map((tech) => (
-                          <span
-                            key={tech}
-                            className={`text-xs px-2 py-1 ${colors.text} bg-surface-darker/30 rounded border ${colors.border}`}
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex gap-3">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className={`flex-1 ${colors.border} ${colors.text} hover:scale-105 ${colors.bg} hover:shadow-lg transition-all duration-300`}
-                          asChild
-                        >
-                          <a className="" href={project.github} target="_blank" rel="noopener noreferrer">
-                            <Github size={16} className="mr-2" />
-                            Code
-                          </a>
-                        </Button>
-                        {project.live && (
-                          <Button
-                            size="sm"
-                            className={`flex-1 bg-gradient-primary hover:scale-105 hover:shadow-neon-cyan hover:brightness-110 transition-all duration-300`}
-                            asChild
-                          >
-                            <a className="" href={project.live} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink size={16} className="mr-2" />
-                              Demo
-                            </a>
-                          </Button>
-                        )}
-                      </div>
-                    </div>
+                    <ProjectCard
+                      project={project}
+                      colors={colors}
+                      isInteractive={true}
+                      className="h-full"
+                    />
                   </motion.div>
                 );
               })}

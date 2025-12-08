@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { animate, stagger } from 'animejs';
+import { animate, stagger, type AnimationParams, type JSAnimation, type TargetsParam } from 'animejs';
 
 interface UseAnimeOptions {
-  targets: string | HTMLElement | NodeList | Array<HTMLElement>;
+  targets: TargetsParam;
   animation?: 'fadeIn' | 'slideUp' | 'scale' | 'rotate' | 'custom';
   delay?: number;
   duration?: number;
@@ -15,13 +15,13 @@ interface UseAnimeOptions {
  * Custom hook for anime.js animations
  * Provides sophisticated, minimalistic animations
  */
-export const useAnime = (options: UseAnimeOptions) => {
+export const useAnime = (options: UseAnimeOptions): JSAnimation | null => {
   const { targets, animation = 'fadeIn', delay = 0, duration = 1000, stagger: staggerDelay, easing = 'easeOutExpo', onComplete } = options;
-  const animationRef = useRef<any>(null);
+  const animationRef = useRef<JSAnimation | null>(null);
 
   useEffect(() => {
     const animationTargets = targets;
-    let animationConfig: any = {
+    let animationConfig: AnimationParams = {
       duration,
       delay: staggerDelay ? stagger(staggerDelay) : delay,
       easing,
