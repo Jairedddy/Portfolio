@@ -109,6 +109,19 @@ All colors MUST be HSL.
     font-family: 'Orbitron', 'monospace';
   }
 
+  /* Neon selection styling for cohesive highlighting */
+  ::selection {
+    background: hsl(var(--neon-purple) / 0.35);
+    color: hsl(0 0% 100%);
+    text-shadow: 0 0 12px hsl(var(--neon-purple) / 0.8);
+  }
+
+  ::-moz-selection {
+    background: hsl(var(--neon-purple) / 0.35);
+    color: hsl(0 0% 100%);
+    text-shadow: 0 0 12px hsl(var(--neon-purple) / 0.8);
+  }
+
   /* Prevent double scrollbars */
   .overflow-hidden {
     overflow: hidden !important;
