@@ -49,7 +49,7 @@ const Footer = () => {
           >
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="focus-ring-cyber text-muted-foreground hover:text-neon-purple transition-colors"
+              className="text-muted-foreground hover:text-neon-purple transition-colors"
             >
               Back to Top
             </button>

@@ -372,7 +372,7 @@ const ContactSection = () => {
 
                     if (item.href) {
                       return (
-                        <a key={item.label} href={item.href} className="focus-ring-cyber block">
+                        <a key={item.label} href={item.href} className="block">
                           {content}
                         </a>
                       );
@@ -403,7 +403,7 @@ const ContactSection = () => {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="focus-ring-cyber flex items-center gap-3 rounded-2xl border border-border/60 bg-card/70 px-4 py-3 transition-all hover:border-neon-cyan"
+                    className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card/70 px-4 py-3 transition-all hover:border-neon-cyan"
                     data-cursor="interactive"
                   >
                     <social.icon className="w-4 h-4 text-neon-cyan" />
@@ -428,7 +428,7 @@ const ContactSection = () => {
                   href="https://buymeacoffee.com/jairedddy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="focus-ring-cyber inline-flex items-center gap-2 rounded-full bg-gradient-primary px-5 py-3 text-sm font-semibold text-background shadow-neon-cyan transition-all duration-300 hover:brightness-110"
+                  className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-5 py-3 text-sm font-semibold text-background shadow-neon-cyan transition-all duration-300 hover:brightness-110"
                   aria-label="Buy me a coffee"
                 >
                   <Coffee className="h-4 w-4" />
@@ -505,7 +505,7 @@ const ContactSection = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan"
+                      className="focus-ring-cyber mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan"
                       placeholder="Your name"
                     />
                   </div>
@@ -517,7 +517,7 @@ const ContactSection = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan"
+                      className="focus-ring-cyber mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan"
                       placeholder="you@email.com"
                     />
                   </div>
@@ -530,7 +530,7 @@ const ContactSection = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan"
+                    className="focus-ring-cyber mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan"
                     placeholder="e.g. Portfolio revamp"
                   />
                 </div>
@@ -543,7 +543,7 @@ const ContactSection = () => {
                     onChange={(e) => handleMessageInputChange(e.target.value)}
                     required
                     rows={5}
-                    className="mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan resize-none"
+                    className="focus-ring-cyber mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan resize-none"
                     placeholder="What are we creating? Tools, inspiration, timeline..."
                   />
                 </div>
@@ -630,12 +630,12 @@ const ContactSection = () => {
                         }
                       }}
                       placeholder="Add another tool (e.g. Prisma, Vite)"
-                      className="bg-surface-darker border-border focus:border-neon-cyan"
+                      className="focus-ring-cyber bg-surface-darker border-border focus:border-neon-cyan"
                     />
                     <Button
                       type="button"
                       onClick={addCustomTech}
-                      className="bg-gradient-primary text-background hover:shadow-neon-cyan"
+                      className="focus-ring-cyber bg-gradient-primary text-background hover:shadow-neon-cyan"
                     >
                       Add
                     </Button>
@@ -668,7 +668,7 @@ const ContactSection = () => {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full md:w-auto bg-gradient-primary hover:shadow-neon-cyan transition-all duration-300 text-base px-8 py-4 h-auto"
+                    className="focus-ring-cyber w-full md:w-auto bg-gradient-primary hover:shadow-neon-cyan transition-all duration-300 text-base px-8 py-4 h-auto"
                     onMouseEnter={(e) => {
                       animate(e.currentTarget, {
                         scale: [1, 1.02],

@@ -260,7 +260,7 @@ const ProjectsSection = () => {
                                   className={`flex-1 ${colors.border} ${colors.text} hover:scale-105 ${colors.bg} hover:shadow-lg transition-all duration-300`}
                                   asChild
                                 >
-                                  <a className="focus-ring-cyber" href={project.github} target="_blank" rel="noopener noreferrer">
+                                  <a className="" href={project.github} target="_blank" rel="noopener noreferrer">
                                     <Github size={16} className="mr-2" />
                                     Code
                                   </a>
@@ -271,7 +271,7 @@ const ProjectsSection = () => {
                                     className={`flex-1 bg-gradient-primary hover:scale-105 hover:shadow-neon-cyan hover:brightness-110 transition-all duration-300`}
                                     asChild
                                   >
-                                    <a className="focus-ring-cyber" href={project.live} target="_blank" rel="noopener noreferrer">
+                                    <a className="" href={project.live} target="_blank" rel="noopener noreferrer">
                                       <ExternalLink size={16} className="mr-2" />
                                       Demo
                                     </a>
@@ -316,7 +316,7 @@ const ProjectsSection = () => {
                     <button
                       key={index}
                       onClick={() => emblaApi?.scrollTo(index)}
-                      className={`focus-ring-cyber h-2 rounded-full transition-all duration-300 ${
+                      className={`h-2 rounded-full transition-all duration-300 ${
                         index === selectedIndex
                           ? "w-8 bg-neon-cyan"
                           : "w-2 bg-muted hover:bg-neon-cyan/50"
@@ -398,7 +398,7 @@ const ProjectsSection = () => {
                           className={`flex-1 ${colors.border} ${colors.text} hover:scale-105 ${colors.bg} hover:shadow-lg transition-all duration-300`}
                           asChild
                         >
-                          <a className="focus-ring-cyber" href={project.github} target="_blank" rel="noopener noreferrer">
+                          <a className="" href={project.github} target="_blank" rel="noopener noreferrer">
                             <Github size={16} className="mr-2" />
                             Code
                           </a>
@@ -409,7 +409,7 @@ const ProjectsSection = () => {
                             className={`flex-1 bg-gradient-primary hover:scale-105 hover:shadow-neon-cyan hover:brightness-110 transition-all duration-300`}
                             asChild
                           >
-                            <a className="focus-ring-cyber" href={project.live} target="_blank" rel="noopener noreferrer">
+                            <a className="" href={project.live} target="_blank" rel="noopener noreferrer">
                               <ExternalLink size={16} className="mr-2" />
                               Demo
                             </a>
@@ -458,7 +458,7 @@ const ProjectsSection = () => {
                 asChild
                 className="border-glow-purple text-neon-purple hover:bg-glow-purple hover:text-background transition-all duration-300 group"
               >
-                <a className="focus-ring-cyber"
+                <a className=""
                   href="https://github.com/Jairedddy" 
                   target="_blank" 
                   rel="noopener noreferrer"
