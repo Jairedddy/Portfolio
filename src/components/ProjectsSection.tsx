@@ -58,7 +58,7 @@ const ProjectsSection = () => {
     },
     {
       title: "Golden Barell Brewery",
-      description: "Golden Barrel’s modern, responsive brewery website built with React and TypeScript. It features rich content sections, production‑ready animations, and polished UI components tailored for a premium brewery brand.",
+      description: "Golden Barrelƒ?Ts modern, responsive brewery website built with React and TypeScript. It features rich content sections, productionƒ?`ready animations, and polished UI components tailored for a premium brewery brand.",
       tech: ["React", "Vite", "Tailwind CSS", "Radix", "TanStack Query", "Lucide React"],
       category: "Web Development",
       color: "cyan",
