@@ -5,6 +5,7 @@ import TextReveal from "./TextReveal";
 import { skillCategories } from "@/data/skillCategories";
 import { gsap } from "gsap";
 import { useGradientTheme } from "@/hooks/useGradientTheme";
+import SkillRadarChart from "./SkillRadarChart";
 
 // Skills Section with Tabbed Interface and Neon Progress Indicators
 const SkillsSection = () => {
@@ -257,90 +258,69 @@ const SkillsSection = () => {
           <div className="w-24 h-1 bg-gradient-accent mx-auto rounded-full mt-4" />
         </motion.div>
 
-        {/* Tab Navigation */}
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
-          {skillCategories.map((category, index) => {
-            const Icon = category.icon;
-            const colors = getColorClasses(category.color);
-            const isActive = activeTab === category.id;
-            
-            return (
-              <motion.button
-                key={category.id}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveTab(category.id)}
-                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 border text-sm ${
-                  isActive
-                    ? `${colors.border} ${colors.bg} ${colors.text} shadow-lg shadow-${colors.text}/20`
-                    : 'border-border text-muted-foreground hover:text-foreground hover:border-border/60'
-                }`}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Icon size={16} />
-                <span className="font-medium">{category.title}</span>
-              </motion.button>
-            );
-          })}
-                      </div>
-
-        {/* Tab Content */}
-                        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="min-h-[400px]"
-        >
-          {skillCategories.map((category) => {
-            if (category.id !== activeTab) return null;
-            
-            const colors = getColorClasses(category.color);
-            
-            return (
-              <div key={category.id} className="space-y-6">
-                {/* Category Header */}
-                <div className="text-center mb-6">
-                  <div className={`inline-flex items-center space-x-3 p-4 rounded-2xl ${colors.bg} ${colors.border} border shadow-lg shadow-${colors.text}/20`}>
-                    <category.icon size={28} className={colors.text} />
-                    <TextReveal
-                      as="h3"
-                      className={`text-2xl font-cyber font-bold ${colors.glow}`}
-                      revealDelay={60}
-                    >
-                      {category.title}
-                    </TextReveal>
+        <div className="grid gap-10 lg:grid-cols-[1.45fr_1fr] items-start">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="min-h-[400px]"
+          >
+            {skillCategories.map((category) => {
+              if (category.id !== activeTab) return null;
+              
+              const colors = getColorClasses(category.color);
+              
+              return (
+                <div key={category.id} className="space-y-6">
+                  {/* Category Header */}
+                  <div className="text-center mb-6">
+                    <div className={`inline-flex items-center space-x-3 p-4 rounded-2xl ${colors.bg} ${colors.border} border`}>
+                      <category.icon size={28} className={colors.text} />
+                      <TextReveal
+                        as="h3"
+                        className={`text-2xl font-cyber font-bold ${colors.glow}`}
+                        revealDelay={60}
+                      >
+                        {category.title}
+                      </TextReveal>
+                    </div>
                   </div>
-                      </div>
 
-                {/* Skills Grid with Progress Rings */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                  {category.skills.map((skill, index) => (
-                    <NeonProgressRing key={skill.name} skill={skill} color={category.color} index={index} />
-                  ))}
-                </div>
+                  {/* Skills Grid with Progress Rings */}
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                    {category.skills.map((skill, index) => (
+                      <NeonProgressRing key={skill.name} skill={skill} color={category.color} index={index} />
+                    ))}
+                  </div>
 
-                {/* Category Description */}
-                <div className="text-center mt-8">
-                  <div className="bg-card p-6 rounded-2xl border border-border shadow-lg max-w-3xl mx-auto">
-                    <p className="text-muted-foreground leading-relaxed text-base">
-                      {category.id === "web-dev" && "Mastery of modern web technologies and frameworks for creating responsive, interactive applications with cutting-edge visual effects."}
-                      {category.id === "design" && "Expertise in design tools and principles for creating intuitive user experiences and compelling visual designs that engage users."}
-                      {category.id === "backend" && "Strong foundation in server-side development, database management, and API design for scalable, robust applications."}
-                      {category.id === "ai-ml" && "Comprehensive knowledge of machine learning libraries, AI models, and data science tools for building intelligent applications."}
-                      {category.id === "integration" && "Specialized skills in integrating AI capabilities into web applications for enhanced user experiences and automation."}
-                      {category.id === "devops" && "Proficiency in deployment, security, and performance optimization for production-ready, secure applications."}
-                      {category.id === "soft-skills" && "Essential professional skills for effective collaboration, communication, and successful project delivery."}
-                    </p>
+                  {/* Category Description */}
+                  <div className="text-center mt-8">
+                    <div className="bg-card p-6 rounded-2xl border border-border shadow-lg max-w-3xl mx-auto">
+                      <p className="text-muted-foreground leading-relaxed text-base">
+                        {category.id === "web-dev" && "Mastery of modern web technologies and frameworks for creating responsive, interactive applications with cutting-edge visual effects."}
+                        {category.id === "design" && "Expertise in design tools and principles for creating intuitive user experiences and compelling visual designs that engage users."}
+                        {category.id === "backend" && "Strong foundation in server-side development, database management, and API design for scalable, robust applications."}
+                        {category.id === "ai-ml" && "Comprehensive knowledge of machine learning libraries, AI models, and data science tools for building intelligent applications."}
+                        {category.id === "integration" && "Specialized skills in integrating AI capabilities into web applications for enhanced user experiences and automation."}
+                        {category.id === "devops" && "Proficiency in deployment, security, and performance optimization for production-ready, secure applications."}
+                        {category.id === "soft-skills" && "Essential professional skills for effective collaboration, communication, and successful project delivery."}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </motion.div>
+              );
+            })}
+          </motion.div>
+
+          <div className="order-first lg:order-none">
+            <SkillRadarChart
+              categories={skillCategories}
+              activeCategoryId={activeTab}
+              onCategoryChange={setActiveTab}
+            />
+          </div>
+        </div>
       </div>
     </section>
   );
