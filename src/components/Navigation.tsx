@@ -81,6 +81,37 @@ const Navigation = () => {
   const resumePath = "/Jai-Reddy-Resume-20251205.pdf";
   const currentTheme = activeThemes[activeSection] ?? activeThemes.home;
 
+  const navIconVariants = {
+    rest: { rotate: 0, scale: 1 },
+    hover: { rotate: 10, scale: 1.2, transition: { duration: 0.25 } },
+    tap: { rotate: -10, scale: 0.95, transition: { duration: 0.2 } },
+    active: { rotate: 0, scale: 1.1, transition: { duration: 0.2 } },
+  };
+
+  const navButtonVariants = {
+    rest: { scale: 1 },
+    hover: { scale: 1.08 },
+    tap: { scale: 0.95 },
+    active: { scale: 1.02 },
+  };
+
+  const socialIconVariants = {
+    rest: { rotate: 0, scale: 1, y: 0 },
+    hover: { rotate: -12, scale: 1.2, y: -3, transition: { duration: 0.25 } },
+    tap: { rotate: 12, scale: 0.95, y: 0, transition: { duration: 0.2 } },
+  };
+
+  const resumeIconVariants = {
+    rest: { rotate: 0, scale: 1 },
+    hover: { rotate: 15, scale: 1.15, transition: { duration: 0.25 } },
+    tap: { rotate: -15, scale: 0.95, transition: { duration: 0.2 } },
+  };
+
+  const toggleIconVariants = {
+    closed: { rotate: 0, scale: 1 },
+    open: { rotate: 180, scale: 1.1 },
+  };
+
   // Smooth scroll to section
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -175,8 +206,11 @@ const Navigation = () => {
                 return (
                   <motion.button
                     key={item.id}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
+                    initial="rest"
+                    variants={navButtonVariants}
+                    animate={isActive ? "active" : "rest"}
+                    whileHover="hover"
+                    whileTap="tap"
                     onClick={() => scrollToSection(item.id)}
                     className={`px-4 py-2 rounded-lg transition-all duration-300 flex items-center space-x-2 ${
                       isActive
@@ -184,7 +218,9 @@ const Navigation = () => {
                         : "text-muted-foreground hover:text-neon-purple"
                     }`}
                   >
-                    <Icon size={16} />
+                    <motion.span variants={navIconVariants} className="flex items-center justify-center">
+                      <Icon size={16} />
+                    </motion.span>
                     <span>{item.label}</span>
                   </motion.button>
                 );
@@ -219,12 +255,16 @@ const Navigation = () => {
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.2, y: -2 }}
-                    whileTap={{ scale: 0.9 }}
+                    initial="rest"
+                    animate="rest"
+                    whileHover="hover"
+                    whileTap="tap"
                     className={`${currentTheme.text} ${currentTheme.hoverText} transition-all duration-300 p-2 rounded-lg`}
                     aria-label={label}
                   >
-                    <Icon size={20} />
+                    <motion.span variants={socialIconVariants} className="flex items-center justify-center">
+                      <Icon size={20} />
+                    </motion.span>
                   </motion.a>
                 ))}
               </div>
@@ -233,11 +273,16 @@ const Navigation = () => {
               <motion.a
                 href={resumePath}
                 download="Jai Reddy.pdf"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                initial="rest"
+                animate="rest"
+                whileHover="hover"
+                whileTap="tap"
+                variants={navButtonVariants}
                 className={`hidden md:flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${currentTheme.buttonBg} ${currentTheme.buttonHover}`}
               >
-                <Download size={16} />
+                <motion.span variants={resumeIconVariants} className="flex items-center justify-center">
+                  <Download size={16} />
+                </motion.span>
                 <span>Resume</span>
               </motion.a>
 
@@ -248,7 +293,13 @@ const Navigation = () => {
                   onClick={() => setIsOpen(!isOpen)}
                   className="text-neon-purple p-2"
                 >
-                  {isOpen ? <X size={24} /> : <Menu size={24} />}
+                  <motion.span
+                    animate={isOpen ? "open" : "closed"}
+                    variants={toggleIconVariants}
+                    className="inline-flex"
+                  >
+                    {isOpen ? <X size={24} /> : <Menu size={24} />}
+                  </motion.span>
                 </motion.button>
               </div>
             </div>
@@ -269,12 +320,16 @@ const Navigation = () => {
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    initial="rest"
+                    animate="rest"
+                    whileHover="hover"
+                    whileTap="tap"
                     className={`${currentTheme.text} ${currentTheme.hoverText} transition-all duration-300 p-2 rounded-lg`}
                     aria-label={label}
                   >
-                    <Icon size={20} />
+                    <motion.span variants={socialIconVariants} className="flex items-center justify-center">
+                      <Icon size={20} />
+                    </motion.span>
                   </motion.a>
                 ))}
               </div>
@@ -285,8 +340,13 @@ const Navigation = () => {
                 const theme = activeThemes[item.id] ?? activeThemes.home;
                 const isActive = activeSection === item.id;
                 return (
-                  <button
+                  <motion.button
                     key={item.id}
+                    initial="rest"
+                    variants={navButtonVariants}
+                    animate={isActive ? "active" : "rest"}
+                    whileHover="hover"
+                    whileTap="tap"
                     onClick={() => scrollToSection(item.id)}
                     className={`flex items-center space-x-3 w-full text-left px-4 py-3 border-b border-border last:border-b-0 transition-colors ${
                       isActive
@@ -294,23 +354,32 @@ const Navigation = () => {
                         : "text-muted-foreground hover:text-neon-purple hover:bg-muted/50"
                     }`}
                   >
-                    <Icon size={16} />
+                    <motion.span variants={navIconVariants} className="flex items-center justify-center">
+                      <Icon size={16} />
+                    </motion.span>
                     <span>{item.label}</span>
-                  </button>
+                  </motion.button>
                 );
               })}
 
               {/* Resume Button in Mobile Menu */}
               <div className="p-4 border-t border-border">
-                <a
+                <motion.a
                   href={resumePath}
                   download="Jai Reddy.pdf"
+                  initial="rest"
+                  animate="rest"
+                  whileHover="hover"
+                  whileTap="tap"
+                  variants={navButtonVariants}
                   className={`w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-lg transition-all duration-300 ${currentTheme.buttonBg} ${currentTheme.buttonHover}`}
                   onClick={() => setIsOpen(false)}
                 >
-                  <Download size={16} />
+                  <motion.span variants={resumeIconVariants} className="flex items-center justify-center">
+                    <Download size={16} />
+                  </motion.span>
                   <span>Resume</span>
-                </a>
+                </motion.a>
               </div>
             </motion.div>
           )}

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { ArrowDown, Github, Linkedin, Mail } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowUpRight, MailOpen } from "lucide-react";
 import ParticleBackground from "./ParticleBackground";
 import ThreeScene from "./ThreeScene";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,24 @@ const HeroSection = () => {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
+
+  const ctaButtonVariants = {
+    rest: { scale: 1 },
+    hover: { scale: 1.05 },
+    tap: { scale: 0.97 },
+  };
+
+  const arrowIconVariants = {
+    rest: { rotate: 0, x: 0 },
+    hover: { rotate: 20, x: 4, transition: { duration: 0.25 } },
+    tap: { rotate: -10, x: 0, transition: { duration: 0.2 } },
+  };
+
+  const mailIconVariants = {
+    rest: { rotate: 0, y: 0, scale: 1 },
+    hover: { rotate: -15, y: -2, scale: 1.1, transition: { duration: 0.25 } },
+    tap: { rotate: 10, y: 0, scale: 0.97, transition: { duration: 0.2 } },
+  };
 
   const scrollToProjects = () => {
     document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
@@ -127,47 +146,45 @@ const HeroSection = () => {
           className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
         >
           <Button
-            onClick={scrollToProjects}
             size="lg"
             className="bg-gradient-secondary hover:shadow-neon-purple transition-all duration-300 text-lg px-8 py-4 h-auto opacity-0"
-            onMouseEnter={(e) => {
-              animate(e.currentTarget, {
-                scale: [1, 1.05],
-                duration: 200,
-                easing: "easeOutQuad",
-              });
-            }}
-            onMouseLeave={(e) => {
-              animate(e.currentTarget, {
-                scale: [1.05, 1],
-                duration: 200,
-                easing: "easeOutQuad",
-              });
-            }}
+            asChild
           >
-            View My Work
+            <motion.button
+              onClick={scrollToProjects}
+              initial="rest"
+              animate="rest"
+              variants={ctaButtonVariants}
+              whileHover="hover"
+              whileTap="tap"
+              type="button"
+            >
+              <span>View My Work</span>
+              <motion.span variants={arrowIconVariants} className="flex items-center justify-center">
+                <ArrowUpRight size={20} />
+              </motion.span>
+            </motion.button>
           </Button>
           <Button
-            onClick={scrollToContact}
             variant="outline"
             size="lg"
             className="border-border hover:border-neon-purple hover:bg-neon-purple hover:text-background transition-all duration-300 text-lg px-8 py-4 h-auto opacity-0"
-            onMouseEnter={(e) => {
-              animate(e.currentTarget, {
-                scale: [1, 1.05],
-                duration: 200,
-                easing: "easeOutQuad",
-              });
-            }}
-            onMouseLeave={(e) => {
-              animate(e.currentTarget, {
-                scale: [1.05, 1],
-                duration: 200,
-                easing: "easeOutQuad",
-              });
-            }}
+            asChild
           >
-            Get In Touch
+            <motion.button
+              onClick={scrollToContact}
+              initial="rest"
+              animate="rest"
+              variants={ctaButtonVariants}
+              whileHover="hover"
+              whileTap="tap"
+              type="button"
+            >
+              <span>Get In Touch</span>
+              <motion.span variants={mailIconVariants} className="flex items-center justify-center">
+                <MailOpen size={20} />
+              </motion.span>
+            </motion.button>
           </Button>
         </div>
       </div>
