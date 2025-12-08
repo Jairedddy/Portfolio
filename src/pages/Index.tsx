@@ -143,7 +143,7 @@ const Index = () => {
             <Navigation />
             
             {/* Main Content Sections */}
-            <main className="relative">
+            <main className="relative snap-container">
                 {/* Hero Section with particles and 3D elements */}
                 <HeroSection />
                 

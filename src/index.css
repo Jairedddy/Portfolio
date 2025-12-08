@@ -72,6 +72,7 @@ All colors MUST be HSL.
     --cursor-color: 189 100% 60%;
     --focus-ring-color: 189 100% 70%;
     --focus-ring-alt: 276 83% 65%;
+    --navbar-height: 4.5rem;
 
   }
 }
@@ -84,6 +85,8 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground overflow-x-hidden;
     font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: var(--navbar-height);
   }
 
   body.custom-cursor-hidden,
@@ -157,6 +160,30 @@ All colors MUST be HSL.
   /* Ensure main container doesn't create scroll context */
   main {
     overflow: visible !important;
+  }
+
+  .snap-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .snap-container > section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    scroll-margin-top: var(--navbar-height);
+  }
+
+  @supports not (scroll-snap-type: y mandatory) {
+    body {
+      scroll-snap-type: none;
+      scroll-padding-top: 0;
+    }
+
+    .snap-container > section {
+      scroll-snap-align: none;
+      scroll-snap-stop: normal;
+    }
   }
 
   .focus-ring-cyber {
