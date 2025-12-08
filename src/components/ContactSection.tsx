@@ -372,7 +372,7 @@ const ContactSection = () => {
 
                     if (item.href) {
                       return (
-                        <a key={item.label} href={item.href} className="block">
+                        <a key={item.label} href={item.href} className="focus-ring-cyber block">
                           {content}
                         </a>
                       );
@@ -403,7 +403,7 @@ const ContactSection = () => {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card/70 px-4 py-3 transition-all hover:border-neon-cyan"
+                    className="focus-ring-cyber flex items-center gap-3 rounded-2xl border border-border/60 bg-card/70 px-4 py-3 transition-all hover:border-neon-cyan"
                     data-cursor="interactive"
                   >
                     <social.icon className="w-4 h-4 text-neon-cyan" />
@@ -428,7 +428,7 @@ const ContactSection = () => {
                   href="https://buymeacoffee.com/jairedddy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-5 py-3 text-sm font-semibold text-background shadow-neon-cyan transition-all duration-300 hover:brightness-110"
+                  className="focus-ring-cyber inline-flex items-center gap-2 rounded-full bg-gradient-primary px-5 py-3 text-sm font-semibold text-background shadow-neon-cyan transition-all duration-300 hover:brightness-110"
                   aria-label="Buy me a coffee"
                 >
                   <Coffee className="h-4 w-4" />
@@ -567,7 +567,7 @@ const ContactSection = () => {
                           type="button"
                           key={category.id}
                           onClick={() => setActiveTechCategory(category.id)}
-                          className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium tracking-[0.2em] transition-all ${
+                          className={`focus-ring-cyber flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium tracking-[0.2em] transition-all ${
                             isActive
                               ? `${colors.border} ${colors.bg} ${colors.text}`
                               : "border-border text-muted-foreground hover:border-border/70"
@@ -597,7 +597,7 @@ const ContactSection = () => {
                             type="button"
                             key={`${activeCategory?.id}-${skill.name}`}
                             onClick={() => toggleTech(skill.name)}
-                            className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all ${
+                            className={`focus-ring-cyber flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all ${
                               isActive
                                 ? "border-neon-cyan/70 bg-neon-cyan/10 shadow-neon-cyan/20"
                                 : "border-border hover:border-neon-cyan/40"
@@ -652,7 +652,7 @@ const ContactSection = () => {
                               type="button"
                               key={tech}
                               onClick={() => removeCustomTech(tech)}
-                              className="flex items-center gap-1 rounded-full border border-border/60 px-3 py-1 text-xs text-muted-foreground hover:border-neon-cyan/60 hover:text-foreground"
+                              className="focus-ring-cyber flex items-center gap-1 rounded-full border border-border/60 px-3 py-1 text-xs text-muted-foreground hover:border-neon-cyan/60 hover:text-foreground"
                             >
                               {tech}
                               <span className="text-base leading-none">&times;</span>

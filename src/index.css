@@ -70,6 +70,8 @@ All colors MUST be HSL.
     --scrollbar-start: 276 83% 55%;
     --scrollbar-end: 276 83% 55%;
     --cursor-color: 189 100% 60%;
+    --focus-ring-color: 189 100% 70%;
+    --focus-ring-alt: 276 83% 65%;
 
   }
 }
@@ -156,6 +158,24 @@ All colors MUST be HSL.
   main {
     overflow: visible !important;
   }
+
+  :where(button, [role="button"], input, textarea, select),
+  .focus-ring-cyber {
+    outline: none;
+    transition:
+      box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  :where(button, [role="button"], input, textarea, select):focus-visible,
+  .focus-ring-cyber:focus-visible {
+    --focus-ring-core: 0 0 0 1px hsl(var(--darker-surface)), 0 0 0 3px hsl(var(--focus-ring-color));
+    border-color: hsl(var(--focus-ring-color));
+    box-shadow: var(--focus-ring-core), 0 0 32px hsl(var(--focus-ring-alt) / 0.7);
+    animation: focus-ring-pulse 1.8s ease-in-out infinite;
+  }
+
 }
 
 @layer utilities {
@@ -321,6 +341,11 @@ All colors MUST be HSL.
   .cursor-layer {
     display: none;
   }
+
+  :where(button, [role="button"], input, textarea, select):focus-visible,
+  .focus-ring-cyber:focus-visible {
+    animation: none;
+  }
 }
 
 @keyframes float {
@@ -352,4 +377,16 @@ All colors MUST be HSL.
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
+}
+
+@keyframes focus-ring-pulse {
+  0% {
+    box-shadow: var(--focus-ring-core), 0 0 24px hsl(var(--focus-ring-color) / 0.4);
+  }
+  50% {
+    box-shadow: var(--focus-ring-core), 0 0 40px hsl(var(--focus-ring-alt) / 0.85);
+  }
+  100% {
+    box-shadow: var(--focus-ring-core), 0 0 24px hsl(var(--focus-ring-color) / 0.4);
+  }
 }

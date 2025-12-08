@@ -221,7 +221,7 @@ const Navigation = () => {
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.2, y: -2 }}
                     whileTap={{ scale: 0.9 }}
-                    className={`${currentTheme.text} ${currentTheme.hoverText} transition-all duration-300 p-2 rounded-lg`}
+                    className={`focus-ring-cyber ${currentTheme.text} ${currentTheme.hoverText} transition-all duration-300 p-2 rounded-lg`}
                     aria-label={label}
                   >
                     <Icon size={20} />
@@ -235,7 +235,7 @@ const Navigation = () => {
                 download="Jai Reddy.pdf"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`hidden md:flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${currentTheme.buttonBg} ${currentTheme.buttonHover}`}
+                className={`focus-ring-cyber hidden md:flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${currentTheme.buttonBg} ${currentTheme.buttonHover}`}
               >
                 <Download size={16} />
                 <span>Resume</span>
@@ -246,7 +246,7 @@ const Navigation = () => {
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setIsOpen(!isOpen)}
-                  className="text-neon-purple p-2"
+                  className="focus-ring-cyber text-neon-purple p-2"
                 >
                   {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </motion.button>
@@ -271,7 +271,7 @@ const Navigation = () => {
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className={`${currentTheme.text} ${currentTheme.hoverText} transition-all duration-300 p-2 rounded-lg`}
+                    className={`focus-ring-cyber ${currentTheme.text} ${currentTheme.hoverText} transition-all duration-300 p-2 rounded-lg`}
                     aria-label={label}
                   >
                     <Icon size={20} />
@@ -288,7 +288,7 @@ const Navigation = () => {
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className={`flex items-center space-x-3 w-full text-left px-4 py-3 border-b border-border last:border-b-0 transition-colors ${
+                    className={`focus-ring-cyber flex items-center space-x-3 w-full text-left px-4 py-3 border-b border-border last:border-b-0 transition-colors ${
                       isActive
                         ? `${theme.text} bg-muted`
                         : "text-muted-foreground hover:text-neon-purple hover:bg-muted/50"
@@ -305,7 +305,7 @@ const Navigation = () => {
                 <a
                   href={resumePath}
                   download="Jai Reddy.pdf"
-                  className={`w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-lg transition-all duration-300 ${currentTheme.buttonBg} ${currentTheme.buttonHover}`}
+                  className={`focus-ring-cyber w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-lg transition-all duration-300 ${currentTheme.buttonBg} ${currentTheme.buttonHover}`}
                   onClick={() => setIsOpen(false)}
                 >
                   <Download size={16} />
