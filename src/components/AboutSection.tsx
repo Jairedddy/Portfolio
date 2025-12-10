@@ -345,7 +345,7 @@ const AboutSection = () => {
         >
           <TextReveal
             as="h3"
-            className="text-3xl font-orbitron font-bold text-center mb-8 text-neon-purple"
+            className="text-3xl font-orbitron font-bold text-center mb-8 text-neon-cyan"
             revealDelay={100}
           >
             My Journey

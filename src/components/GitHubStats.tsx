@@ -237,9 +237,6 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({
       <div className="relative z-10 space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-cyber uppercase tracking-[0.4em] text-muted-foreground">
-              GitHub Pulse
-            </p>
             <div className="flex items-center gap-2">
               <Github className="h-6 w-6 text-neon-cyan" />
               <h3 className="text-3xl font-orbitron font-black text-glow-cyan">

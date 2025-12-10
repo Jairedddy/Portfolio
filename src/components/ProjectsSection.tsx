@@ -437,14 +437,14 @@ const ProjectsSection = () => {
                     onClick={() => handleCategoryChange(category)}
                     disabled={isFiltering}
                     className={`relative px-5 py-2 rounded-full border border-border/70 bg-card/60 uppercase tracking-[0.2em] text-[0.65rem] font-semibold transition-all duration-300 ${
-                      isActiveCategory ? "text-neon-cyan" : "text-muted-foreground hover:text-foreground"
+                      isActiveCategory ? "text-neon-purple" : "text-muted-foreground hover:text-foreground"
                     } ${isFiltering ? "cursor-wait" : ""}`}
                     aria-pressed={isActiveCategory}
                   >
                     {isActiveCategory && (
                       <motion.span
                         layoutId="projects-active-category"
-                        className="absolute inset-0 rounded-full bg-glow-cyan/20 border border-glow-cyan/60 shadow-neon-cyan"
+                        className="absolute inset-0 rounded-full bg-glow-purple/20 border border-glow-purple/60 shadow-neon-purple"
                         transition={{ type: "spring", stiffness: 320, damping: 28 }}
                       />
                     )}

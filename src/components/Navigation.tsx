@@ -189,6 +189,7 @@ const Navigation = () => {
             {/* Left Section: Logo */}
             <div className="flex items-center">
               <motion.div
+                data-easter-logo
                 whileHover={{ scale: 1.05 }}
                 className="font-cyber text-xl font-bold text-neon-purple cursor-pointer ml-4"
                 onClick={() => scrollToSection("home")}

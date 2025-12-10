@@ -8,6 +8,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import LoadingScreen from "./components/LoadingScreen";
+import EasterEggs from "./components/EasterEggs";
+import { EasterEggsProvider } from "./context/EasterEggsContext";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +41,7 @@ const App = () => {
       resolved = true;
       if (fallbackTimer) {
         window.clearTimeout(fallbackTimer);
+        fallbackTimer = undefined;
       }
       const elapsed = performance.now() - startTime;
       const remaining = Math.max(MIN_LOADING_DURATION - elapsed, 0);
@@ -70,6 +73,7 @@ const App = () => {
       window.clearInterval(progressInterval);
       if (fallbackTimer) {
         window.clearTimeout(fallbackTimer);
+        fallbackTimer = undefined;
       }
       if (completionTimer) window.clearTimeout(completionTimer);
       if (hideTimer) window.clearTimeout(hideTimer);
@@ -77,20 +81,23 @@ const App = () => {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AnimatePresence>{isLoading && <LoadingScreen progress={progress} />}</AnimatePresence>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <EasterEggsProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <AnimatePresence>{isLoading && <LoadingScreen progress={progress} />}</AnimatePresence>
+          <EasterEggs />
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </EasterEggsProvider>
   );
 };
 
