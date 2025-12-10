@@ -1,12 +1,18 @@
-import React, { useRef, useEffect } from 'react';
-import { motion, useInView } from 'framer-motion';
+import React, { useRef, useEffect, useState } from 'react';
+import { AnimatePresence, motion, useInView } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Code, Zap, Users, Award } from 'lucide-react';
 import ParticleBackground from './ParticleBackground';
 import TextReveal from './TextReveal';
+import GitHubStats from './GitHubStats';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const triggerStatLabels = new Set([
+  "Projects Completed",
+  "Technologies Mastered",
+]);
 
 const AboutSection = () => {
   const sectionRef = useRef(null);
@@ -14,6 +20,14 @@ const AboutSection = () => {
   const journeyRef = useRef<HTMLDivElement | null>(null);
   const lineProgressRef = useRef<HTMLDivElement | null>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const [statsPanelState, setStatsPanelState] = useState<{
+    visible: boolean;
+    trigger: string | null;
+  }>({
+    visible: false,
+    trigger: null,
+  });
+  const showGitHubStats = statsPanelState.visible;
 
   // Stats data with animated counters
   const stats = [
@@ -79,6 +93,23 @@ const AboutSection = () => {
       );
     });
   }, [isInView, stats]);
+
+  const handleStatToggle = (label: string) => {
+    if (!triggerStatLabels.has(label)) return;
+    setStatsPanelState((prev) => {
+      if (prev.trigger === label) {
+        const nextVisible = !prev.visible;
+        return {
+          trigger: nextVisible ? label : null,
+          visible: nextVisible,
+        };
+      }
+      return {
+        trigger: label,
+        visible: true,
+      };
+    });
+  };
 
   useEffect(() => {
     if (!journeyRef.current) return;
@@ -195,7 +226,7 @@ const AboutSection = () => {
             <div className="bg-card p-6 rounded-2xl border border-border shadow-lg">
               <TextReveal
                 as="h3"
-                className="text-2xl font-orbitron font-bold mb-4 text-neon-purple"
+                className="text-2xl font-orbitron font-bold mb-4 text-neon-cyan"
                 revealDelay={120}
                 revealStagger={25}
               >
@@ -228,26 +259,82 @@ const AboutSection = () => {
           >
             {stats.map((stat) => {
               const Icon = stat.icon;
+              const isInteractive = triggerStatLabels.has(stat.label);
+              const isActive =
+                isInteractive &&
+                showGitHubStats &&
+                statsPanelState.trigger === stat.label;
+              const cardClasses = [
+                "bg-card p-4 rounded-xl text-center border shadow-lg transition",
+                "border-border shadow-black/40",
+                isInteractive
+                  ? "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan/60 focus-visible:ring-offset-2"
+                  : "",
+                isActive
+                  ? "border-neon-cyan/60 shadow-neon-cyan/30"
+                  : "hover:border-neon-cyan/40 hover:shadow-neon-cyan/20",
+              ]
+                .filter(Boolean)
+                .join(" ");
+
               return (
                 <motion.div
                   key={stat.label}
-                  className="bg-card p-4 rounded-xl text-center border border-border shadow-lg"
+                  className={cardClasses}
                   whileHover={{ scale: 1.05, y: -5 }}
                   transition={{ type: "spring", stiffness: 250 }}
+                  onClick={() => handleStatToggle(stat.label)}
+                  role={isInteractive ? "button" : undefined}
+                  tabIndex={isInteractive ? 0 : undefined}
+                  aria-expanded={isInteractive ? isActive : undefined}
+                  aria-controls={
+                    isInteractive ? "github-stats-panel" : undefined
+                  }
+                  onKeyDown={(event) => {
+                    if (!isInteractive) return;
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      handleStatToggle(stat.label);
+                    }
+                  }}
                 >
-                  <Icon className="w-6 h-6 mx-auto mb-3 text-neon-purple" />
+                  <Icon className="w-6 h-6 mx-auto mb-3 text-neon-cyan" />
                   <div className="text-2xl font-orbitron font-bold text-glow-cyan mb-1">
                     <span className="stat-number">0</span>
                     <span>{stat.suffix}</span>
                   </div>
                   <p className="text-muted-foreground font-cyber text-xs">
                     {stat.label}
+                    {isInteractive && (
+                      <span className="block text-[10px] uppercase tracking-[0.2em] text-neon-cyan mt-1">
+                        Tap to toggle stats
+                      </span>
+                    )}
                   </p>
                 </motion.div>
               );
             })}
           </motion.div>
         </div>
+
+        {/* GitHub Stats Widget */}
+        <AnimatePresence>
+          {showGitHubStats && (
+            <motion.div
+              key="github-stats-panel"
+              id="github-stats-panel"
+              className="mb-16"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              style={{ overflow: "hidden" }}
+              aria-live="polite"
+            >
+              <GitHubStats />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Timeline */}
         <motion.div
