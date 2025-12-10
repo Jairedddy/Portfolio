@@ -4,7 +4,7 @@ import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { ExternalLink, Github, ChevronLeft, ChevronRight, Grid3x3, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ParticleBackground from "./ParticleBackground";
-import useEmblaCarousel, { type EmblaCarouselType } from "embla-carousel-react";
+import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
 import TextReveal from "./TextReveal";
 
 type Project = {
@@ -43,13 +43,13 @@ const gridItemVariants = {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as const },
   },
   exit: {
     opacity: 0,
     scale: 0.85,
     y: -30,
-    transition: { duration: 0.3, ease: "easeIn" },
+    transition: { duration: 0.3, ease: [0.4, 0, 0.6, 1] as const },
   },
 };
 
@@ -295,7 +295,7 @@ const ProjectsSection = () => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
-  const onSelect = useCallback((api: EmblaCarouselType | undefined) => {
+  const onSelect = useCallback((api: UseEmblaCarouselType[1] | undefined) => {
     if (!api) return;
     setSelectedIndex(api.selectedScrollSnap());
     setCanScrollPrev(api.canScrollPrev());
@@ -482,11 +482,19 @@ const ProjectsSection = () => {
                         return (
                           <motion.div
                             key={project.title}
-                            layout
-                            className={`flex-[0_0_85%] md:flex-[0_0_70%] lg:flex-[0_0_60%] min-w-0 px-2 transition-all duration-700 ease-out ${
-                              isActive ? "scale-100 opacity-100 z-10" : "scale-[0.85] opacity-50 z-0 cursor-pointer"
-                            }`}
-                            transition={{ duration: 0.5, ease: "easeInOut" }}
+                            className={`flex-[0_0_85%] md:flex-[0_0_70%] lg:flex-[0_0_60%] min-w-0 px-2 ${isActive ? "" : "cursor-pointer"}`}
+                            animate={{
+                              scale: isActive ? 1 : 0.88,
+                              opacity: isActive ? 1 : 0.35,
+                              zIndex: isActive ? 2 : 1,
+                              filter: isActive ? "blur(0px)" : "blur(1.5px)",
+                            }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 260,
+                              damping: 28,
+                            }}
+                            style={{ willChange: "transform" }}
                             onClick={() => {
                               if (!isActive) {
                                 emblaApi?.scrollTo(index);
