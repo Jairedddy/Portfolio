@@ -1,6 +1,8 @@
 const GITHUB_API_BASE = "https://api.github.com";
 const GITHUB_CONTRIBUTIONS_API =
   "https://github-contributions-api.jogruber.de/v4";
+// CORS proxy fallback - use if direct API fails
+const CORS_PROXY = "https://api.allorigins.win/raw?url=";
 const DEFAULT_USERNAME = "Jairedddy";
 const CACHE_TTL = 1000 * 60 * 60 * 6; // 6 hours
 
@@ -140,16 +142,40 @@ const fetchAllRepos = async (username: string): Promise<GitHubRepo[]> => {
 const fetchContributions = async (
   username: string
 ): Promise<ContributionDay[]> => {
+  const apiUrl = `${GITHUB_CONTRIBUTIONS_API}/${username}`;
+  
   try {
-    const response = await fetch(`${GITHUB_CONTRIBUTIONS_API}/${username}`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch contribution graph");
+    // Try direct fetch first
+    const response = await fetch(apiUrl, {
+      mode: 'cors',
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      return Array.isArray(data?.contributions) ? data.contributions : [];
     }
-    const data = await response.json();
-    return Array.isArray(data?.contributions) ? data.contributions : [];
-  } catch {
-    // Gracefully degrade if contribution service fails
-    return [];
+    
+    throw new Error(`HTTP ${response.status}`);
+  } catch (directError) {
+    // If direct fetch fails (likely CORS), try CORS proxy
+    try {
+      const proxiedUrl = `${CORS_PROXY}${encodeURIComponent(apiUrl)}`;
+      const response = await fetch(proxiedUrl);
+      
+      if (!response.ok) {
+        throw new Error(`Proxy HTTP ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return Array.isArray(data?.contributions) ? data.contributions : [];
+    } catch (proxyError) {
+      // Gracefully degrade if both direct and proxy fail
+      console.warn('[GitHub Stats] Failed to fetch contributions:', {
+        direct: directError instanceof Error ? directError.message : 'Unknown',
+        proxy: proxyError instanceof Error ? proxyError.message : 'Unknown',
+      });
+      return [];
+    }
   }
 };
 
