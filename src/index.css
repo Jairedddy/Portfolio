@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,7 +7,6 @@
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 
 @layer base {
   :root {
@@ -69,6 +70,10 @@ All colors MUST be HSL.
     /* Scrollbar Colors (HSL components) */
     --scrollbar-start: 276 83% 55%;
     --scrollbar-end: 276 83% 55%;
+    --cursor-color: 189 100% 60%;
+    --focus-ring-color: 189 100% 70%;
+    --focus-ring-alt: 276 83% 65%;
+    --navbar-height: 4.5rem;
 
   }
 }
@@ -81,6 +86,20 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground overflow-x-hidden;
     font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: var(--navbar-height);
+  }
+
+  body.custom-cursor-hidden,
+  body.custom-cursor-hidden * {
+    cursor: none !important;
+  }
+
+  @media (pointer: coarse) {
+    body.custom-cursor-hidden,
+    body.custom-cursor-hidden * {
+      cursor: auto;
+    }
   }
 
   html {
@@ -89,6 +108,19 @@ All colors MUST be HSL.
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Orbitron', 'monospace';
+  }
+
+  /* Neon selection styling for cohesive highlighting */
+  ::selection {
+    background: hsl(var(--neon-purple) / 0.35);
+    color: hsl(0 0% 100%);
+    text-shadow: 0 0 12px hsl(var(--neon-purple) / 0.8);
+  }
+
+  ::-moz-selection {
+    background: hsl(var(--neon-purple) / 0.35);
+    color: hsl(0 0% 100%);
+    text-shadow: 0 0 12px hsl(var(--neon-purple) / 0.8);
   }
 
   /* Prevent double scrollbars */
@@ -143,6 +175,46 @@ All colors MUST be HSL.
   main {
     overflow: visible !important;
   }
+
+  .snap-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .snap-container > section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    scroll-margin-top: var(--navbar-height);
+  }
+
+  @supports not (scroll-snap-type: y mandatory) {
+    body {
+      scroll-snap-type: none;
+      scroll-padding-top: 0;
+    }
+
+    .snap-container > section {
+      scroll-snap-align: none;
+      scroll-snap-stop: normal;
+    }
+  }
+
+  .focus-ring-cyber {
+    outline: none;
+    transition:
+      box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .focus-ring-cyber:focus-visible {
+    --focus-ring-core: 0 0 0 1px hsl(var(--darker-surface)), 0 0 0 3px hsl(var(--focus-ring-color));
+    border-color: hsl(var(--focus-ring-color));
+    box-shadow: var(--focus-ring-core), 0 0 32px hsl(var(--focus-ring-alt) / 0.7);
+    animation: focus-ring-pulse 1.8s ease-in-out infinite;
+  }
+
 }
 
 @layer utilities {
@@ -252,6 +324,68 @@ All colors MUST be HSL.
   }
 }
 
+.cursor-layer {
+  mix-blend-mode: screen;
+}
+
+.cursor-dot,
+.cursor-trail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 9999px;
+  will-change: transform, opacity;
+  transform: translate3d(-50%, -50%, 0);
+  pointer-events: none;
+  transition: width 0.2s ease, height 0.2s ease, border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+}
+
+.cursor-dot {
+  width: 20px;
+  height: 20px;
+  border: 2px solid hsl(var(--cursor-color));
+  box-shadow:
+    0 0 25px hsl(var(--cursor-color) / 0.7),
+    inset 0 0 10px hsl(var(--cursor-color) / 0.8);
+  background: hsl(var(--cursor-color) / 0.15);
+}
+
+.cursor-trail {
+  width: 14px;
+  height: 14px;
+  background: hsl(var(--cursor-color) / 0.6);
+  box-shadow: 0 0 20px hsl(var(--cursor-color) / 0.5);
+  opacity: 0;
+}
+
+.cursor-layer.cursor-interactive .cursor-dot {
+  width: 30px;
+  height: 30px;
+  border-width: 1px;
+  background: hsl(var(--cursor-color) / 0.25);
+  box-shadow:
+    0 0 30px hsl(var(--cursor-color) / 0.8),
+    inset 0 0 15px hsl(var(--cursor-color) / 0.9);
+}
+
+.cursor-layer.cursor-interactive .cursor-trail {
+  width: 18px;
+  height: 18px;
+  opacity: 1;
+  background: hsl(var(--cursor-color));
+  box-shadow: 0 0 35px hsl(var(--cursor-color) / 0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-layer {
+    display: none;
+  }
+
+  .focus-ring-cyber:focus-visible {
+    animation: none;
+  }
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-20px); }
@@ -281,4 +415,16 @@ All colors MUST be HSL.
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
+}
+
+@keyframes focus-ring-pulse {
+  0% {
+    box-shadow: var(--focus-ring-core), 0 0 24px hsl(var(--focus-ring-color) / 0.4);
+  }
+  50% {
+    box-shadow: var(--focus-ring-core), 0 0 40px hsl(var(--focus-ring-alt) / 0.85);
+  }
+  100% {
+    box-shadow: var(--focus-ring-core), 0 0 24px hsl(var(--focus-ring-color) / 0.4);
+  }
 }

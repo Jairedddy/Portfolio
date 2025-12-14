@@ -1,10 +1,273 @@
-import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { animate } from "animejs";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import type { CSSProperties, MouseEvent } from "react";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { ExternalLink, Github, ChevronLeft, ChevronRight, Grid3x3, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ParticleBackground from "./ParticleBackground";
-import useEmblaCarousel from "embla-carousel-react";
+import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
+import TextReveal from "./TextReveal";
+
+type Project = {
+  title: string;
+  description: string;
+  tech: string[];
+  category: string;
+  color: string;
+  github: string;
+  live?: string;
+  features: string[];
+};
+
+type ColorClasses = {
+  border: string;
+  text: string;
+  glow: string;
+  shadow: string;
+  bg: string;
+};
+
+const gridContainerVariants = {
+  initial: {},
+  animate: {
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.05,
+    },
+  },
+  exit: { opacity: 0 },
+};
+
+const gridItemVariants = {
+  initial: { opacity: 0, scale: 0.9, y: 30 },
+  animate: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as const },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.85,
+    y: -30,
+    transition: { duration: 0.3, ease: [0.4, 0, 0.6, 1] as const },
+  },
+};
+
+// Lightweight tilt controller that maps pointer position to 3D transforms.
+const useTiltCard = (enabled: boolean) => {
+  const baseStyle = useMemo<CSSProperties>(() => ({
+    transform: "perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)",
+    boxShadow: "0 25px 55px rgba(8, 17, 41, 0.45)",
+  }), []);
+
+  const [style, setStyle] = useState<CSSProperties>(baseStyle);
+
+  const handleMouseMove = useCallback((event: MouseEvent<HTMLDivElement>) => {
+    if (!enabled) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -10;
+    const rotateY = ((x - centerX) / centerX) * 10;
+    const shadowOffsetX = rotateY * -2.5;
+    const shadowOffsetY = rotateX * -3;
+
+    setStyle({
+      transform: `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`,
+      boxShadow: `${shadowOffsetX}px ${shadowOffsetY}px 45px rgba(3, 7, 18, 0.55), 0 15px 35px rgba(79, 209, 197, 0.2)`,
+    });
+  }, [enabled]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (!enabled) return;
+    setStyle(baseStyle);
+  }, [enabled, baseStyle]);
+
+  useEffect(() => {
+    if (!enabled) {
+      setStyle(baseStyle);
+    }
+  }, [enabled, baseStyle]);
+
+  return {
+    tiltStyle: enabled ? style : baseStyle,
+    handleMouseMove: enabled ? handleMouseMove : undefined,
+    handleMouseLeave: enabled ? handleMouseLeave : undefined,
+  };
+};
+
+type ProjectCardProps = {
+  project: Project;
+  colors: ColorClasses;
+  isInteractive: boolean;
+  className?: string;
+};
+
+const ProjectCard = ({ project, colors, isInteractive, className = "" }: ProjectCardProps) => {
+  const { tiltStyle, handleMouseMove, handleMouseLeave } = useTiltCard(isInteractive);
+
+  return (
+    <div className={className} style={{ perspective: "1200px" }}>
+      <div
+        className={`bg-card rounded-lg border border-border shadow-lg hover:${colors.border} transition-all duration-300 group h-full`}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          transformStyle: "preserve-3d",
+          transition: "transform 0.15s ease-out, box-shadow 0.25s ease-out",
+          ...tiltStyle,
+        }}
+      >
+        <div className="p-6 space-y-4">
+          <div
+            className={`inline-block px-3 py-1 rounded-full text-xs font-cyber ${colors.text} bg-surface-darker/50 border ${colors.border} mb-2`}
+            style={{ transform: "translateZ(30px)" }}
+          >
+            {project.category}
+          </div>
+
+          <h3
+            className={`text-xl font-bold ${colors.glow} mb-2 group-hover:scale-105 transition-transform`}
+            style={{ transform: "translateZ(45px)" }}
+          >
+            {project.title}
+          </h3>
+
+          <p
+            className="text-muted-foreground text-sm leading-relaxed"
+            style={{ transform: "translateZ(20px)" }}
+          >
+            {project.description}
+          </p>
+
+          <div className="mb-2" style={{ transform: "translateZ(30px)" }}>
+            <div className="flex flex-wrap gap-2">
+              {project.features.map((feature) => (
+                <span
+                  key={feature}
+                  className="text-xs px-2 py-1 bg-muted rounded text-muted-foreground"
+                >
+                  {feature}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mb-4" style={{ transform: "translateZ(35px)" }}>
+            {project.tech.map((tech) => (
+              <span
+                key={tech}
+                className={`text-xs px-2 py-1 ${colors.text} bg-surface-darker/30 rounded border ${colors.border}`}
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          <div className="flex gap-3" style={{ transform: "translateZ(45px)" }}>
+            <Button
+              size="sm"
+              variant="outline"
+              className={`flex-1 ${colors.border} ${colors.text} hover:scale-105 ${colors.bg} hover:shadow-lg transition-all duration-300`}
+              asChild
+            >
+              <a href={project.github} target="_blank" rel="noopener noreferrer">
+                <Github size={16} className="mr-2" />
+                Code
+              </a>
+            </Button>
+            {project.live && (
+              <Button
+                size="sm"
+                className="flex-1 bg-gradient-primary hover:scale-105 hover:shadow-neon-cyan hover:brightness-110 transition-all duration-300"
+                asChild
+              >
+                <a href={project.live} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink size={16} className="mr-2" />
+                  Demo
+                </a>
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const PROJECTS: Project[] = [
+  {
+    title: "Noir Ink Tattoo Studio",
+    description: "A sophisticated, monochrome tattoo studio and supply store featuring AI-powered design generation, comprehensive booking system, and educational resources.",
+    tech: ["React", "TypeScript", "Vite", "Tailwind CSS", "Lucide React", "Pollinations.ai"],
+    category: "Web Development",
+    color: "purple",
+    github: "https://github.com/Jairedddy/Noir-Ink-Tattoo-Studio",
+    live: "https://noir-ink.netlify.app/",
+    features: ["Model compression", "Hardware optimization", "Cross-platform"]
+  },
+  {
+    title: "Golden Barell Brewery",
+    description: "Golden Barrel’'?Ts modern, responsive brewery website built with React and TypeScript. It features rich content sections, production’'?`ready animations, and polished UI components tailored for a premium brewery brand.",
+    tech: ["React", "Vite", "Tailwind CSS", "Radix", "TanStack Query", "Lucide React"],
+    category: "Web Development",
+    color: "cyan",
+    github: "https://github.com/Jairedddy/Golden-Barell-Brewery",
+    live: "https://goldenbarell.netlify.app/",
+    features: ["React", "Vite", "Tailwind CSS", "Radix", "TanStack Query", "Lucide React"]
+  },
+  {
+    title: "Obsidian Eye",
+    description: "Dystopian surveillance simulator that lets operators aythor cinematic reconnaissance prompts, trigger AI-generated 'drone' captures, adn explore the world state throuh interactive lore. The experene mixed a control-roomm UI, batch scan tooling, HUD overlays and persistent operatore settings to mumic an active roecon terminal.",
+    tech: ["React", "Tailwind CSS", "lucide-react", "JSON and JS", "JSZip", "Pollinations.ai"],
+    category: "Imaginative AI",
+    color: "green",
+    github: "https://github.com/Jairedddy/Obsidian-Eye",
+    live: "https://obsidian-eye.netlify.app/",
+    features: ["Cyber Punk Theme", "AI-Generated Imagery", "Interactive UI", "Responsive Design", "Lore Exploration", "Operator Tools"]
+  },
+  {
+    title: "Code Nebula",
+    description: "Interactive 3D visualization tool that transforms GitHub repositories into stunning 'galaxy' visualizations. It empowers developers to explore codebases in an immersive, three-dimensional space, facilitating a deeper understanding of code structure, dependencies, and inter-file relationships.",
+    tech: ["React", "Vite", "Three.js", "D3-Force-3D", "Radix UI", "TanStack Query", "React Router", "Supabase", "Github API", "OpenAI API"],
+    category: "Web Development",
+    color: "purple",
+    github: "https://github.com/Jairedddy/CodeNebula",
+    live: "https://codenebulaa.netlify.app/",
+    features: ["Cyber Punk Theme", "3D Visualization", "Interactive UI", "Responsive Design", "AI Integration", "Repository Insights"]
+  },
+  {
+    title: "Spotify Dash-Bored",
+    description: "A comprehensive, interactive dashboard for visualizing your Spotify listening data with beautiful, data-driven insights and analytics.",
+    tech: ["Javascript", "React", "Tailwind CSS", "Spotify API"],
+    category: "Web Development",
+    color: "green",
+    github: "https://github.com/Jairedddy/Spotify-Dashboard",
+    live: "https://spotify-dashbored.netlify.app/",
+    features: ["Spotify API", "Data Visualization", "Responsive Design"]
+  },
+  {
+    title: "Amul Scraper",
+    description: "A sophisticated automation tool designed to monitor product availability on the official Amul e-commerce platform (shop.amul.com). This solution eliminates the need for manual, repetitive stock checks by automating the entire process through intelligent browser automation.",
+    tech: ["Python", "Selenium WebDriver", "Selenium Manager", "JSON", "ChromeDriver", "EdgeDriver", "FirefoxDriver"],
+    category: "Automation",
+    color: "cyan",
+    github: "https://github.com/Jairedddy/Amul-Scraper",
+    features: ["Multi-Browser Support", "Automatic Driver Management", "Product Management", "Intelligent Stock Detection", "Comprehensive Reporting", "Robust Error Handling"]
+  },
+  {
+    title: "Instagram Follower Tracker",
+    description: "Asophisticated automation tool designed to analyze your Instagram account and identify which accounts you follow that don't follow you back. This solution eliminates the need for manual checking by automating the entire process through intelligent browser automation.",
+    tech: ["Python", "Selenium WebDriver", "Selenium Manager", "ChromeDriver", "EdgeDriver", "FirefoxDriver", ],
+    category: "Automation",
+    color: "purple",
+    github: "https://github.com/Jairedddy/Instagram-Follower-Tracker",
+    features: ["Secure Login", "Real-Time Input Detection", "Smart Extraction Algorithm", "Intelligent Error Handling", "Performance Optimization", "Multi-Browser Support"]
+  }
+];
 
 // Projects Section with Interactive Cards
 const ProjectsSection = () => {
@@ -20,6 +283,9 @@ const ProjectsSection = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [filterPulse, setFilterPulse] = useState(0);
+  const [isFiltering, setIsFiltering] = useState(false);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -29,11 +295,11 @@ const ProjectsSection = () => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
-  const onSelect = useCallback((emblaApi: any) => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
+  const onSelect = useCallback((api: UseEmblaCarouselType[1] | undefined) => {
+    if (!api) return;
+    setSelectedIndex(api.selectedScrollSnap());
+    setCanScrollPrev(api.canScrollPrev());
+    setCanScrollNext(api.canScrollNext());
   }, []);
 
   useEffect(() => {
@@ -45,68 +311,45 @@ const ProjectsSection = () => {
       emblaApi.off("select", onSelect);
     };
   }, [emblaApi, onSelect]);
-  const projects = [
-    {
-      title: "Noir Ink Tattoo Studio",
-      description: "A sophisticated, monochrome tattoo studio and supply store featuring AI-powered design generation, comprehensive booking system, and educational resources.",
-      tech: ["React", "TypeScript", "Vite", "Tailwind CSS", "Lucide React", "Pollinations.ai"],
-      category: "Web Development",
-      color: "purple",
-      github: "https://github.com/Jairedddy/Noir-Ink-Tattoo-Studio",
-      live: "https://noir-ink.netlify.app/",
-      features: ["Model compression", "Hardware optimization", "Cross-platform"]
-    },
-    {
-      title: "Golden Barell Brewery",
-      description: "Golden Barrel’s modern, responsive brewery website built with React and TypeScript. It features rich content sections, production‑ready animations, and polished UI components tailored for a premium brewery brand.",
-      tech: ["React", "Vite", "Tailwind CSS", "Radix", "TanStack Query", "Lucide React"],
-      category: "Web Development",
-      color: "cyan",
-      github: "https://github.com/Jairedddy/Golden-Barell-Brewery",
-      live: "https://goldenbarell.netlify.app/",
-      features: ["React", "Vite", "Tailwind CSS", "Radix", "TanStack Query", "Lucide React"]
-    },
-    {
-      title: "Code Nebula",
-      description: "Interactive 3D visualization tool that transforms GitHub repositories into stunning 'galaxy' visualizations. It empowers developers to explore codebases in an immersive, three-dimensional space, facilitating a deeper understanding of code structure, dependencies, and inter-file relationships.",
-      tech: ["React", "Vite", "Three.js", "D3-Force-3D", "Radix UI", "TanStack Query", "React Router", "Supabase", "Github API", "OpenAI API"],
-      category: "Web Development",
-      color: "purple",
-      github: "https://github.com/Jairedddy/CodeNebula",
-      live: "https://codenebulaa.netlify.app/",
-      features: ["Cyber Punk Theme", "3D Visualization", "Interactive UI", "Responsive Design", "AI Integration", "Repository Insights"]
-    },
-    {
-      title: "Spotify Dash-Bored",
-      description: "A comprehensive, interactive dashboard for visualizing your Spotify listening data with beautiful, data-driven insights and analytics.",
-      tech: ["Javascript", "React", "Tailwind CSS", "Spotify API"],
-      category: "Web Development",
-      color: "green",
-      github: "https://github.com/Jairedddy/Spotify-Dashboard",
-      live: "https://spotify-dashbored.netlify.app/",
-      features: ["Spotify API", "Data Visualization", "Responsive Design"]
-    },
-    {
-      title: "Amul Scraper",
-      description: "A sophisticated automation tool designed to monitor product availability on the official Amul e-commerce platform (shop.amul.com). This solution eliminates the need for manual, repetitive stock checks by automating the entire process through intelligent browser automation.",
-      tech: ["Python", "Selenium WebDriver", "Selenium Manager", "JSON", "ChromeDriver", "EdgeDriver", "FirefoxDriver"],
-      category: "Automation",
-      color: "cyan",
-      github: "https://github.com/Jairedddy/Amul-Scraper",
-      features: ["Multi-Browser Support", "Automatic Driver Management", "Product Management", "Intelligent Stock Detection", "Comprehensive Reporting", "Robust Error Handling"]
-    },
-    {
-      title: "Instagram Follower Tracker",
-      description: "Asophisticated automation tool designed to analyze your Instagram account and identify which accounts you follow that don't follow you back. This solution eliminates the need for manual checking by automating the entire process through intelligent browser automation.",
-      tech: ["Python", "Selenium WebDriver", "Selenium Manager", "ChromeDriver", "EdgeDriver", "FirefoxDriver", ],
-      category: "Automation",
-      color: "purple",
-      github: "https://github.com/Jairedddy/Instagram-Follower-Tracker",
-      features: ["Secure Login", "Real-Time Input Detection", "Smart Extraction Algorithm", "Intelligent Error Handling", "Performance Optimization", "Multi-Browser Support"]
-    }
-  ];
+  
+  
+  const categories = useMemo(() => {
+    const uniqueCategories = Array.from(new Set(PROJECTS.map((project) => project.category)));
+    return ["All", ...uniqueCategories];
+  }, []);
 
-  const getColorClasses = (color: string) => {
+  const filteredProjects = useMemo(() => {
+    if (activeCategory === "All") return PROJECTS;
+    return PROJECTS.filter((project) => project.category === activeCategory);
+  }, [activeCategory]);
+
+  const handleCategoryChange = useCallback((category: string) => {
+    if (category === activeCategory) return;
+    setActiveCategory(category);
+    setSelectedIndex(0);
+    emblaApi?.scrollTo(0);
+    setFilterPulse(Date.now());
+  }, [activeCategory, emblaApi]);
+
+  useEffect(() => {
+    if (!filterPulse) return;
+    setIsFiltering(true);
+    const timeout = setTimeout(() => setIsFiltering(false), 450);
+    return () => clearTimeout(timeout);
+  }, [filterPulse]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.reInit();
+    const nextIndex = Math.min(selectedIndex, Math.max(filteredProjects.length - 1, 0));
+    if (nextIndex !== selectedIndex) {
+      setSelectedIndex(nextIndex);
+    }
+    setCanScrollPrev(emblaApi.canScrollPrev());
+    setCanScrollNext(emblaApi.canScrollNext());
+  }, [emblaApi, filteredProjects.length, selectedIndex]);
+
+  const getColorClasses = (color: string): ColorClasses => {
     switch (color) {
       case 'cyan':
         return {
@@ -160,30 +403,62 @@ const ProjectsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-16"
-          onViewportEnter={() => {
-            const header = document.querySelector('#projects h2');
-            if (header) {
-              animate(header, {
-                opacity: [0, 1],
-                scale: [0.8, 1],
-                rotateX: [90, 0],
-                duration: 1000,
-                easing: 'easeOutExpo',
-              });
-            }
-          }}
         >
-          <h2 className="text-4xl md:text-5xl font-black font-cyber text-glow-purple mb-6 opacity-0">
+          <TextReveal
+            as="h2"
+            className="text-4xl md:text-5xl font-black font-cyber text-glow-purple mb-6"
+            revealDelay={80}
+          >
             &lt; PROJECTS /&gt;
-          </h2>
+          </TextReveal>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Explore my latest AI innovations and machine learning solutions
           </p>
           <div className="w-24 h-1 bg-gradient-secondary mx-auto rounded-full mt-6" />
         </motion.div>
 
+        <motion.div
+          layout
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-12"
+        >
+          <LayoutGroup id="project-category-filter">
+            <div className="flex flex-wrap justify-center gap-3 md:gap-4">
+              {categories.map((category) => {
+                const isActiveCategory = category === activeCategory;
+                return (
+                  <motion.button
+                    key={category}
+                    type="button"
+                    layout="position"
+                    whileTap={{ scale: 0.96 }}
+                    onClick={() => handleCategoryChange(category)}
+                    disabled={isFiltering}
+                    className={`relative px-5 py-2 rounded-full border border-border/70 bg-card/60 uppercase tracking-[0.2em] text-[0.65rem] font-semibold transition-all duration-300 ${
+                      isActiveCategory ? "text-neon-purple" : "text-muted-foreground hover:text-foreground"
+                    } ${isFiltering ? "cursor-wait" : ""}`}
+                    aria-pressed={isActiveCategory}
+                  >
+                    {isActiveCategory && (
+                      <motion.span
+                        layoutId="projects-active-category"
+                        className="absolute inset-0 rounded-full bg-glow-purple/20 border border-glow-purple/60 shadow-neon-purple"
+                        transition={{ type: "spring", stiffness: 320, damping: 28 }}
+                      />
+                    )}
+                    <span className="relative z-10">{category}</span>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </LayoutGroup>
+        </motion.div>
+
         {/* Projects Display - Carousel or Grid */}
-        <AnimatePresence mode="wait">
+        <motion.div layout className="relative">
+          <AnimatePresence mode="wait">
           {!isGridView ? (
             <motion.div
               key="carousel"
@@ -197,102 +472,57 @@ const ProjectsSection = () => {
               <div 
                 className="relative overflow-hidden px-8 md:px-16"
               >
-                <div ref={emblaRef} className="overflow-hidden cursor-grab active:cursor-grabbing">
-                  <div className="flex gap-6">
-                    {projects.map((project, index) => {
-                      const colors = getColorClasses(project.color);
-                      const isActive = index === selectedIndex;
-                      
-                      return (
-                        <motion.div
-                          key={project.title}
-                          className={`flex-[0_0_85%] md:flex-[0_0_70%] lg:flex-[0_0_60%] min-w-0 px-2 transition-all duration-700 ease-out ${
-                            isActive ? "scale-100 opacity-100 z-10" : "scale-[0.85] opacity-50 z-0 cursor-pointer"
-                          }`}
-                          whileHover={isActive ? { scale: 1.02, transition: { duration: 0.2 } } : {}}
-                          transition={{ duration: 0.5, ease: "easeInOut" }}
-                          onClick={() => {
-                            if (!isActive) {
-                              emblaApi?.scrollTo(index);
-                            }
-                          }}
-                        >
-                          <div className={`bg-card rounded-lg border border-border shadow-lg hover:${colors.border} transition-all duration-300 group h-full`}>
-                            <div className="p-6">
-                              {/* Category Badge */}
-                              <div className={`inline-block px-3 py-1 rounded-full text-xs font-cyber ${colors.text} bg-surface-darker/50 border ${colors.border} mb-4`}>
-                                {project.category}
-                              </div>
+                {filteredProjects.length > 0 ? (
+                  <div ref={emblaRef} className="overflow-hidden cursor-grab active:cursor-grabbing">
+                    <div className="flex gap-6">
+                      {filteredProjects.map((project, index) => {
+                        const colors = getColorClasses(project.color);
+                        const isActive = index === selectedIndex;
 
-                              {/* Project Title */}
-                              <h3 className={`text-xl font-bold ${colors.glow} mb-3 group-hover:scale-105 transition-transform`}>
-                                {project.title}
-                              </h3>
-
-                              {/* Description */}
-                              <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                                {project.description}
-                              </p>
-
-                              {/* Features */}
-                              <div className="mb-4">
-                                <div className="flex flex-wrap gap-2">
-                                  {project.features.map((feature) => (
-                                    <span
-                                      key={feature}
-                                      className="text-xs px-2 py-1 bg-muted rounded text-muted-foreground"
-                                    >
-                                      {feature}
-                                    </span>
-                                  ))}
-                                </div>
-                              </div>
-
-                              {/* Tech Stack */}
-                              <div className="flex flex-wrap gap-2 mb-6">
-                                {project.tech.map((tech) => (
-                                  <span
-                                    key={tech}
-                                    className={`text-xs px-2 py-1 ${colors.text} bg-surface-darker/30 rounded border ${colors.border}`}
-                                  >
-                                    {tech}
-                                  </span>
-                                ))}
-                              </div>
-
-                              {/* Action Buttons */}
-                              <div className="flex gap-3">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={`flex-1 ${colors.border} ${colors.text} hover:scale-105 ${colors.bg} hover:shadow-lg transition-all duration-300`}
-                                  asChild
-                                >
-                                  <a href={project.github} target="_blank" rel="noopener noreferrer">
-                                    <Github size={16} className="mr-2" />
-                                    Code
-                                  </a>
-                                </Button>
-                                {project.live && (
-                                  <Button
-                                    size="sm"
-                                    className={`flex-1 bg-gradient-primary hover:scale-105 hover:shadow-neon-cyan hover:brightness-110 transition-all duration-300`}
-                                    asChild
-                                  >
-                                    <a href={project.live} target="_blank" rel="noopener noreferrer">
-                                      <ExternalLink size={16} className="mr-2" />
-                                      Demo
-                                    </a>
-                                  </Button>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
+                        return (
+                          <motion.div
+                            key={project.title}
+                            className={`flex-[0_0_85%] md:flex-[0_0_70%] lg:flex-[0_0_60%] min-w-0 px-2 ${isActive ? "" : "cursor-pointer"}`}
+                            animate={{
+                              scale: isActive ? 1 : 0.88,
+                              opacity: isActive ? 1 : 0.35,
+                              zIndex: isActive ? 2 : 1,
+                              filter: isActive ? "blur(0px)" : "blur(1.5px)",
+                            }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 260,
+                              damping: 28,
+                            }}
+                            style={{ willChange: "transform" }}
+                            onClick={() => {
+                              if (!isActive) {
+                                emblaApi?.scrollTo(index);
+                              }
+                            }}
+                          >
+                            <ProjectCard
+                              project={project}
+                              colors={colors}
+                              isInteractive={isActive}
+                              className="h-full"
+                            />
+                          </motion.div>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex items-center justify-center py-16"
+                  >
+                    <p className="text-muted-foreground text-sm tracking-wider uppercase">
+                      No projects in this category yet.
+                    </p>
+                  </motion.div>
+                )}
 
                 {/* Navigation Arrows */}
                 <Button
@@ -319,20 +549,22 @@ const ProjectsSection = () => {
                 </Button>
 
                 {/* Carousel Indicators */}
-                <div className="flex justify-center gap-2 mt-8">
-                  {projects.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => emblaApi?.scrollTo(index)}
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        index === selectedIndex
-                          ? "w-8 bg-neon-cyan"
-                          : "w-2 bg-muted hover:bg-neon-cyan/50"
-                      }`}
-                      aria-label={`Go to slide ${index + 1}`}
-                    />
-                  ))}
-                </div>
+                {filteredProjects.length > 0 && (
+                  <div className="flex justify-center gap-2 mt-8">
+                    {filteredProjects.map((_, index) => (
+                      <button
+                        key={`${activeCategory}-${index}`}
+                        onClick={() => emblaApi?.scrollTo(index)}
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          index === selectedIndex
+                            ? "w-8 bg-neon-cyan"
+                            : "w-2 bg-muted hover:bg-neon-cyan/50"
+                        }`}
+                        aria-label={`Go to slide ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </motion.div>
           ) : (
@@ -342,95 +574,76 @@ const ProjectsSection = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+              className="relative"
             >
-              {projects.map((project, index) => {
-                const colors = getColorClasses(project.color);
-                
-                return (
-                  <motion.div
-                    key={project.title}
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05, duration: 0.4 }}
-                    whileHover={{ y: -10, scale: 1.02 }}
-                    className={`bg-card rounded-lg border border-border shadow-lg hover:${colors.border} transition-all duration-300 group`}
-                  >
-                    <div className="p-6">
-                      {/* Category Badge */}
-                      <div className={`inline-block px-3 py-1 rounded-full text-xs font-cyber ${colors.text} bg-surface-darker/50 border ${colors.border} mb-4`}>
-                        {project.category}
-                      </div>
+              {filteredProjects.length > 0 ? (
+                <motion.div
+                  layout
+                  variants={gridContainerVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                >
+                  <AnimatePresence mode="sync" initial={false}>
+                    {filteredProjects.map((project) => {
+                      const colors = getColorClasses(project.color);
 
-                      {/* Project Title */}
-                      <h3 className={`text-xl font-bold ${colors.glow} mb-3 group-hover:scale-105 transition-transform`}>
-                        {project.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                        {project.description}
-                      </p>
-
-                      {/* Features */}
-                      <div className="mb-4">
-                        <div className="flex flex-wrap gap-2">
-                          {project.features.map((feature) => (
-                            <span
-                              key={feature}
-                              className="text-xs px-2 py-1 bg-muted rounded text-muted-foreground"
-                            >
-                              {feature}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Tech Stack */}
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {project.tech.map((tech) => (
-                          <span
-                            key={tech}
-                            className={`text-xs px-2 py-1 ${colors.text} bg-surface-darker/30 rounded border ${colors.border}`}
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex gap-3">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className={`flex-1 ${colors.border} ${colors.text} hover:scale-105 ${colors.bg} hover:shadow-lg transition-all duration-300`}
-                          asChild
+                      return (
+                        <motion.div
+                          key={project.title}
+                          layout
+                          variants={gridItemVariants}
+                          whileHover={{ y: -10 }}
                         >
-                          <a href={project.github} target="_blank" rel="noopener noreferrer">
-                            <Github size={16} className="mr-2" />
-                            Code
-                          </a>
-                        </Button>
-                        {project.live && (
-                          <Button
-                            size="sm"
-                            className={`flex-1 bg-gradient-primary hover:scale-105 hover:shadow-neon-cyan hover:brightness-110 transition-all duration-300`}
-                            asChild
-                          >
-                            <a href={project.live} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink size={16} className="mr-2" />
-                              Demo
-                            </a>
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
+                          <ProjectCard
+                            project={project}
+                            colors={colors}
+                            isInteractive
+                            className="h-full"
+                          />
+                        </motion.div>
+                      );
+                    })}
+                  </AnimatePresence>
+                </motion.div>
+              ) : (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex items-center justify-center py-16 rounded-2xl border border-dashed border-border/60"
+                >
+                  <p className="text-muted-foreground text-sm tracking-widest uppercase">
+                    Nothing to show for this category yet.
+                  </p>
+                </motion.div>
+              )}
             </motion.div>
           )}
-        </AnimatePresence>
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {isFiltering && (
+              <motion.div
+                key="filter-loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 flex flex-col items-center justify-center rounded-[32px] bg-background/70 backdrop-blur-md pointer-events-auto z-20"
+              >
+                <motion.span
+                  className="h-12 w-12 rounded-full border-2 border-neon-cyan/20 border-t-neon-cyan mb-4"
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                />
+                <p className="text-xs uppercase tracking-[0.5em] text-muted-foreground">
+                  Recalibrating Grid
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
 
         {/* Toggle View Button */}
         <motion.div
@@ -466,7 +679,7 @@ const ProjectsSection = () => {
                 asChild
                 className="border-glow-purple text-neon-purple hover:bg-glow-purple hover:text-background transition-all duration-300 group"
               >
-                <a 
+                <a className=""
                   href="https://github.com/Jairedddy" 
                   target="_blank" 
                   rel="noopener noreferrer"

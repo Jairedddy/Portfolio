@@ -259,17 +259,17 @@ const ContactSection = () => {
 
   const processSteps = [
     {
-      title: "Discover",
+      title: "Research",
       icon: Search,
       description: "Research user flows, constraints, and success signals before we touch code."
     },
     {
-      title: "Prototype",
+      title: "Develop",
       icon: TimerReset,
       description: "Rapid motion-first experiments to validate interactions and tooling choices."
     },
     {
-      title: "Ship",
+      title: "Deploy",
       icon: Rocket,
       description: "Production build, polish, and launch with documentation and handoff."
     },
@@ -425,7 +425,7 @@ const ContactSection = () => {
                   </p>
                 </div>
                 <a
-                  href="https://www.buymeacoffee.com/jaishukreddy"
+                  href="https://buymeacoffee.com/jairedddy"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-5 py-3 text-sm font-semibold text-background shadow-neon-cyan transition-all duration-300 hover:brightness-110"
@@ -505,7 +505,7 @@ const ContactSection = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan"
+                      className="focus-ring-cyber mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan"
                       placeholder="Your name"
                     />
                   </div>
@@ -517,7 +517,7 @@ const ContactSection = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan"
+                      className="focus-ring-cyber mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan"
                       placeholder="you@email.com"
                     />
                   </div>
@@ -530,7 +530,7 @@ const ContactSection = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan"
+                    className="focus-ring-cyber mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan"
                     placeholder="e.g. Portfolio revamp"
                   />
                 </div>
@@ -543,7 +543,7 @@ const ContactSection = () => {
                     onChange={(e) => handleMessageInputChange(e.target.value)}
                     required
                     rows={5}
-                    className="mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan resize-none"
+                    className="focus-ring-cyber mt-2 bg-surface-darker/80 border-border focus:border-neon-cyan resize-none"
                     placeholder="What are we creating? Tools, inspiration, timeline..."
                   />
                 </div>
@@ -567,7 +567,7 @@ const ContactSection = () => {
                           type="button"
                           key={category.id}
                           onClick={() => setActiveTechCategory(category.id)}
-                          className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium tracking-[0.2em] transition-all ${
+                          className={`focus-ring-cyber flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium tracking-[0.2em] transition-all ${
                             isActive
                               ? `${colors.border} ${colors.bg} ${colors.text}`
                               : "border-border text-muted-foreground hover:border-border/70"
@@ -597,7 +597,7 @@ const ContactSection = () => {
                             type="button"
                             key={`${activeCategory?.id}-${skill.name}`}
                             onClick={() => toggleTech(skill.name)}
-                            className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all ${
+                            className={`focus-ring-cyber flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all ${
                               isActive
                                 ? "border-neon-cyan/70 bg-neon-cyan/10 shadow-neon-cyan/20"
                                 : "border-border hover:border-neon-cyan/40"
@@ -630,12 +630,12 @@ const ContactSection = () => {
                         }
                       }}
                       placeholder="Add another tool (e.g. Prisma, Vite)"
-                      className="bg-surface-darker border-border focus:border-neon-cyan"
+                      className="focus-ring-cyber bg-surface-darker border-border focus:border-neon-cyan"
                     />
                     <Button
                       type="button"
                       onClick={addCustomTech}
-                      className="bg-gradient-primary text-background hover:shadow-neon-cyan"
+                      className="focus-ring-cyber bg-gradient-primary text-background hover:shadow-neon-cyan"
                     >
                       Add
                     </Button>
@@ -652,7 +652,7 @@ const ContactSection = () => {
                               type="button"
                               key={tech}
                               onClick={() => removeCustomTech(tech)}
-                              className="flex items-center gap-1 rounded-full border border-border/60 px-3 py-1 text-xs text-muted-foreground hover:border-neon-cyan/60 hover:text-foreground"
+                              className="focus-ring-cyber flex items-center gap-1 rounded-full border border-border/60 px-3 py-1 text-xs text-muted-foreground hover:border-neon-cyan/60 hover:text-foreground"
                             >
                               {tech}
                               <span className="text-base leading-none">&times;</span>
@@ -668,7 +668,7 @@ const ContactSection = () => {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full md:w-auto bg-gradient-primary hover:shadow-neon-cyan transition-all duration-300 text-base px-8 py-4 h-auto"
+                    className="focus-ring-cyber w-full md:w-auto bg-gradient-primary hover:shadow-neon-cyan transition-all duration-300 text-base px-8 py-4 h-auto"
                     onMouseEnter={(e) => {
                       animate(e.currentTarget, {
                         scale: [1, 1.02],

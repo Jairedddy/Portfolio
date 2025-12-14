@@ -1,11 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Menu, X, Github, Linkedin, Mail, Download, Home, User, Code, FolderOpen, MessageCircle } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Navigation Component with Smooth Scroll
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [scrollPercent, setScrollPercent] = useState(0);
+  const progressRef = useRef<HTMLDivElement | null>(null);
 
   const navItems = [
     { id: "home", label: "Home", icon: Home },
@@ -75,6 +81,37 @@ const Navigation = () => {
   const resumePath = "/Jai-Reddy-Resume-20251205.pdf";
   const currentTheme = activeThemes[activeSection] ?? activeThemes.home;
 
+  const navIconVariants = {
+    rest: { rotate: 0, scale: 1 },
+    hover: { rotate: 10, scale: 1.2, transition: { duration: 0.25 } },
+    tap: { rotate: -10, scale: 0.95, transition: { duration: 0.2 } },
+    active: { rotate: 0, scale: 1.1, transition: { duration: 0.2 } },
+  };
+
+  const navButtonVariants = {
+    rest: { scale: 1 },
+    hover: { scale: 1.08 },
+    tap: { scale: 0.95 },
+    active: { scale: 1.02 },
+  };
+
+  const socialIconVariants = {
+    rest: { rotate: 0, scale: 1, y: 0 },
+    hover: { rotate: -12, scale: 1.2, y: -3, transition: { duration: 0.25 } },
+    tap: { rotate: 12, scale: 0.95, y: 0, transition: { duration: 0.2 } },
+  };
+
+  const resumeIconVariants = {
+    rest: { rotate: 0, scale: 1 },
+    hover: { rotate: 15, scale: 1.15, transition: { duration: 0.25 } },
+    tap: { rotate: -15, scale: 0.95, transition: { duration: 0.2 } },
+  };
+
+  const toggleIconVariants = {
+    closed: { rotate: 0, scale: 1 },
+    open: { rotate: 180, scale: 1.1 },
+  };
+
   // Smooth scroll to section
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -84,24 +121,59 @@ const Navigation = () => {
     setIsOpen(false);
   };
 
-  // Track active section on scroll
+  // Track scroll percentage
   useEffect(() => {
     const handleScroll = () => {
-      const sections = navItems.map(item => document.getElementById(item.id));
-      const scrollY = window.scrollY + 100;
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i];
-        if (section && section.offsetTop <= scrollY) {
-          setActiveSection(navItems[i].id);
-          break;
-        }
+      if (typeof window === "undefined") return;
+      const doc = document.documentElement;
+      const totalScrollable = doc.scrollHeight - window.innerHeight;
+      if (totalScrollable <= 0) {
+        setScrollPercent(0);
+        return;
       }
+      const percent = (window.scrollY / totalScrollable) * 100;
+      setScrollPercent(Math.min(Math.max(percent, 0), 100));
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, []);
+
+  // Animate progress bar
+  useEffect(() => {
+    if (!progressRef.current) return;
+    gsap.to(progressRef.current, {
+      width: `${scrollPercent}%`,
+      duration: 0.35,
+      ease: "power2.out",
+    });
+  }, [scrollPercent]);
+
+  // Track active section on scroll using GSAP ScrollTrigger
+  useEffect(() => {
+    const triggers = navItems.map((item) => {
+      const element = document.getElementById(item.id);
+      if (!element) return null;
+
+      return ScrollTrigger.create({
+        trigger: element,
+        start: "top center",
+        end: "bottom center",
+        onEnter: () => setActiveSection(item.id),
+        onEnterBack: () => setActiveSection(item.id),
+      });
+    }).filter((trigger) => trigger !== null);
+
+    return () => {
+      triggers.forEach((trigger) => trigger?.kill());
+    };
+  }, []);
+
 
   return (
     <motion.nav
@@ -117,6 +189,7 @@ const Navigation = () => {
             {/* Left Section: Logo */}
             <div className="flex items-center">
               <motion.div
+                data-easter-logo
                 whileHover={{ scale: 1.05 }}
                 className="font-cyber text-xl font-bold text-neon-purple cursor-pointer ml-4"
                 onClick={() => scrollToSection("home")}
@@ -134,8 +207,11 @@ const Navigation = () => {
                 return (
                   <motion.button
                     key={item.id}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
+                    initial="rest"
+                    variants={navButtonVariants}
+                    animate={isActive ? "active" : "rest"}
+                    whileHover="hover"
+                    whileTap="tap"
                     onClick={() => scrollToSection(item.id)}
                     className={`px-4 py-2 rounded-lg transition-all duration-300 flex items-center space-x-2 ${
                       isActive
@@ -143,11 +219,31 @@ const Navigation = () => {
                         : "text-muted-foreground hover:text-neon-purple"
                     }`}
                   >
-                    <Icon size={16} />
+                    <motion.span variants={navIconVariants} className="flex items-center justify-center">
+                      <Icon size={16} />
+                    </motion.span>
                     <span>{item.label}</span>
                   </motion.button>
                 );
               })}
+            </div>
+
+            {/* Scroll Progress Bar - Between Nav Items and Social Icons */}
+            <div className="hidden lg:flex items-center mx-4">
+              <div className="flex items-center gap-3 min-w-[150px] max-w-[200px]">
+                {/* Progress Bar */}
+                <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div
+                    ref={progressRef}
+                    className="h-full rounded-full bg-gradient-to-r from-neon-purple via-neon-cyan to-neon-green shadow-[0_0_12px_rgba(56,189,248,0.4)]"
+                    style={{ width: "0%" }}
+                  />
+                </div>
+                {/* Percentage */}
+                <span className="font-cyber text-muted-foreground/70 text-xs">
+                  {Math.round(scrollPercent)}%
+                </span>
+              </div>
             </div>
 
             {/* Right Section: Social Icons + Resume Button + Mobile Menu */}
@@ -160,12 +256,16 @@ const Navigation = () => {
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.2, y: -2 }}
-                    whileTap={{ scale: 0.9 }}
+                    initial="rest"
+                    animate="rest"
+                    whileHover="hover"
+                    whileTap="tap"
                     className={`${currentTheme.text} ${currentTheme.hoverText} transition-all duration-300 p-2 rounded-lg`}
                     aria-label={label}
                   >
-                    <Icon size={20} />
+                    <motion.span variants={socialIconVariants} className="flex items-center justify-center">
+                      <Icon size={20} />
+                    </motion.span>
                   </motion.a>
                 ))}
               </div>
@@ -174,11 +274,16 @@ const Navigation = () => {
               <motion.a
                 href={resumePath}
                 download="Jai Reddy.pdf"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                initial="rest"
+                animate="rest"
+                whileHover="hover"
+                whileTap="tap"
+                variants={navButtonVariants}
                 className={`hidden md:flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${currentTheme.buttonBg} ${currentTheme.buttonHover}`}
               >
-                <Download size={16} />
+                <motion.span variants={resumeIconVariants} className="flex items-center justify-center">
+                  <Download size={16} />
+                </motion.span>
                 <span>Resume</span>
               </motion.a>
 
@@ -189,7 +294,13 @@ const Navigation = () => {
                   onClick={() => setIsOpen(!isOpen)}
                   className="text-neon-purple p-2"
                 >
-                  {isOpen ? <X size={24} /> : <Menu size={24} />}
+                  <motion.span
+                    animate={isOpen ? "open" : "closed"}
+                    variants={toggleIconVariants}
+                    className="inline-flex"
+                  >
+                    {isOpen ? <X size={24} /> : <Menu size={24} />}
+                  </motion.span>
                 </motion.button>
               </div>
             </div>
@@ -210,12 +321,16 @@ const Navigation = () => {
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    initial="rest"
+                    animate="rest"
+                    whileHover="hover"
+                    whileTap="tap"
                     className={`${currentTheme.text} ${currentTheme.hoverText} transition-all duration-300 p-2 rounded-lg`}
                     aria-label={label}
                   >
-                    <Icon size={20} />
+                    <motion.span variants={socialIconVariants} className="flex items-center justify-center">
+                      <Icon size={20} />
+                    </motion.span>
                   </motion.a>
                 ))}
               </div>
@@ -226,8 +341,13 @@ const Navigation = () => {
                 const theme = activeThemes[item.id] ?? activeThemes.home;
                 const isActive = activeSection === item.id;
                 return (
-                  <button
+                  <motion.button
                     key={item.id}
+                    initial="rest"
+                    variants={navButtonVariants}
+                    animate={isActive ? "active" : "rest"}
+                    whileHover="hover"
+                    whileTap="tap"
                     onClick={() => scrollToSection(item.id)}
                     className={`flex items-center space-x-3 w-full text-left px-4 py-3 border-b border-border last:border-b-0 transition-colors ${
                       isActive
@@ -235,23 +355,32 @@ const Navigation = () => {
                         : "text-muted-foreground hover:text-neon-purple hover:bg-muted/50"
                     }`}
                   >
-                    <Icon size={16} />
+                    <motion.span variants={navIconVariants} className="flex items-center justify-center">
+                      <Icon size={16} />
+                    </motion.span>
                     <span>{item.label}</span>
-                  </button>
+                  </motion.button>
                 );
               })}
 
               {/* Resume Button in Mobile Menu */}
               <div className="p-4 border-t border-border">
-                <a
+                <motion.a
                   href={resumePath}
                   download="Jai Reddy.pdf"
+                  initial="rest"
+                  animate="rest"
+                  whileHover="hover"
+                  whileTap="tap"
+                  variants={navButtonVariants}
                   className={`w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-lg transition-all duration-300 ${currentTheme.buttonBg} ${currentTheme.buttonHover}`}
                   onClick={() => setIsOpen(false)}
                 >
-                  <Download size={16} />
+                  <motion.span variants={resumeIconVariants} className="flex items-center justify-center">
+                    <Download size={16} />
+                  </motion.span>
                   <span>Resume</span>
-                </a>
+                </motion.a>
               </div>
             </motion.div>
           )}
