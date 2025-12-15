@@ -110,15 +110,6 @@ const LoadingScreen = ({ progress }: LoadingScreenProps) => {
             Loading {clampedProgress}%
           </p>
         </div>
-
-        <motion.div
-          className="flex items-center justify-center gap-2 text-[0.7rem] sm:text-xs text-white/50 px-2"
-          animate={{ opacity: [0.3, 0.8, 0.3] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <span className="inline-flex h-2 w-2 rounded-full bg-neon-cyan/70 animate-pulse" />
-          Crafting the Jai Reddy experience
-        </motion.div>
       </div>
     </motion.div>
   );

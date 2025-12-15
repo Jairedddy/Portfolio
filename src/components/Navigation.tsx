@@ -78,7 +78,7 @@ const Navigation = () => {
     { icon: Github, href: "https://github.com/Jairedddy", label: "GitHub" },
     { icon: Linkedin, href: "https://linkedin.com/in/jaishuk-reddy-671777217", label: "LinkedIn" },
   ];
-  const resumePath = "/Jai-Reddy-Resume-20251205.pdf";
+  const resumePath = "/Jai-Reddy-Resume.pdf";
   const currentTheme = activeThemes[activeSection] ?? activeThemes.home;
 
   const navIconVariants = {
