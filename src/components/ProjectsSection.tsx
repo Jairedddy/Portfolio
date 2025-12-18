@@ -210,6 +210,16 @@ const PROJECTS: Project[] = [
     features: ["Model compression", "Hardware optimization", "Cross-platform"]
   },
   {
+    title: "Photography Portfolio",
+    description: "A modern, minimalist photography portfolio application built with React, TypeScript and Vite. Features a dual-theme system (Monochrome/Vibrant), smooth animations, and a fully functional contact form with email integration.",
+    tech: ["React", "Vite", "TypeScript", "Tailwind CSS", "Lucide React", "GSAP", "Lenis", "Nodemailer", "Vercel"],
+    category: "Web Development",
+    color: "green",
+    github: "https://github.com/Jairedddy/Photography-Portfolio",
+    live: "https://jaireddyphotography.vercel.app/",
+    features: ["React", "Vite", "Tailwind CSS", "TypeScript", "Lucide React", "GSAP", "Lenis", "Nodemailer", "Vercel"]
+  },
+  {
     title: "Golden Barell Brewery",
     description: "Golden Barrel’'?Ts modern, responsive brewery website built with React and TypeScript. It features rich content sections, production’'?`ready animations, and polished UI components tailored for a premium brewery brand.",
     tech: ["React", "Vite", "Tailwind CSS", "Radix", "TanStack Query", "Lucide React"],
