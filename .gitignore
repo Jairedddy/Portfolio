@@ -13,7 +13,6 @@ dist-ssr
 *.local
 .env
 .env.*
-!.env.example
 
 # Editor directories and files
 .vscode/*
@@ -28,3 +27,4 @@ dist-ssr
 
 # Project-specific files
 Ideas.md
+!.env.example
