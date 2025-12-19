@@ -43,31 +43,26 @@ const AboutSection = () => {
       year: "2024",
       title: "Associate Data Scientist, Full Stack Developer, Prompt Engineer and GenAI Expert",
       company: "Straive Pvt.Ltd",
-      description: "Leading development of AI-powered web applications using React, Node.js, Flask, Fast API and machine learning APIs to craft solutions for clients. I also build applications that leverage LLMs and GenAI to cater to multiple MNC's use cases."
     },
     {
       year: "2024",
       title: "Associate Data Scientist, Full Stack Developer, Prompt Engineer and GenAI Expert",
       company: "Gramener Technology Solutions Pvt.Ltd",
-      description: "Building AI-driven web applications with React and Node.Js leveraging machine learning APIs to deliver client solutions. I also handle data analysis, model training, and API integration."
     },
     {
       year: "2024",
       title: "Full Stack Developer and Prompt Engineer",
       company: "Freelance",
-      description: "Build responsive, interactive interfaces for Saas platforms, Specialized in React, JavaScript, modern JavaScript libraries like Three.js, Ethers.js, D3.js etc."
     },
     {
       year: "2024",
       title: "Full Stack Developer",
       company: "Freelance",
-      description: "Developed full-stack applications and gained expertise in JavaScript, Python, and database design."
     },
     {
       year: "2024",
       title: "Information Technology Graduate",
       company: "Vellore Institute of Technology",
-      description: "Bachelor's degree in Information Technology with focus on web technologies, AI and software engineering."
     }
   ];
 
@@ -235,15 +230,7 @@ const AboutSection = () => {
               
               <div className="space-y-3 text-muted-foreground font-rajdhani text-base leading-relaxed">
                 <p>
-                I'm a full-stack developer with a passion for creating immersive digital experiences that push the boundaries of what's possible on the web. With immense experience, I specialize in modern JavaScript Frameworks, Creative Coding, and Performance Optimization and Aesthetic Website Design.
-                </p>
-                
-                <p>
-                My journey in tech started with a curiosity about how things work under the hood. Today, I combine technical expertise with creative vision to build applications that are not just functional, but truly engaging and memorable.
-                </p>
-                
-                <p>
-                When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, binge-watching movies, listening to music on blast volumes, playing some sport, or just staring out the window.
+                Full-stack developer specializing in modern JavaScript frameworks, creative coding, and performance optimization. I build immersive digital experiences that blend technical expertise with creative vision.
                 </p>
               </div>
             </div>

@@ -326,9 +326,6 @@ const ContactSection = () => {
           <h2 className="text-3xl md:text-4xl font-black font-cyber text-glow-cyan mb-3">
             &lt; CONTACT /&gt;
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Minimal content, more visuals. Send a short brief and I will translate it into something tangible.
-          </p>
         </div>
 
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-stretch">
@@ -393,7 +390,7 @@ const ContactSection = () => {
               className="rounded-[28px] border border-border/70 bg-surface-darker/85 p-6 shadow-xl backdrop-blur-xl"
             >
               <div className="flex items-center justify-between mb-4">
-                <h4 className="text-lg font-cyber text-glow-green">Elsewhere</h4>
+                <h4 className="text-lg font-cyber text-glow-cyan">Elsewhere</h4>
                 <span className="text-xs text-muted-foreground uppercase tracking-[0.3em]">Social</span>
               </div>
               <div className="flex flex-wrap gap-4">
