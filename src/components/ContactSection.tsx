@@ -14,7 +14,9 @@ import {
   Workflow,
   Search,
   Code2,
-  Sparkles
+  Sparkles,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +26,8 @@ import { animate, stagger } from "animejs";
 import ParticleBackground from "./ParticleBackground";
 import MessageSentAlert from "./MessageSentAlert";
 import { skillCategories } from "@/data/skillCategories";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { AnimatePresence, motion } from "framer-motion";
 
 const techCategoryIds = ["web-dev", "backend", "ai-ml", "integration", "devops"];
 const techCategories = skillCategories.filter((category) => techCategoryIds.includes(category.id));
@@ -99,6 +103,7 @@ const stripTechBlock = (message: string) => {
 
 const ContactSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const isMobile = useIsMobile();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -110,6 +115,7 @@ const ContactSection = () => {
   const [customTechs, setCustomTechs] = useState<string[]>([]);
   const [customTechInput, setCustomTechInput] = useState("");
   const [activeTechCategory, setActiveTechCategory] = useState(defaultTechCategoryId);
+  const [isTechSectionOpen, setIsTechSectionOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -326,9 +332,11 @@ const ContactSection = () => {
           <h2 className="text-3xl md:text-4xl font-black font-cyber text-glow-cyan mb-3">
             &lt; CONTACT /&gt;
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Minimal content, more visuals. Send a short brief and I will translate it into something tangible.
-          </p>
+          {!isMobile && (
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+              Minimal content, more visuals. Send a short brief and I will translate it into something tangible.
+            </p>
+          )}
         </div>
 
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-stretch">
@@ -351,132 +359,138 @@ const ContactSection = () => {
                 </div>
 
                 <div className="space-y-3">
-                  {contactInfo.map((item) => {
-                    const content = (
-                      <div className="rounded-2xl border border-border/70 bg-surface-darker/70 p-4 transition-colors hover:border-neon-cyan/60">
-                        <div className="flex items-center gap-3">
-                          <div className="p-3 rounded-xl bg-card/60 border border-border/80">
-                            <item.icon className="w-4 h-4 text-neon-cyan" />
-                          </div>
-                          <div>
-                            <p className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
-                              {item.label}
-                            </p>
-                            <p className="text-sm font-semibold text-foreground mt-1 break-words">
-                              {item.value}
-                            </p>
+                  {contactInfo
+                    .filter((item) => !isMobile || item.label !== "Response")
+                    .map((item) => {
+                      const content = (
+                        <div className="rounded-2xl border border-border/70 bg-surface-darker/70 p-4 transition-colors hover:border-neon-cyan/60">
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-xl bg-card/60 border border-border/80">
+                              <item.icon className="w-4 h-4 text-neon-cyan" />
+                            </div>
+                            <div>
+                              <p className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
+                                {item.label}
+                              </p>
+                              <p className="text-sm font-semibold text-foreground mt-1 break-words">
+                                {item.value}
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-
-                    if (item.href) {
-                      return (
-                        <a key={item.label} href={item.href} className="block">
-                          {content}
-                        </a>
                       );
-                    }
 
-                    return (
-                      <div key={item.label}>
-                        {content}
-                      </div>
-                    );
-                  })}
+                      if (item.href) {
+                        return (
+                          <a key={item.label} href={item.href} className="block">
+                            {content}
+                          </a>
+                        );
+                      }
+
+                      return (
+                        <div key={item.label}>
+                          {content}
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             </div>
 
-            <div
-              data-anime-card
-              className="rounded-[28px] border border-border/70 bg-surface-darker/85 p-6 shadow-xl backdrop-blur-xl"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="text-lg font-cyber text-glow-green">Elsewhere</h4>
-                <span className="text-xs text-muted-foreground uppercase tracking-[0.3em]">Social</span>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card/70 px-4 py-3 transition-all hover:border-neon-cyan"
-                    data-cursor="interactive"
-                  >
-                    <social.icon className="w-4 h-4 text-neon-cyan" />
-                    <span className="text-sm font-medium text-foreground">{social.label}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            <div
-              data-anime-card
-              className="rounded-[28px] border border-neon-cyan/30 bg-gradient-to-r from-neon-cyan/15 via-transparent to-neon-purple/15 p-6 shadow-[0_25px_60px_rgba(0,0,0,0.5)] backdrop-blur-xl"
-            >
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">Fuel the build</p>
-                  <p className="text-base text-foreground mt-2 max-w-sm">
-                    If you enjoy the work, you can keep the caffeine supply flowing for the next visual experiment.
-                  </p>
-                </div>
-                <a
-                  href="https://buymeacoffee.com/jairedddy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-5 py-3 text-sm font-semibold text-background shadow-neon-cyan transition-all duration-300 hover:brightness-110"
-                  aria-label="Buy me a coffee"
+            {!isMobile && (
+              <>
+                <div
+                  data-anime-card
+                  className="rounded-[28px] border border-border/70 bg-surface-darker/85 p-6 shadow-xl backdrop-blur-xl"
                 >
-                  <Coffee className="h-4 w-4" />
-                  Buy me a coffee
-                </a>
-              </div>
-            </div>
-
-            <div
-              data-anime-card
-              className="rounded-[28px] border border-border/70 bg-surface-darker/85 p-6 shadow-xl backdrop-blur-xl"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="rounded-2xl border border-border/70 bg-card/70 p-2">
-                  <Workflow className="h-4 w-4 text-neon-cyan" />
-                </div>
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">
-                    Process
-                  </p>
-                </div>
-              </div>
-              <div className="relative">
-                <div className="absolute left-8 right-8 top-9 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-                <div className="flex flex-wrap gap-y-10 gap-x-4 justify-between">
-                  {processSteps.map((step, index) => {
-                    const Icon = step.icon;
-                    return (
-                      <div
-                        key={step.title}
-                        className="group relative flex flex-col items-center text-center flex-1 min-w-[120px]"
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-lg font-cyber text-glow-green">Elsewhere</h4>
+                    <span className="text-xs text-muted-foreground uppercase tracking-[0.3em]">Social</span>
+                  </div>
+                  <div className="flex flex-wrap gap-4">
+                    {socialLinks.map((social) => (
+                      <a
+                        key={social.label}
+                        href={social.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card/70 px-4 py-3 transition-all hover:border-neon-cyan"
+                        data-cursor="interactive"
                       >
-                        <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-border/70 bg-card/70 shadow-[0_0_30px_rgba(0,255,255,0.08)]">
-                          <Icon className="h-5 w-5 text-neon-cyan" />
-                          <div className="absolute -inset-1 rounded-full border border-neon-cyan/40 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </div>
-                        <p className="mt-3 text-xs uppercase tracking-[0.35em] text-muted-foreground">
-                          {step.title}
-                        </p>
-                        <div className="pointer-events-none absolute top-[4.5rem] w-48 rounded-2xl border border-border/60 bg-background/95 p-3 text-xs text-muted-foreground opacity-0 shadow-xl transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-1">
-                          {step.description}
-                        </div>
-                      </div>
-                    );
-                  })}
+                        <social.icon className="w-4 h-4 text-neon-cyan" />
+                        <span className="text-sm font-medium text-foreground">{social.label}</span>
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </div>
+
+                <div
+                  data-anime-card
+                  className="rounded-[28px] border border-neon-cyan/30 bg-gradient-to-r from-neon-cyan/15 via-transparent to-neon-purple/15 p-6 shadow-[0_25px_60px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+                >
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">Fuel the build</p>
+                      <p className="text-base text-foreground mt-2 max-w-sm">
+                        If you enjoy the work, you can keep the caffeine supply flowing for the next visual experiment.
+                      </p>
+                    </div>
+                    <a
+                      href="https://buymeacoffee.com/jairedddy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-5 py-3 text-sm font-semibold text-background shadow-neon-cyan transition-all duration-300 hover:brightness-110"
+                      aria-label="Buy me a coffee"
+                    >
+                      <Coffee className="h-4 w-4" />
+                      Buy me a coffee
+                    </a>
+                  </div>
+                </div>
+
+                <div
+                  data-anime-card
+                  className="rounded-[28px] border border-border/70 bg-surface-darker/85 p-6 shadow-xl backdrop-blur-xl"
+                >
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="rounded-2xl border border-border/70 bg-card/70 p-2">
+                      <Workflow className="h-4 w-4 text-neon-cyan" />
+                    </div>
+                    <div>
+                      <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">
+                        Process
+                      </p>
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <div className="absolute left-8 right-8 top-9 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+                    <div className="flex flex-wrap gap-y-10 gap-x-4 justify-between">
+                      {processSteps.map((step, index) => {
+                        const Icon = step.icon;
+                        return (
+                          <div
+                            key={step.title}
+                            className="group relative flex flex-col items-center text-center flex-1 min-w-[120px]"
+                          >
+                            <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-border/70 bg-card/70 shadow-[0_0_30px_rgba(0,255,255,0.08)]">
+                              <Icon className="h-5 w-5 text-neon-cyan" />
+                              <div className="absolute -inset-1 rounded-full border border-neon-cyan/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </div>
+                            <p className="mt-3 text-xs uppercase tracking-[0.35em] text-muted-foreground">
+                              {step.title}
+                            </p>
+                            <div className="pointer-events-none absolute top-[4.5rem] w-48 rounded-2xl border border-border/60 bg-background/95 p-3 text-xs text-muted-foreground opacity-0 shadow-xl transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-1">
+                              {step.description}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="flex">
@@ -549,119 +563,148 @@ const ContactSection = () => {
                 </div>
 
                 <div className="space-y-2 rounded-2xl border border-border/60 bg-surface-darker/70 p-4 flex flex-col overflow-hidden">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
-                      Technology suggestions
-                    </p>
-                    <span className="text-[11px] text-muted-foreground">
-                      {combinedTechs.length} selected
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {techCategories.map((category) => {
-                      const Icon = category.icon;
-                      const colors = getColorClasses(category.color);
-                      const isActive = activeTechCategory === category.id;
-                      return (
-                        <button
-                          type="button"
-                          key={category.id}
-                          onClick={() => setActiveTechCategory(category.id)}
-                          className={`focus-ring-cyber flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium tracking-[0.2em] transition-all ${
-                            isActive
-                              ? `${colors.border} ${colors.bg} ${colors.text}`
-                              : "border-border text-muted-foreground hover:border-border/70"
-                          }`}
-                        >
-                          <Icon className="h-4 w-4" />
-                          {category.title}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <div
-                    className="min-h-0 max-h-64 overflow-y-auto pr-1 custom-scroll"
-                    style={
-                      {
-                        scrollbarColor: `${activeColors.scrollbar} transparent`,
-                        scrollbarWidth: "thin",
-                        "--scrollbar-color": activeColors.scrollbar,
-                      } as CSSProperties
-                    }
+                  <button
+                    type="button"
+                    onClick={() => setIsTechSectionOpen(!isTechSectionOpen)}
+                    className={`flex items-center justify-between gap-2 ${isMobile ? '' : 'pointer-events-none'}`}
+                    disabled={!isMobile}
                   >
-                    <div className="grid gap-3 md:grid-cols-2">
-                      {activeSkills.map((skill) => {
-                        const isActive = selectedTechs.includes(skill.name);
-                        return (
-                          <button
-                            type="button"
-                            key={`${activeCategory?.id}-${skill.name}`}
-                            onClick={() => toggleTech(skill.name)}
-                            className={`focus-ring-cyber flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all ${
-                              isActive
-                                ? "border-neon-cyan/70 bg-neon-cyan/10 shadow-neon-cyan/20"
-                                : "border-border hover:border-neon-cyan/40"
-                            }`}
-                          >
-                            <div
-                              className={`rounded-xl border border-border/70 bg-card/70 p-2 ${activeColors.text}`}
-                            >
-                              {CategoryIcon && <CategoryIcon className="h-4 w-4" />}
-                            </div>
-                            <div>
-                              <p className="text-sm font-semibold text-foreground">{skill.name}</p>
-                              <p className="text-xs text-muted-foreground">
-                                Tap to {isActive ? "remove" : "add"}
-                              </p>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2 sm:flex-row">
-                    <Input
-                      value={customTechInput}
-                      onChange={(e) => setCustomTechInput(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          addCustomTech();
-                        }
-                      }}
-                      placeholder="Add another tool (e.g. Prisma, Vite)"
-                      className="focus-ring-cyber bg-surface-darker border-border focus:border-neon-cyan"
-                    />
-                    <Button
-                      type="button"
-                      onClick={addCustomTech}
-                      className="focus-ring-cyber bg-gradient-primary text-background hover:shadow-neon-cyan"
-                    >
-                      Add
-                    </Button>
-                  </div>
-                  {combinedTechs.length > 0 && (
-                    <div className="rounded-2xl border border-border/70 bg-card/70 p-4">
-                      <p className="mt-2 whitespace-pre-line text-sm text-muted-foreground">
-                        {previewTechBlock.trim()}
+                    <div className="flex flex-wrap items-center justify-between gap-2 flex-1">
+                      <p className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
+                        Technology suggestions
                       </p>
-                      {customTechs.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {customTechs.map((tech) => (
-                            <button
-                              type="button"
-                              key={tech}
-                              onClick={() => removeCustomTech(tech)}
-                              className="focus-ring-cyber flex items-center gap-1 rounded-full border border-border/60 px-3 py-1 text-xs text-muted-foreground hover:border-neon-cyan/60 hover:text-foreground"
-                            >
-                              {tech}
-                              <span className="text-base leading-none">&times;</span>
-                            </button>
-                          ))}
-                        </div>
-                      )}
+                      <span className="text-[11px] text-muted-foreground">
+                        {combinedTechs.length} selected
+                      </span>
                     </div>
-                  )}
+                    {isMobile && (
+                      <motion.div
+                        animate={{ rotate: isTechSectionOpen ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <ChevronDown className="h-4 w-4 text-neon-cyan" />
+                      </motion.div>
+                    )}
+                  </button>
+                  <AnimatePresence>
+                    {(!isMobile || isTechSectionOpen) && (
+                      <motion.div
+                        initial={isMobile ? { height: 0, opacity: 0 } : false}
+                        animate={isMobile ? { height: "auto", opacity: 1 } : false}
+                        exit={isMobile ? { height: 0, opacity: 0 } : false}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className={isMobile ? "overflow-hidden" : ""}
+                      >
+                        <div className="space-y-4">
+                          <div className="flex flex-wrap gap-2">
+                            {techCategories.map((category) => {
+                              const Icon = category.icon;
+                              const colors = getColorClasses(category.color);
+                              const isActive = activeTechCategory === category.id;
+                              return (
+                                <button
+                                  type="button"
+                                  key={category.id}
+                                  onClick={() => setActiveTechCategory(category.id)}
+                                  className={`focus-ring-cyber flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium tracking-[0.2em] transition-all ${
+                                    isActive
+                                      ? `${colors.border} ${colors.bg} ${colors.text}`
+                                      : "border-border text-muted-foreground hover:border-border/70"
+                                  }`}
+                                >
+                                  <Icon className="h-4 w-4" />
+                                  {category.title}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <div
+                            className="min-h-0 max-h-64 overflow-y-auto pr-1 custom-scroll"
+                            style={
+                              {
+                                scrollbarColor: `${activeColors.scrollbar} transparent`,
+                                scrollbarWidth: "thin",
+                                "--scrollbar-color": activeColors.scrollbar,
+                              } as CSSProperties
+                            }
+                          >
+                            <div className="grid gap-3 md:grid-cols-2">
+                              {activeSkills.map((skill) => {
+                                const isActive = selectedTechs.includes(skill.name);
+                                return (
+                                  <button
+                                    type="button"
+                                    key={`${activeCategory?.id}-${skill.name}`}
+                                    onClick={() => toggleTech(skill.name)}
+                                    className={`focus-ring-cyber flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all ${
+                                      isActive
+                                        ? "border-neon-cyan/70 bg-neon-cyan/10 shadow-neon-cyan/20"
+                                        : "border-border hover:border-neon-cyan/40"
+                                    }`}
+                                  >
+                                    <div
+                                      className={`rounded-xl border border-border/70 bg-card/70 p-2 ${activeColors.text}`}
+                                    >
+                                      {CategoryIcon && <CategoryIcon className="h-4 w-4" />}
+                                    </div>
+                                    <div>
+                                      <p className="text-sm font-semibold text-foreground">{skill.name}</p>
+                                      <p className="text-xs text-muted-foreground">
+                                        Tap to {isActive ? "remove" : "add"}
+                                      </p>
+                                    </div>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-2 sm:flex-row mt-4">
+                            <Input
+                              value={customTechInput}
+                              onChange={(e) => setCustomTechInput(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  addCustomTech();
+                                }
+                              }}
+                              placeholder="Add another tool (e.g. Prisma, Vite)"
+                              className="focus-ring-cyber bg-surface-darker border-border focus:border-neon-cyan"
+                            />
+                            <Button
+                              type="button"
+                              onClick={addCustomTech}
+                              className="focus-ring-cyber bg-gradient-primary text-background hover:shadow-neon-cyan"
+                            >
+                              Add
+                            </Button>
+                          </div>
+                          {combinedTechs.length > 0 && (
+                            <div className="rounded-2xl border border-border/70 bg-card/70 p-4">
+                              <p className="mt-2 whitespace-pre-line text-sm text-muted-foreground">
+                                {previewTechBlock.trim()}
+                              </p>
+                              {customTechs.length > 0 && (
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                  {customTechs.map((tech) => (
+                                    <button
+                                      type="button"
+                                      key={tech}
+                                      onClick={() => removeCustomTech(tech)}
+                                      className="focus-ring-cyber flex items-center gap-1 rounded-full border border-border/60 px-3 py-1 text-xs text-muted-foreground hover:border-neon-cyan/60 hover:text-foreground"
+                                    >
+                                      {tech}
+                                      <span className="text-base leading-none">&times;</span>
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 <div className="mt-auto flex justify-end border-t border-border/60 pt-4">

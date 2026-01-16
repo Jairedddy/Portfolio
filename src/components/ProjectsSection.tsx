@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import ParticleBackground from "./ParticleBackground";
 import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
 import TextReveal from "./TextReveal";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Project = {
   title: string;
@@ -107,6 +108,7 @@ type ProjectCardProps = {
 
 const ProjectCard = ({ project, colors, isInteractive, className = "" }: ProjectCardProps) => {
   const { tiltStyle, handleMouseMove, handleMouseLeave } = useTiltCard(isInteractive);
+  const isMobile = useIsMobile();
 
   return (
     <div className={className} style={{ perspective: "1200px" }}>
@@ -121,34 +123,36 @@ const ProjectCard = ({ project, colors, isInteractive, className = "" }: Project
           ...tiltStyle,
         }}
       >
-        <div className="p-6 space-y-4">
+        <div className={`p-4 sm:p-6 ${isMobile ? 'space-y-3' : 'space-y-4'}`}>
           <div
-            className={`inline-block px-3 py-1 rounded-full text-xs font-cyber ${colors.text} bg-surface-darker/50 border ${colors.border} mb-2`}
+            className={`inline-block px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[0.65rem] sm:text-xs font-cyber ${colors.text} bg-surface-darker/50 border ${colors.border} mb-1.5 sm:mb-2`}
             style={{ transform: "translateZ(30px)" }}
           >
             {project.category}
           </div>
 
           <h3
-            className={`text-xl font-bold ${colors.glow} mb-2 group-hover:scale-105 transition-transform`}
+            className={`text-lg sm:text-xl font-bold ${colors.glow} mb-1.5 sm:mb-2 group-hover:scale-105 transition-transform leading-tight`}
             style={{ transform: "translateZ(45px)" }}
           >
             {project.title}
           </h3>
 
-          <p
-            className="text-muted-foreground text-sm leading-relaxed"
-            style={{ transform: "translateZ(20px)" }}
-          >
-            {project.description}
-          </p>
+          {!isMobile && (
+            <p
+              className="text-muted-foreground text-sm leading-relaxed"
+              style={{ transform: "translateZ(20px)" }}
+            >
+              {project.description}
+            </p>
+          )}
 
-          <div className="mb-2" style={{ transform: "translateZ(30px)" }}>
-            <div className="flex flex-wrap gap-2">
+          <div className={`${isMobile ? 'mb-1.5' : 'mb-2'}`} style={{ transform: "translateZ(30px)" }}>
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {project.features.map((feature) => (
                 <span
                   key={feature}
-                  className="text-xs px-2 py-1 bg-muted rounded text-muted-foreground"
+                  className="text-[0.65rem] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 bg-muted rounded text-muted-foreground"
                 >
                   {feature}
                 </span>
@@ -156,37 +160,37 @@ const ProjectCard = ({ project, colors, isInteractive, className = "" }: Project
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-4" style={{ transform: "translateZ(35px)" }}>
+          <div className={`flex flex-wrap gap-1.5 sm:gap-2 ${isMobile ? 'mb-3' : 'mb-4'}`} style={{ transform: "translateZ(35px)" }}>
             {project.tech.map((tech) => (
               <span
                 key={tech}
-                className={`text-xs px-2 py-1 ${colors.text} bg-surface-darker/30 rounded border ${colors.border}`}
+                className={`text-[0.65rem] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 ${colors.text} bg-surface-darker/30 rounded border ${colors.border}`}
               >
                 {tech}
               </span>
             ))}
           </div>
 
-          <div className="flex gap-3" style={{ transform: "translateZ(45px)" }}>
+          <div className="flex gap-2 sm:gap-3" style={{ transform: "translateZ(45px)" }}>
             <Button
-              size="sm"
+              size={isMobile ? "sm" : "sm"}
               variant="outline"
-              className={`flex-1 ${colors.border} ${colors.text} hover:scale-105 ${colors.bg} hover:shadow-lg transition-all duration-300`}
+              className={`flex-1 ${colors.border} ${colors.text} hover:scale-105 ${colors.bg} hover:shadow-lg transition-all duration-300 text-xs sm:text-sm`}
               asChild
             >
               <a href={project.github} target="_blank" rel="noopener noreferrer">
-                <Github size={16} className="mr-2" />
+                <Github size={isMobile ? 14 : 16} className="mr-1.5 sm:mr-2" />
                 Code
               </a>
             </Button>
             {project.live && (
               <Button
-                size="sm"
-                className="flex-1 bg-gradient-primary hover:scale-105 hover:shadow-neon-cyan hover:brightness-110 transition-all duration-300"
+                size={isMobile ? "sm" : "sm"}
+                className="flex-1 bg-gradient-primary hover:scale-105 hover:shadow-neon-cyan hover:brightness-110 transition-all duration-300 text-xs sm:text-sm"
                 asChild
               >
                 <a href={project.live} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink size={16} className="mr-2" />
+                  <ExternalLink size={isMobile ? 14 : 16} className="mr-1.5 sm:mr-2" />
                   Demo
                 </a>
               </Button>
@@ -200,24 +204,24 @@ const ProjectCard = ({ project, colors, isInteractive, className = "" }: Project
 
 const PROJECTS: Project[] = [
   {
-    title: "Noir Ink Tattoo Studio",
-    description: "A sophisticated, monochrome tattoo studio and supply store featuring AI-powered design generation, comprehensive booking system, and educational resources.",
-    tech: ["React", "TypeScript", "Vite", "Tailwind CSS", "Lucide React", "Pollinations.ai"],
-    category: "Web Development",
-    color: "purple",
-    github: "https://github.com/Jairedddy/Noir-Ink-Tattoo-Studio",
-    live: "https://noir-ink.netlify.app/",
-    features: ["Model compression", "Hardware optimization", "Cross-platform"]
-  },
-  {
     title: "Photography Portfolio",
     description: "A modern, minimalist photography portfolio application built with React, TypeScript and Vite. Features a dual-theme system (Monochrome/Vibrant), smooth animations, and a fully functional contact form with email integration.",
     tech: ["React", "Vite", "TypeScript", "Tailwind CSS", "Lucide React", "GSAP", "Lenis", "Nodemailer", "Vercel"],
     category: "Web Development",
-    color: "green",
+    color: "purple",
     github: "https://github.com/Jairedddy/Photography-Portfolio",
     live: "https://jaireddyphotography.vercel.app/",
     features: ["React", "Vite", "Tailwind CSS", "TypeScript", "Lucide React", "GSAP", "Lenis", "Nodemailer", "Vercel"]
+  },
+  {
+    title: "Noir Ink Tattoo Studio",
+    description: "A sophisticated, monochrome tattoo studio and supply store featuring AI-powered design generation, comprehensive booking system, and educational resources.",
+    tech: ["React", "TypeScript", "Vite", "Tailwind CSS", "Lucide React", "Pollinations.ai"],
+    category: "Web Development",
+    color: "green",
+    github: "https://github.com/Jairedddy/Noir-Ink-Tattoo-Studio",
+    live: "https://noir-ink.netlify.app/",
+    features: ["Model compression", "Hardware optimization", "Cross-platform"]
   },
   {
     title: "Golden Barell Brewery",
@@ -281,6 +285,7 @@ const PROJECTS: Project[] = [
 
 // Projects Section with Interactive Cards
 const ProjectsSection = () => {
+  const isMobile = useIsMobile();
   const [isGridView, setIsGridView] = useState(false);
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
@@ -397,7 +402,7 @@ const ProjectsSection = () => {
   };
 
   return (
-    <section id="projects" className="py-20 relative min-h-screen">
+    <section id="projects" className="py-12 sm:py-20 relative min-h-screen">
       <ParticleBackground id="projects-particles" variant="projects" />
       
       {/* Animated Background Elements - Reduced for performance */}
@@ -406,25 +411,25 @@ const ProjectsSection = () => {
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-neon-green/10 rounded-full blur-3xl animate-pulse performance-optimized" style={{ animationDelay: '4s' }}></div>
       </div>
       
-      <div className="max-w-7xl mx-auto px-4 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-10 sm:mb-16"
         >
           <TextReveal
             as="h2"
-            className="text-4xl md:text-5xl font-black font-cyber text-glow-purple mb-6"
+            className="text-3xl sm:text-4xl md:text-5xl font-black font-cyber text-glow-purple mb-4 sm:mb-6"
             revealDelay={80}
           >
             &lt; PROJECTS /&gt;
           </TextReveal>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto px-2">
             Explore my latest AI innovations and machine learning solutions
           </p>
-          <div className="w-24 h-1 bg-gradient-secondary mx-auto rounded-full mt-6" />
+          <div className="w-24 h-1 bg-gradient-secondary mx-auto rounded-full mt-4 sm:mt-6" />
         </motion.div>
 
         <motion.div
@@ -432,10 +437,10 @@ const ProjectsSection = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-12"
+          className="mb-8 sm:mb-12"
         >
           <LayoutGroup id="project-category-filter">
-            <div className="flex flex-wrap justify-center gap-3 md:gap-4">
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 px-2">
               {categories.map((category) => {
                 const isActiveCategory = category === activeCategory;
                 return (
@@ -446,7 +451,7 @@ const ProjectsSection = () => {
                     whileTap={{ scale: 0.96 }}
                     onClick={() => handleCategoryChange(category)}
                     disabled={isFiltering}
-                    className={`relative px-5 py-2 rounded-full border border-border/70 bg-card/60 uppercase tracking-[0.2em] text-[0.65rem] font-semibold transition-all duration-300 ${
+                    className={`relative px-3 sm:px-5 py-1.5 sm:py-2 rounded-full border border-border/70 bg-card/60 uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[0.6rem] sm:text-[0.65rem] font-semibold transition-all duration-300 ${
                       isActiveCategory ? "text-neon-purple" : "text-muted-foreground hover:text-foreground"
                     } ${isFiltering ? "cursor-wait" : ""}`}
                     aria-pressed={isActiveCategory}
@@ -480,11 +485,11 @@ const ProjectsSection = () => {
             >
               {/* Carousel Container */}
               <div 
-                className="relative overflow-hidden px-8 md:px-16"
+                className="relative overflow-hidden px-4 sm:px-8 md:px-16"
               >
                 {filteredProjects.length > 0 ? (
                   <div ref={emblaRef} className="overflow-hidden cursor-grab active:cursor-grabbing">
-                    <div className="flex gap-6">
+                    <div className="flex gap-4 sm:gap-6">
                       {filteredProjects.map((project, index) => {
                         const colors = getColorClasses(project.color);
                         const isActive = index === selectedIndex;
@@ -492,12 +497,12 @@ const ProjectsSection = () => {
                         return (
                           <motion.div
                             key={project.title}
-                            className={`flex-[0_0_85%] md:flex-[0_0_70%] lg:flex-[0_0_60%] min-w-0 px-2 ${isActive ? "" : "cursor-pointer"}`}
+                            className={`flex-[0_0_90%] sm:flex-[0_0_85%] md:flex-[0_0_70%] lg:flex-[0_0_60%] min-w-0 px-1 sm:px-2 ${isActive ? "" : "cursor-pointer"}`}
                             animate={{
-                              scale: isActive ? 1 : 0.88,
-                              opacity: isActive ? 1 : 0.35,
+                              scale: isActive ? 1 : isMobile ? 0.92 : 0.88,
+                              opacity: isActive ? 1 : isMobile ? 0.5 : 0.35,
                               zIndex: isActive ? 2 : 1,
-                              filter: isActive ? "blur(0px)" : "blur(1.5px)",
+                              filter: isActive ? "blur(0px)" : isMobile ? "blur(0.5px)" : "blur(1.5px)",
                             }}
                             transition={{
                               type: "spring",
@@ -526,9 +531,9 @@ const ProjectsSection = () => {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="flex items-center justify-center py-16"
+                    className="flex items-center justify-center py-12 sm:py-16"
                   >
-                    <p className="text-muted-foreground text-sm tracking-wider uppercase">
+                    <p className="text-muted-foreground text-xs sm:text-sm tracking-wider uppercase">
                       No projects in this category yet.
                     </p>
                   </motion.div>
@@ -540,35 +545,35 @@ const ProjectsSection = () => {
                   size="icon"
                   onClick={scrollPrev}
                   disabled={!canScrollPrev}
-                  className={`absolute left-2 md:left-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full border-border text-neon-cyan hover:border-neon-cyan hover:bg-neon-cyan hover:text-background hover:scale-110 transition-all duration-300 z-20 bg-card/90 ${
+                  className={`absolute left-1 sm:left-2 md:left-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full border-border text-neon-cyan hover:border-neon-cyan hover:bg-neon-cyan hover:text-background hover:scale-110 transition-all duration-300 z-20 bg-card/90 ${
                     !canScrollPrev ? "opacity-30 cursor-not-allowed" : "opacity-100"
                   }`}
                 >
-                  <ChevronLeft className="h-6 w-6" />
+                  <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
                 </Button>
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={scrollNext}
                   disabled={!canScrollNext}
-                  className={`absolute right-2 md:right-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full border-border text-neon-cyan hover:border-neon-cyan hover:bg-neon-cyan hover:text-background hover:scale-110 transition-all duration-300 z-20 bg-card/90 ${
+                  className={`absolute right-1 sm:right-2 md:right-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full border-border text-neon-cyan hover:border-neon-cyan hover:bg-neon-cyan hover:text-background hover:scale-110 transition-all duration-300 z-20 bg-card/90 ${
                     !canScrollNext ? "opacity-30 cursor-not-allowed" : "opacity-100"
                   }`}
                 >
-                  <ChevronRight className="h-6 w-6" />
+                  <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
                 </Button>
 
                 {/* Carousel Indicators */}
                 {filteredProjects.length > 0 && (
-                  <div className="flex justify-center gap-2 mt-8">
+                  <div className="flex justify-center gap-1.5 sm:gap-2 mt-6 sm:mt-8">
                     {filteredProjects.map((_, index) => (
                       <button
                         key={`${activeCategory}-${index}`}
                         onClick={() => emblaApi?.scrollTo(index)}
-                        className={`h-2 rounded-full transition-all duration-300 ${
+                        className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
                           index === selectedIndex
-                            ? "w-8 bg-neon-cyan"
-                            : "w-2 bg-muted hover:bg-neon-cyan/50"
+                            ? "w-6 sm:w-8 bg-neon-cyan"
+                            : "w-1.5 sm:w-2 bg-muted hover:bg-neon-cyan/50"
                         }`}
                         aria-label={`Go to slide ${index + 1}`}
                       />
@@ -593,7 +598,7 @@ const ProjectsSection = () => {
                   initial="initial"
                   animate="animate"
                   exit="exit"
-                  className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                  className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
                 >
                   <AnimatePresence mode="sync" initial={false}>
                     {filteredProjects.map((project) => {
@@ -660,42 +665,45 @@ const ProjectsSection = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mt-12"
+          className="text-center mt-8 sm:mt-12"
         >
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
             <Button
-              size="lg"
+              size={isMobile ? "default" : "lg"}
               variant="outline"
               onClick={() => setIsGridView(!isGridView)}
-              className="border-glow-cyan text-neon-cyan hover:bg-glow-cyan hover:text-background transition-all duration-300 group"
+              className="border-glow-cyan text-neon-cyan hover:bg-glow-cyan hover:text-background transition-all duration-300 group text-sm sm:text-base"
             >
               {isGridView ? (
                 <>
-                  <LayoutGrid size={20} className="mr-2 group-hover:rotate-12 transition-transform" />
-                  Back to Carousel
+                  <LayoutGrid size={isMobile ? 18 : 20} className="mr-2 group-hover:rotate-12 transition-transform" />
+                  <span className="hidden sm:inline">Back to Carousel</span>
+                  <span className="sm:hidden">Carousel</span>
                 </>
               ) : (
                 <>
-                  View All Projects
-                  <Grid3x3 size={20} className="ml-2 group-hover:rotate-12 transition-transform" />
+                  <span className="hidden sm:inline">View All Projects</span>
+                  <span className="sm:hidden">View All</span>
+                  <Grid3x3 size={isMobile ? 18 : 20} className="ml-2 group-hover:rotate-12 transition-transform" />
                 </>
               )}
             </Button>
             
             {isGridView && (
               <Button
-                size="lg"
+                size={isMobile ? "default" : "lg"}
                 variant="outline"
                 asChild
-                className="border-glow-purple text-neon-purple hover:bg-glow-purple hover:text-background transition-all duration-300 group"
+                className="border-glow-purple text-neon-purple hover:bg-glow-purple hover:text-background transition-all duration-300 group text-sm sm:text-base"
               >
                 <a className=""
                   href="https://github.com/Jairedddy" 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
-                  <Github size={20} className="mr-2 group-hover:rotate-12 transition-transform" />
-                  Take me to Github
+                  <Github size={isMobile ? 18 : 20} className="mr-2 group-hover:rotate-12 transition-transform" />
+                  <span className="hidden sm:inline">Take me to Github</span>
+                  <span className="sm:hidden">Github</span>
                 </a>
               </Button>
             )}

@@ -6,11 +6,13 @@ import { skillCategories } from "@/data/skillCategories";
 import { gsap } from "gsap";
 import { useGradientTheme } from "@/hooks/useGradientTheme";
 import SkillRadarChart from "./SkillRadarChart";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Skills Section with Tabbed Interface and Neon Progress Indicators
 const SkillsSection = () => {
   const [activeTab, setActiveTab] = useState("web-dev");
   const sectionRef = useRef<HTMLElement | null>(null);
+  const isMobile = useIsMobile();
   useGradientTheme(sectionRef, "skills");
 
 
@@ -295,19 +297,21 @@ const SkillsSection = () => {
                   </div>
 
                   {/* Category Description */}
-                  <div className="text-center mt-8">
-                    <div className="bg-card p-6 rounded-2xl border border-border shadow-lg max-w-3xl mx-auto">
-                      <p className="text-muted-foreground leading-relaxed text-base">
-                        {category.id === "web-dev" && "Mastery of modern web technologies and frameworks for creating responsive, interactive applications with cutting-edge visual effects."}
-                        {category.id === "design" && "Expertise in design tools and principles for creating intuitive user experiences and compelling visual designs that engage users."}
-                        {category.id === "backend" && "Strong foundation in server-side development, database management, and API design for scalable, robust applications."}
-                        {category.id === "ai-ml" && "Comprehensive knowledge of machine learning libraries, AI models, and data science tools for building intelligent applications."}
-                        {category.id === "integration" && "Specialized skills in integrating AI capabilities into web applications for enhanced user experiences and automation."}
-                        {category.id === "devops" && "Proficiency in deployment, security, and performance optimization for production-ready, secure applications."}
-                        {category.id === "soft-skills" && "Essential professional skills for effective collaboration, communication, and successful project delivery."}
-                      </p>
+                  {!isMobile && (
+                    <div className="text-center mt-8">
+                      <div className="bg-card p-6 rounded-2xl border border-border shadow-lg max-w-3xl mx-auto">
+                        <p className="text-muted-foreground leading-relaxed text-base">
+                          {category.id === "web-dev" && "Mastery of modern web technologies and frameworks for creating responsive, interactive applications with cutting-edge visual effects."}
+                          {category.id === "design" && "Expertise in design tools and principles for creating intuitive user experiences and compelling visual designs that engage users."}
+                          {category.id === "backend" && "Strong foundation in server-side development, database management, and API design for scalable, robust applications."}
+                          {category.id === "ai-ml" && "Comprehensive knowledge of machine learning libraries, AI models, and data science tools for building intelligent applications."}
+                          {category.id === "integration" && "Specialized skills in integrating AI capabilities into web applications for enhanced user experiences and automation."}
+                          {category.id === "devops" && "Proficiency in deployment, security, and performance optimization for production-ready, secure applications."}
+                          {category.id === "soft-skills" && "Essential professional skills for effective collaboration, communication, and successful project delivery."}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               );
             })}

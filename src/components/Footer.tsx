@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
 import { Heart, Code, MapPin } from "lucide-react";
 import useEasterEggsContext from "@/hooks/useEasterEggsContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Footer Component
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const isMobile = useIsMobile();
   const { discoveredCount, totalEggs, hint } = useEasterEggsContext();
 
   return (
@@ -74,27 +76,29 @@ const Footer = () => {
         </motion.div>
 
         {/* Easter Egg Progress */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-8 rounded-2xl border border-white/10 bg-gradient-to-br from-black/40 via-surface-darker/70 to-black/30 p-6"
-        >
-          <div className="flex flex-col gap-3 text-left text-sm text-muted-foreground">
-            <div className="flex items-center justify-between text-xs uppercase tracking-[0.35em] text-white/60">
-              <span>Neon saga</span>
-              <span>
-                Chapters {discoveredCount} / {totalEggs}
-              </span>
+        {!isMobile && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-8 rounded-2xl border border-white/10 bg-gradient-to-br from-black/40 via-surface-darker/70 to-black/30 p-6"
+          >
+            <div className="flex flex-col gap-3 text-left text-sm text-muted-foreground">
+              <div className="flex items-center justify-between text-xs uppercase tracking-[0.35em] text-white/60">
+                <span>Neon saga</span>
+                <span>
+                  Chapters {discoveredCount} / {totalEggs}
+                </span>
+              </div>
+              <div className="flex items-start gap-3 text-base text-white">
+                <MapPin size={18} className="text-neon-purple mt-0.5" />
+                <p className="leading-relaxed">
+                  {hint ?? "All chapters complete. Gotham and Krypton glow in sync."}
+                </p>
+              </div>
             </div>
-            <div className="flex items-start gap-3 text-base text-white">
-              <MapPin size={18} className="text-neon-purple mt-0.5" />
-              <p className="leading-relaxed">
-                {hint ?? "All chapters complete. Gotham and Krypton glow in sync."}
-              </p>
-            </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
       </div>
     </footer>
   );

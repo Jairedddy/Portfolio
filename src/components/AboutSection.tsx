@@ -6,6 +6,7 @@ import { Code, Zap, Users, Award } from 'lucide-react';
 import ParticleBackground from './ParticleBackground';
 import TextReveal from './TextReveal';
 import GitHubStats from './GitHubStats';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,6 +21,7 @@ const AboutSection = () => {
   const journeyRef = useRef<HTMLDivElement | null>(null);
   const lineProgressRef = useRef<HTMLDivElement | null>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const isMobile = useIsMobile();
   const [statsPanelState, setStatsPanelState] = useState<{
     visible: boolean;
     trigger: string | null;
@@ -183,7 +185,7 @@ const AboutSection = () => {
   }, []);
 
   return (
-    <section id="about" className="py-20 relative min-h-screen">
+    <section id="about" className="py-12 sm:py-20 relative min-h-screen">
       {/* Background Layers */}
       <ParticleBackground id="about-particles" variant="about" />
       <div className="absolute inset-0 neon-grid opacity-20"></div>
@@ -195,18 +197,18 @@ const AboutSection = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-neon-green/5 rounded-full blur-3xl animate-pulse performance-optimized" style={{ animationDelay: '4s' }}></div>
       </div>
       
-      <div className="max-w-6xl mx-auto px-4 relative z-10" ref={sectionRef}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10" ref={sectionRef}>
         
         {/* Section Header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-10 sm:mb-16"
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
           <TextReveal
             as="h2"
-            className="text-4xl md:text-5xl font-black font-orbitron mb-6 text-glow-cyan"
+            className="text-3xl sm:text-4xl md:text-5xl font-black font-orbitron mb-4 sm:mb-6 text-glow-cyan"
             revealDelay={80}
           >
             &lt; ABOUT /&gt;
@@ -215,7 +217,7 @@ const AboutSection = () => {
         </motion.div>
 
         {/* Main Content */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center mb-10 sm:mb-16">
           
           {/* About Text */}
           <motion.div
@@ -223,36 +225,38 @@ const AboutSection = () => {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <div className="bg-card p-6 rounded-2xl border border-border shadow-lg">
+            <div className="bg-card p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-border shadow-lg">
               <TextReveal
                 as="h3"
-                className="text-2xl font-orbitron font-bold mb-4 text-neon-cyan"
+                className="text-xl sm:text-2xl font-orbitron font-bold mb-3 sm:mb-4 text-neon-cyan"
                 revealDelay={120}
                 revealStagger={25}
               >
-                BUilding Platforms for Businesses Since 2019
+                Building Platforms For{"\u00A0"}Businesses{"\u00A0"}Since{"\u00A0"}2019
               </TextReveal>
               
-              <div className="space-y-3 text-muted-foreground font-rajdhani text-base leading-relaxed">
-                <p>
-                I'm a full-stack developer with a passion for creating immersive digital experiences that push the boundaries of what's possible on the web. With immense experience, I specialize in modern JavaScript Frameworks, Creative Coding, and Performance Optimization and Aesthetic Website Design.
-                </p>
-                
-                <p>
-                My journey in tech started with a curiosity about how things work under the hood. Today, I combine technical expertise with creative vision to build applications that are not just functional, but truly engaging and memorable.
-                </p>
-                
-                <p>
-                When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, binge-watching movies, listening to music on blast volumes, playing some sport, or just staring out the window.
-                </p>
-              </div>
+              {!isMobile && (
+                <div className="space-y-2.5 sm:space-y-3 text-muted-foreground font-rajdhani text-sm sm:text-base leading-relaxed">
+                  <p>
+                  I'm a full-stack developer with a passion for creating immersive digital experiences that push the boundaries of what's possible on the web. With immense experience, I specialize in modern JavaScript Frameworks, Creative Coding, and Performance Optimization and Aesthetic Website Design.
+                  </p>
+                  
+                  <p>
+                  My journey in tech started with a curiosity about how things work under the hood. Today, I combine technical expertise with creative vision to build applications that are not just functional, but truly engaging and memorable.
+                  </p>
+                  
+                  <p>
+                  When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, binge-watching movies, listening to music on blast volumes, playing some sport, or just staring out the window.
+                  </p>
+                </div>
+              )}
             </div>
           </motion.div>
 
           {/* Stats Grid */}
           <motion.div
             ref={statsRef}
-            className="grid grid-cols-2 gap-4"
+            className="grid grid-cols-2 gap-3 sm:gap-4"
             initial={{ opacity: 0, x: 50 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -265,7 +269,7 @@ const AboutSection = () => {
                 showGitHubStats &&
                 statsPanelState.trigger === stat.label;
               const cardClasses = [
-                "bg-card p-4 rounded-xl text-center border shadow-lg transition",
+                "bg-card p-3 sm:p-4 rounded-lg sm:rounded-xl text-center border shadow-lg transition",
                 "border-border shadow-black/40",
                 isInteractive
                   ? "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan/60 focus-visible:ring-offset-2"
@@ -298,15 +302,15 @@ const AboutSection = () => {
                     }
                   }}
                 >
-                  <Icon className="w-6 h-6 mx-auto mb-3 text-neon-cyan" />
-                  <div className="text-2xl font-orbitron font-bold text-glow-cyan mb-1">
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2 sm:mb-3 text-neon-cyan" />
+                  <div className="text-xl sm:text-2xl font-orbitron font-bold text-glow-cyan mb-1">
                     <span className="stat-number">0</span>
                     <span>{stat.suffix}</span>
                   </div>
-                  <p className="text-muted-foreground font-cyber text-xs">
+                  <p className="text-muted-foreground font-cyber text-[0.65rem] sm:text-xs">
                     {stat.label}
                     {isInteractive && (
-                      <span className="block text-[10px] uppercase tracking-[0.2em] text-neon-cyan mt-1">
+                      <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] text-neon-cyan mt-0.5 sm:mt-1">
                         Tap to toggle stats
                       </span>
                     )}
@@ -323,7 +327,7 @@ const AboutSection = () => {
             <motion.div
               key="github-stats-panel"
               id="github-stats-panel"
-              className="mb-16"
+              className="mb-10 sm:mb-16"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
@@ -345,7 +349,7 @@ const AboutSection = () => {
         >
           <TextReveal
             as="h3"
-            className="text-3xl font-orbitron font-bold text-center mb-8 text-neon-cyan"
+            className="text-2xl sm:text-3xl font-orbitron font-bold text-center mb-6 sm:mb-8 text-neon-cyan"
             revealDelay={100}
           >
             My Journey
@@ -353,41 +357,62 @@ const AboutSection = () => {
           
           <div className="relative">
             {/* Timeline Line */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-border/40 rounded-full overflow-hidden">
+            <div className={`absolute ${isMobile ? 'left-0' : 'left-1/2 transform -translate-x-1/2'} w-1 h-full bg-border/40 rounded-full overflow-hidden`}>
               <div
                 ref={lineProgressRef}
                 className="absolute inset-0 bg-gradient-to-b from-neon-purple via-neon-cyan to-neon-green origin-top scale-y-0"
               />
             </div>
             
-            <div className="space-y-8">
+            <div className={`space-y-6 sm:space-y-8 ${isMobile ? 'pl-8' : ''}`}>
               {timeline.map((item, index) => (
                 <div
                   key={`${item.year}-${item.company}-${index}`}
-                  className={`journey-row flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
+                  className={`journey-row flex items-center relative ${isMobile ? 'flex-row' : index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
                 >
-                  <div className={`w-5/12 ${index % 2 === 0 ? 'text-right pr-4' : 'text-left pl-4'}`}>
-                    <div className="journey-card bg-card p-3 rounded-xl border border-border shadow-lg hover:border-neon-purple transition-colors">
-                      <div className="text-lg font-cyber font-bold text-neon-purple mb-1">
-                        {item.year}
+                  {!isMobile && (
+                    <div className={`w-5/12 ${index % 2 === 0 ? 'text-right pr-4' : 'text-left pl-4'}`}>
+                      <div className="journey-card bg-card p-3 sm:p-4 rounded-lg sm:rounded-xl border border-border shadow-lg hover:border-neon-purple transition-colors">
+                        <div className="text-base sm:text-lg font-cyber font-bold text-neon-purple mb-1">
+                          {item.year}
+                        </div>
+                        <h4 className="text-sm sm:text-base font-cyber font-bold text-foreground mb-1 leading-tight">
+                          {item.title}
+                        </h4>
+                        <p className="text-xs sm:text-sm text-neon-purple font-cyber font-semibold mb-1">
+                          {item.company}
+                        </p>
+                        <p className="text-muted-foreground font-cyber text-xs">
+                          {item.description}
+                        </p>
                       </div>
-                      <h4 className="text-base font-cyber font-bold text-foreground mb-1">
-                        {item.title}
-                      </h4>
-                      <p className="text-neon-purple font-cyber font-semibold mb-1">
-                        {item.company}
-                      </p>
-                      <p className="text-muted-foreground font-cyber text-xs">
-                        {item.description}
-                      </p>
                     </div>
-                  </div>
+                  )}
 
-                  <div className="w-2/12 flex justify-center">
-                    <div className="journey-dot w-6 h-6 bg-neon-purple rounded-full shadow-neon-purple border-4 border-background"></div>
-                  </div>
+                  {/* Timeline Node - positioned on the progress bar */}
+                  {!isMobile && (
+                    <div className="w-2/12 flex justify-center">
+                      <div className="journey-dot w-5 h-5 sm:w-6 sm:h-6 bg-neon-purple rounded-full shadow-neon-purple border-4 border-background"></div>
+                    </div>
+                  )}
 
-                  <div className="w-5/12"></div>
+                  {isMobile ? (
+                    <div className="w-full">
+                      <div className="journey-card bg-card p-3 sm:p-4 rounded-lg sm:rounded-xl border border-border shadow-lg hover:border-neon-purple transition-colors">
+                        <div className="text-base sm:text-lg font-cyber font-bold text-neon-purple mb-1">
+                          {item.year}
+                        </div>
+                        <h4 className="text-sm sm:text-base font-cyber font-bold text-foreground mb-1 leading-tight">
+                          {item.title}
+                        </h4>
+                        <p className="text-xs sm:text-sm text-neon-purple font-cyber font-semibold mb-1">
+                          {item.company}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-5/12"></div>
+                  )}
                 </div>
               ))}
             </div>
