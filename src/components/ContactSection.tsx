@@ -33,7 +33,9 @@ const techCategoryIds = ["web-dev", "backend", "ai-ml", "integration", "devops"]
 const techCategories = skillCategories.filter((category) => techCategoryIds.includes(category.id));
 const defaultTechCategoryId = techCategories[0]?.id ?? "";
 const TECH_MARKER = "\n\nPreferred Tech Stack:";
-const CONTACT_ENDPOINT = import.meta.env.VITE_CONTACT_ENDPOINT ?? "/api/contact";
+const CONTACT_ENDPOINT =
+  (import.meta as ImportMeta & { env?: { VITE_CONTACT_ENDPOINT?: string } }).env
+    ?.VITE_CONTACT_ENDPOINT ?? "/api/contact";
 
 const getColorClasses = (color: string) => {
   switch (color) {
@@ -589,9 +591,9 @@ const ContactSection = () => {
                   <AnimatePresence>
                     {(!isMobile || isTechSectionOpen) && (
                       <motion.div
-                        initial={isMobile ? { height: 0, opacity: 0 } : false}
-                        animate={isMobile ? { height: "auto", opacity: 1 } : false}
-                        exit={isMobile ? { height: 0, opacity: 0 } : false}
+                        initial={isMobile ? { height: 0, opacity: 0 } : undefined}
+                        animate={isMobile ? { height: "auto", opacity: 1 } : undefined}
+                        exit={isMobile ? { height: 0, opacity: 0 } : undefined}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         className={isMobile ? "overflow-hidden" : ""}
                       >
