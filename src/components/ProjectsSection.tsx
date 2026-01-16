@@ -7,6 +7,7 @@ import ParticleBackground from "./ParticleBackground";
 import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
 import TextReveal from "./TextReveal";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { fetchProjectsFromGoogleSheet, type ProjectFromSheet } from "@/api/googleSheets";
 
 type Project = {
   title: string;
@@ -287,6 +288,8 @@ const PROJECTS: Project[] = [
 const ProjectsSection = () => {
   const isMobile = useIsMobile();
   const [isGridView, setIsGridView] = useState(false);
+  const [projects, setProjects] = useState<Project[]>(PROJECTS);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
       align: "center",
@@ -301,6 +304,47 @@ const ProjectsSection = () => {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [filterPulse, setFilterPulse] = useState(0);
   const [isFiltering, setIsFiltering] = useState(false);
+
+  // Load projects from Google Sheets on mount (if configured)
+  useEffect(() => {
+    const loadProjectsFromSheet = async () => {
+      // Check if Google Sheets URL is configured
+      const sheetUrl = (import.meta as ImportMeta & { env?: { VITE_GOOGLE_SHEETS_PROJECTS_URL?: string } }).env?.VITE_GOOGLE_SHEETS_PROJECTS_URL;
+      if (!sheetUrl) {
+        // No Google Sheets URL configured, use hardcoded projects
+        return;
+      }
+
+      setIsLoadingProjects(true);
+      try {
+        const sheetProjects = await fetchProjectsFromGoogleSheet(sheetUrl);
+        if (sheetProjects && sheetProjects.length > 0) {
+          // Convert ProjectFromSheet to Project format
+          const convertedProjects: Project[] = sheetProjects.map((p) => ({
+            title: p.title,
+            description: p.description,
+            tech: p.tech,
+            category: p.category,
+            color: p.color,
+            github: p.github,
+            live: p.live,
+            features: p.features,
+          }));
+          setProjects(convertedProjects);
+          console.log(`[ProjectsSection] Loaded ${convertedProjects.length} projects from Google Sheets`);
+        } else {
+          console.warn('[ProjectsSection] No projects found in Google Sheet, using hardcoded projects');
+        }
+      } catch (error) {
+        console.error('[ProjectsSection] Failed to load projects from Google Sheet:', error);
+        // Fallback to hardcoded projects on error
+      } finally {
+        setIsLoadingProjects(false);
+      }
+    };
+
+    loadProjectsFromSheet();
+  }, []);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -329,14 +373,14 @@ const ProjectsSection = () => {
   
   
   const categories = useMemo(() => {
-    const uniqueCategories = Array.from(new Set(PROJECTS.map((project) => project.category)));
+    const uniqueCategories = Array.from(new Set(projects.map((project) => project.category)));
     return ["All", ...uniqueCategories];
-  }, []);
+  }, [projects]);
 
   const filteredProjects = useMemo(() => {
-    if (activeCategory === "All") return PROJECTS;
-    return PROJECTS.filter((project) => project.category === activeCategory);
-  }, [activeCategory]);
+    if (activeCategory === "All") return projects;
+    return projects.filter((project) => project.category === activeCategory);
+  }, [activeCategory, projects]);
 
   const handleCategoryChange = useCallback((category: string) => {
     if (category === activeCategory) return;

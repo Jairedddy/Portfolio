@@ -133,9 +133,11 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({
 
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - RECENT_CONTRIBUTION_DAYS);
+    cutoff.setHours(0, 0, 0, 0);
 
     let days = stats.contributions.filter((entry) => {
       const entryDate = new Date(entry.date);
+      entryDate.setHours(0, 0, 0, 0);
       return entryDate >= cutoff;
     });
 
@@ -143,15 +145,24 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({
       days = stats.contributions.slice(-RECENT_CONTRIBUTION_DAYS);
     }
 
+    // Sort days by date to ensure proper order
+    days.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    // Group into weeks (7 days per week)
     const weeks: ContributionDay[][] = [];
     const monthEntries: Array<[number, string]> = [];
     let previousMonth = "";
 
     for (let i = 0; i < days.length; i += 7) {
       const week = days.slice(i, i + 7);
-      weeks.push(week);
-      if (week.length) {
-        const monthLabel = monthFormatter.format(new Date(week[0].date));
+      if (week.length > 0) {
+        weeks.push(week);
+        
+        // Get the month of the first day in the week
+        const firstDayDate = new Date(week[0].date);
+        const monthLabel = monthFormatter.format(firstDayDate);
+        
+        // Add month label when it changes
         if (monthLabel !== previousMonth) {
           monthEntries.push([weeks.length - 1, monthLabel]);
           previousMonth = monthLabel;

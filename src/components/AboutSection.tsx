@@ -241,15 +241,11 @@ const AboutSection = () => {
               {!isMobile && (
                 <div className="space-y-2.5 sm:space-y-3 text-muted-foreground font-rajdhani text-sm sm:text-base leading-relaxed">
                   <p>
-                  I'm a full-stack developer with a passion for creating immersive digital experiences that push the boundaries of what's possible on the web. With immense experience, I specialize in modern JavaScript Frameworks, Creative Coding, and Performance Optimization and Aesthetic Website Design.
+                  I'm a full-stack developer with a passion for creating immersive digital experiences that push the boundaries of what's possible on the web.
                   </p>
                   
                   <p>
                   My journey in tech started with a curiosity about how things work under the hood. Today, I combine technical expertise with creative vision to build applications that are not just functional, but truly engaging and memorable.
-                  </p>
-                  
-                  <p>
-                  When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, binge-watching movies, listening to music on blast volumes, playing some sport, or just staring out the window.
                   </p>
                 </div>
               )}
