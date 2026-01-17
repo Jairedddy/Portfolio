@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import type { CSSProperties, MouseEvent } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { ExternalLink, Github, ChevronLeft, ChevronRight, Grid3x3, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -54,50 +53,6 @@ const gridItemVariants = {
   },
 };
 
-// Lightweight tilt controller that maps pointer position to 3D transforms.
-const useTiltCard = (enabled: boolean) => {
-  const baseStyle = useMemo<CSSProperties>(() => ({
-    transform: "perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)",
-    boxShadow: "0 25px 55px rgba(8, 17, 41, 0.45)",
-  }), []);
-
-  const [style, setStyle] = useState<CSSProperties>(baseStyle);
-
-  const handleMouseMove = useCallback((event: MouseEvent<HTMLDivElement>) => {
-    if (!enabled) return;
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = ((y - centerY) / centerY) * -10;
-    const rotateY = ((x - centerX) / centerX) * 10;
-    const shadowOffsetX = rotateY * -2.5;
-    const shadowOffsetY = rotateX * -3;
-
-    setStyle({
-      transform: `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`,
-      boxShadow: `${shadowOffsetX}px ${shadowOffsetY}px 45px rgba(3, 7, 18, 0.55), 0 15px 35px rgba(79, 209, 197, 0.2)`,
-    });
-  }, [enabled]);
-
-  const handleMouseLeave = useCallback(() => {
-    if (!enabled) return;
-    setStyle(baseStyle);
-  }, [enabled, baseStyle]);
-
-  useEffect(() => {
-    if (!enabled) {
-      setStyle(baseStyle);
-    }
-  }, [enabled, baseStyle]);
-
-  return {
-    tiltStyle: enabled ? style : baseStyle,
-    handleMouseMove: enabled ? handleMouseMove : undefined,
-    handleMouseLeave: enabled ? handleMouseLeave : undefined,
-  };
-};
 
 type ProjectCardProps = {
   project: Project;
@@ -107,33 +62,22 @@ type ProjectCardProps = {
 };
 
 const ProjectCard = ({ project, colors, isInteractive, className = "" }: ProjectCardProps) => {
-  const { tiltStyle, handleMouseMove, handleMouseLeave } = useTiltCard(isInteractive);
   const isMobile = useIsMobile();
 
   return (
-    <div className={className} style={{ perspective: "1200px" }}>
+    <div className={className}>
       <div
-        className={`bg-card rounded-lg border border-border shadow-lg hover:${colors.border} transition-all duration-300 group h-full`}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          transformStyle: "preserve-3d",
-          transition: "transform 0.15s ease-out, box-shadow 0.25s ease-out",
-          ...tiltStyle,
-        }}
+        className={`bg-card rounded-lg border border-border shadow-lg hover:${colors.border} transition-all duration-300 group h-full hover:shadow-xl`}
       >
         <div className={`p-4 sm:p-6 ${isMobile ? 'space-y-3' : 'space-y-4'}`}>
           <div
             className={`inline-block px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[0.65rem] sm:text-xs font-cyber ${colors.text} bg-surface-darker/50 border ${colors.border} mb-1.5 sm:mb-2`}
-            style={{ transform: "translateZ(30px)" }}
           >
             {project.category}
           </div>
 
           <h3
             className={`text-lg sm:text-xl font-bold ${colors.glow} mb-1.5 sm:mb-2 group-hover:scale-105 transition-transform leading-tight`}
-            style={{ transform: "translateZ(45px)" }}
           >
             {project.title}
           </h3>
@@ -141,13 +85,12 @@ const ProjectCard = ({ project, colors, isInteractive, className = "" }: Project
           {!isMobile && (
             <p
               className="text-muted-foreground text-sm leading-relaxed mb-3"
-              style={{ transform: "translateZ(20px)" }}
             >
               {project.description}
             </p>
           )}
 
-          <div className={`flex flex-wrap gap-1.5 sm:gap-2 ${isMobile ? 'mb-3' : 'mb-4'}`} style={{ transform: "translateZ(35px)" }}>
+          <div className={`flex flex-wrap gap-1.5 sm:gap-2 ${isMobile ? 'mb-3' : 'mb-4'}`}>
             {project.tech.map((tech) => (
               <span
                 key={tech}
@@ -158,7 +101,7 @@ const ProjectCard = ({ project, colors, isInteractive, className = "" }: Project
             ))}
           </div>
 
-          <div className="flex gap-2 sm:gap-3" style={{ transform: "translateZ(45px)" }}>
+          <div className="flex gap-2 sm:gap-3">
             <Button
               size={isMobile ? "sm" : "sm"}
               variant="outline"
