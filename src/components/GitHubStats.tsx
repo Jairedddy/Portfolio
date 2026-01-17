@@ -156,7 +156,7 @@ const GitHubStats: React.FC<GitHubStatsProps> = ({
     for (let i = 0; i < days.length; i += 7) {
       const week = days.slice(i, i + 7);
       if (week.length > 0) {
-        weeks.push(week);
+      weeks.push(week);
         
         // Get the month of the first day in the week
         const firstDayDate = new Date(week[0].date);

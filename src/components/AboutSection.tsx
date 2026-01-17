@@ -43,36 +43,52 @@ const AboutSection = () => {
   );
 
   // Timeline data
+  // Enhanced structure with optional fields:
+  // - location: string (e.g., "Hyderabad, India", "Remote")
+  // - achievements: string[] (key achievements or highlights)
+  // - technologies: string[] (technologies used or learned)
+  // - type: string (optional: "work", "education", "achievement", "freelance", "project")
   const timeline: Array<{
     year: string;
     title: string;
     company: string;
-    description?: string;
+    location?: string;
+    type?: string;
   }> = [
     {
-      year: "2024",
-      title: "Associate Data Scientist, Full Stack Developer, Prompt Engineer and GenAI Expert",
-      company: "Straive Pvt.Ltd",
-    },
-    {
-      year: "2024",
-      title: "Associate Data Scientist, Full Stack Developer, Prompt Engineer and GenAI Expert",
-      company: "Gramener Technology Solutions Pvt.Ltd",
-    },
-    {
-      year: "2024",
-      title: "Full Stack Developer and Prompt Engineer",
-      company: "Freelance",
-    },
-    {
-      year: "2024",
-      title: "Full Stack Developer",
-      company: "Freelance",
-    },
-    {
-      year: "2024",
-      title: "Information Technology Graduate",
+      year: "2019-2024",
+      title: "Bachelor of Technology in Information Technology",
       company: "Vellore Institute of Technology",
+      location: "Vellore, India",
+      type: "education",
+    },
+    {
+      year: "2020 - 2022",
+      title: "Junior Full Stack Developer",
+      company: "Freelance",
+      location: "Remote",
+      type: "freelance",
+    },
+    {
+      year: "2020 - 2022",
+      title: "Open Source Contributor",
+      company: "GitHub Community",
+      location: "Global",
+      type: "achievement",
+    },
+    {
+      year: "2022 - 2024",
+      title: "Full Stack Developer & Prompt Engineer",
+      company: "Freelance",
+      location: "Remote",
+      type: "freelance",
+    },
+    {
+      year: "August 2024 - Present",
+      title: "Associate Data Scientist & GenAI Expert",
+      company: "Straive Pvt.Ltd",
+      location: "Hyderabad, India",
+      type: "work",
     }
   ];
 
@@ -364,7 +380,7 @@ const AboutSection = () => {
             </div>
             
             <div className={`space-y-6 sm:space-y-8 ${isMobile ? 'pl-8' : ''}`}>
-              {timeline.map((item, index) => (
+              {timeline.slice().reverse().map((item, index) => (
                 <div
                   key={`${item.year}-${item.company}-${index}`}
                   className={`journey-row flex items-center relative ${isMobile ? 'flex-row' : index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
@@ -381,9 +397,9 @@ const AboutSection = () => {
                         <p className="text-xs sm:text-sm text-neon-purple font-cyber font-semibold mb-1">
                           {item.company}
                         </p>
-                        {item.description && (
-                          <p className="text-muted-foreground font-cyber text-xs">
-                            {item.description}
+                        {item.location && (
+                          <p className="text-[0.65rem] sm:text-xs text-muted-foreground font-cyber mb-1.5">
+                            📍 {item.location}
                           </p>
                         )}
                       </div>
@@ -409,6 +425,11 @@ const AboutSection = () => {
                         <p className="text-xs sm:text-sm text-neon-purple font-cyber font-semibold mb-1">
                           {item.company}
                         </p>
+                        {item.location && (
+                          <p className="text-[0.65rem] sm:text-xs text-muted-foreground font-cyber mb-1.5">
+                            📍 {item.location}
+                          </p>
+                        )}
                       </div>
                     </div>
                   ) : (
