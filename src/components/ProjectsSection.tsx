@@ -7,7 +7,7 @@ import ParticleBackground from "./ParticleBackground";
 import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
 import TextReveal from "./TextReveal";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { fetchProjectsFromGoogleSheet, type ProjectFromSheet } from "@/api/googleSheets";
+import { fetchProjectsFromGoogleSheetsAPI, type ProjectFromSheet } from "@/api/googleSheets";
 
 type Project = {
   title: string;
@@ -17,7 +17,6 @@ type Project = {
   color: string;
   github: string;
   live?: string;
-  features: string[];
 };
 
 type ColorClasses = {
@@ -141,25 +140,12 @@ const ProjectCard = ({ project, colors, isInteractive, className = "" }: Project
 
           {!isMobile && (
             <p
-              className="text-muted-foreground text-sm leading-relaxed"
+              className="text-muted-foreground text-sm leading-relaxed mb-3"
               style={{ transform: "translateZ(20px)" }}
             >
               {project.description}
             </p>
           )}
-
-          <div className={`${isMobile ? 'mb-1.5' : 'mb-2'}`} style={{ transform: "translateZ(30px)" }}>
-            <div className="flex flex-wrap gap-1.5 sm:gap-2">
-              {project.features.map((feature) => (
-                <span
-                  key={feature}
-                  className="text-[0.65rem] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 bg-muted rounded text-muted-foreground"
-                >
-                  {feature}
-                </span>
-              ))}
-            </div>
-          </div>
 
           <div className={`flex flex-wrap gap-1.5 sm:gap-2 ${isMobile ? 'mb-3' : 'mb-4'}`} style={{ transform: "translateZ(35px)" }}>
             {project.tech.map((tech) => (
@@ -203,92 +189,15 @@ const ProjectCard = ({ project, colors, isInteractive, className = "" }: Project
   );
 };
 
-const PROJECTS: Project[] = [
-  {
-    title: "Photography Portfolio",
-    description: "A modern, minimalist photography portfolio application built with React, TypeScript and Vite. Features a dual-theme system (Monochrome/Vibrant), smooth animations, and a fully functional contact form with email integration.",
-    tech: ["React", "Vite", "TypeScript", "Tailwind CSS", "Lucide React", "GSAP", "Lenis", "Nodemailer", "Vercel"],
-    category: "Web Development",
-    color: "purple",
-    github: "https://github.com/Jairedddy/Photography-Portfolio",
-    live: "https://jaireddyphotography.vercel.app/",
-    features: ["React", "Vite", "Tailwind CSS", "TypeScript", "Lucide React", "GSAP", "Lenis", "Nodemailer", "Vercel"]
-  },
-  {
-    title: "Noir Ink Tattoo Studio",
-    description: "A sophisticated, monochrome tattoo studio and supply store featuring AI-powered design generation, comprehensive booking system, and educational resources.",
-    tech: ["React", "TypeScript", "Vite", "Tailwind CSS", "Lucide React", "Pollinations.ai"],
-    category: "Web Development",
-    color: "green",
-    github: "https://github.com/Jairedddy/Noir-Ink-Tattoo-Studio",
-    live: "https://noir-ink.netlify.app/",
-    features: ["Model compression", "Hardware optimization", "Cross-platform"]
-  },
-  {
-    title: "Golden Barell Brewery",
-    description: "Golden Barrel’'?Ts modern, responsive brewery website built with React and TypeScript. It features rich content sections, production’'?`ready animations, and polished UI components tailored for a premium brewery brand.",
-    tech: ["React", "Vite", "Tailwind CSS", "Radix", "TanStack Query", "Lucide React"],
-    category: "Web Development",
-    color: "cyan",
-    github: "https://github.com/Jairedddy/Golden-Barell-Brewery",
-    live: "https://goldenbarell.netlify.app/",
-    features: ["React", "Vite", "Tailwind CSS", "Radix", "TanStack Query", "Lucide React"]
-  },
-  {
-    title: "Obsidian Eye",
-    description: "Dystopian surveillance simulator that lets operators aythor cinematic reconnaissance prompts, trigger AI-generated 'drone' captures, adn explore the world state throuh interactive lore. The experene mixed a control-roomm UI, batch scan tooling, HUD overlays and persistent operatore settings to mumic an active roecon terminal.",
-    tech: ["React", "Tailwind CSS", "lucide-react", "JSON and JS", "JSZip", "Pollinations.ai"],
-    category: "Imaginative AI",
-    color: "green",
-    github: "https://github.com/Jairedddy/Obsidian-Eye",
-    live: "https://obsidian-eye.netlify.app/",
-    features: ["Cyber Punk Theme", "AI-Generated Imagery", "Interactive UI", "Responsive Design", "Lore Exploration", "Operator Tools"]
-  },
-  {
-    title: "Code Nebula",
-    description: "Interactive 3D visualization tool that transforms GitHub repositories into stunning 'galaxy' visualizations. It empowers developers to explore codebases in an immersive, three-dimensional space, facilitating a deeper understanding of code structure, dependencies, and inter-file relationships.",
-    tech: ["React", "Vite", "Three.js", "D3-Force-3D", "Radix UI", "TanStack Query", "React Router", "Supabase", "Github API", "OpenAI API"],
-    category: "Web Development",
-    color: "purple",
-    github: "https://github.com/Jairedddy/CodeNebula",
-    live: "https://codenebulaa.netlify.app/",
-    features: ["Cyber Punk Theme", "3D Visualization", "Interactive UI", "Responsive Design", "AI Integration", "Repository Insights"]
-  },
-  {
-    title: "Spotify Dash-Bored",
-    description: "A comprehensive, interactive dashboard for visualizing your Spotify listening data with beautiful, data-driven insights and analytics.",
-    tech: ["Javascript", "React", "Tailwind CSS", "Spotify API"],
-    category: "Web Development",
-    color: "green",
-    github: "https://github.com/Jairedddy/Spotify-Dashboard",
-    live: "https://spotify-dashbored.netlify.app/",
-    features: ["Spotify API", "Data Visualization", "Responsive Design"]
-  },
-  {
-    title: "Amul Scraper",
-    description: "A sophisticated automation tool designed to monitor product availability on the official Amul e-commerce platform (shop.amul.com). This solution eliminates the need for manual, repetitive stock checks by automating the entire process through intelligent browser automation.",
-    tech: ["Python", "Selenium WebDriver", "Selenium Manager", "JSON", "ChromeDriver", "EdgeDriver", "FirefoxDriver"],
-    category: "Automation",
-    color: "cyan",
-    github: "https://github.com/Jairedddy/Amul-Scraper",
-    features: ["Multi-Browser Support", "Automatic Driver Management", "Product Management", "Intelligent Stock Detection", "Comprehensive Reporting", "Robust Error Handling"]
-  },
-  {
-    title: "Instagram Follower Tracker",
-    description: "Asophisticated automation tool designed to analyze your Instagram account and identify which accounts you follow that don't follow you back. This solution eliminates the need for manual checking by automating the entire process through intelligent browser automation.",
-    tech: ["Python", "Selenium WebDriver", "Selenium Manager", "ChromeDriver", "EdgeDriver", "FirefoxDriver", ],
-    category: "Automation",
-    color: "purple",
-    github: "https://github.com/Jairedddy/Instagram-Follower-Tracker",
-    features: ["Secure Login", "Real-Time Input Detection", "Smart Extraction Algorithm", "Intelligent Error Handling", "Performance Optimization", "Multi-Browser Support"]
-  }
-];
+// Projects are now loaded from Google Sheets via API
+// Fallback empty array - will be populated from Google Sheets or remain empty if API fails
+const PROJECTS: Project[] = [];
 
 // Projects Section with Interactive Cards
 const ProjectsSection = () => {
   const isMobile = useIsMobile();
   const [isGridView, setIsGridView] = useState(false);
-  const [projects, setProjects] = useState<Project[]>(PROJECTS);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
@@ -308,16 +217,18 @@ const ProjectsSection = () => {
   // Load projects from Google Sheets on mount (if configured)
   useEffect(() => {
     const loadProjectsFromSheet = async () => {
-      // Check if Google Sheets URL is configured
-      const sheetUrl = (import.meta as ImportMeta & { env?: { VITE_GOOGLE_SHEETS_PROJECTS_URL?: string } }).env?.VITE_GOOGLE_SHEETS_PROJECTS_URL;
-      if (!sheetUrl) {
-        // No Google Sheets URL configured, use hardcoded projects
+      // Check if Google Sheets API credentials are configured
+      const apiKey = (import.meta as ImportMeta & { env?: { VITE_GOOGLE_SHEETS_API?: string } }).env?.VITE_GOOGLE_SHEETS_API;
+      const sheetId = (import.meta as ImportMeta & { env?: { VITE_GOOGLE_SHEETS_ID?: string } }).env?.VITE_GOOGLE_SHEETS_ID;
+      
+      if (!apiKey || !sheetId) {
+        // No Google Sheets API credentials configured, use hardcoded projects
         return;
       }
 
       setIsLoadingProjects(true);
       try {
-        const sheetProjects = await fetchProjectsFromGoogleSheet(sheetUrl);
+        const sheetProjects = await fetchProjectsFromGoogleSheetsAPI(sheetId, apiKey);
         if (sheetProjects && sheetProjects.length > 0) {
           // Convert ProjectFromSheet to Project format
           const convertedProjects: Project[] = sheetProjects.map((p) => ({
@@ -328,15 +239,14 @@ const ProjectsSection = () => {
             color: p.color,
             github: p.github,
             live: p.live,
-            features: p.features,
           }));
           setProjects(convertedProjects);
-          console.log(`[ProjectsSection] Loaded ${convertedProjects.length} projects from Google Sheets`);
+          console.log(`[ProjectsSection] Loaded ${convertedProjects.length} projects from Google Sheets API`);
         } else {
           console.warn('[ProjectsSection] No projects found in Google Sheet, using hardcoded projects');
         }
       } catch (error) {
-        console.error('[ProjectsSection] Failed to load projects from Google Sheet:', error);
+        console.error('[ProjectsSection] Failed to load projects from Google Sheets API:', error);
         // Fallback to hardcoded projects on error
       } finally {
         setIsLoadingProjects(false);

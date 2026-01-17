@@ -12,7 +12,6 @@
  *    - color (string: "purple", "green", "cyan", "orange", "pink", "red")
  *    - github (string: URL)
  *    - live (string: URL, optional - leave empty if no live demo)
- *    - features (comma-separated string, e.g., "Feature 1,Feature 2")
  * 
  * 2. Publish the sheet to the web:
  *    - File > Share > Publish to web
@@ -44,7 +43,6 @@ export interface ProjectFromSheet {
   color: string;
   github: string;
   live?: string;
-  features: string[];
 }
 
 const parseCSV = (csvText: string): string[][] => {
@@ -123,7 +121,6 @@ const parseProjectsFromCSV = (csvText: string): ProjectFromSheet[] => {
         color: row[4]?.trim() || 'cyan',
         github: row[5]?.trim() || '',
         live: row[6]?.trim() || undefined,
-        features: row[7]?.split(',').map(f => f.trim()).filter(Boolean) || [],
       };
 
       // Validate required fields
@@ -186,7 +183,7 @@ export const fetchProjectsFromGoogleSheet = async (
 export const fetchProjectsFromGoogleSheetsAPI = async (
   sheetId: string,
   apiKey: string,
-  range: string = 'Sheet1!A2:H1000' // Skip header row
+  range: string = 'Sheet1!A2:G1000' // Skip header row
 ): Promise<ProjectFromSheet[] | null> => {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
 
@@ -214,7 +211,6 @@ export const fetchProjectsFromGoogleSheetsAPI = async (
           color: row[4]?.trim() || 'cyan',
           github: row[5]?.trim() || '',
           live: row[6]?.trim() || undefined,
-          features: row[7]?.split(',').map((f: string) => f.trim()).filter(Boolean) || [],
         };
 
         if (project.title && project.github) {
