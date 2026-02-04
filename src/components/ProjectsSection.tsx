@@ -6,7 +6,7 @@ import ParticleBackground from "./ParticleBackground";
 import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
 import TextReveal from "./TextReveal";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { fetchProjectsFromGoogleSheetsAPI, type ProjectFromSheet } from "@/api/googleSheets";
+import { fetchProjectsFromGoogleSheetsAPI, fetchProjectsFromGoogleSheet, type ProjectFromSheet } from "@/api/googleSheets";
 
 type Project = {
   title: string;
@@ -160,40 +160,64 @@ const ProjectsSection = () => {
   // Load projects from Google Sheets on mount (if configured)
   useEffect(() => {
     const loadProjectsFromSheet = async () => {
-      // Check if Google Sheets API credentials are configured
+      setIsLoadingProjects(true);
+      
+      // Try CSV approach first (more reliable, no API key needed)
+      const csvUrl = (import.meta as ImportMeta & { env?: { VITE_GOOGLE_SHEETS_PROJECTS_URL?: string } }).env?.VITE_GOOGLE_SHEETS_PROJECTS_URL;
+      
+      if (csvUrl) {
+        try {
+          const csvProjects = await fetchProjectsFromGoogleSheet(csvUrl);
+          if (csvProjects && csvProjects.length > 0) {
+            const convertedProjects: Project[] = csvProjects.map((p) => ({
+              title: p.title,
+              description: p.description,
+              tech: p.tech,
+              category: p.category,
+              color: p.color,
+              github: p.github,
+              live: p.live,
+            }));
+            setProjects(convertedProjects);
+            console.log(`[ProjectsSection] Loaded ${convertedProjects.length} projects from Google Sheets CSV`);
+            setIsLoadingProjects(false);
+            return;
+          }
+        } catch (error) {
+          console.warn('[ProjectsSection] CSV fetch failed, trying API fallback:', error);
+        }
+      }
+
+      // Fallback to API approach if CSV fails or not configured
       const apiKey = (import.meta as ImportMeta & { env?: { VITE_GOOGLE_SHEETS_API?: string } }).env?.VITE_GOOGLE_SHEETS_API;
       const sheetId = (import.meta as ImportMeta & { env?: { VITE_GOOGLE_SHEETS_ID?: string } }).env?.VITE_GOOGLE_SHEETS_ID;
       
-      if (!apiKey || !sheetId) {
-        // No Google Sheets API credentials configured, use hardcoded projects
-        return;
-      }
-
-      setIsLoadingProjects(true);
-      try {
-        const sheetProjects = await fetchProjectsFromGoogleSheetsAPI(sheetId, apiKey);
-        if (sheetProjects && sheetProjects.length > 0) {
-          // Convert ProjectFromSheet to Project format
-          const convertedProjects: Project[] = sheetProjects.map((p) => ({
-            title: p.title,
-            description: p.description,
-            tech: p.tech,
-            category: p.category,
-            color: p.color,
-            github: p.github,
-            live: p.live,
-          }));
-          setProjects(convertedProjects);
-          console.log(`[ProjectsSection] Loaded ${convertedProjects.length} projects from Google Sheets API`);
-        } else {
-          console.warn('[ProjectsSection] No projects found in Google Sheet, using hardcoded projects');
+      if (apiKey && sheetId) {
+        try {
+          const sheetProjects = await fetchProjectsFromGoogleSheetsAPI(sheetId, apiKey);
+          if (sheetProjects && sheetProjects.length > 0) {
+            const convertedProjects: Project[] = sheetProjects.map((p) => ({
+              title: p.title,
+              description: p.description,
+              tech: p.tech,
+              category: p.category,
+              color: p.color,
+              github: p.github,
+              live: p.live,
+            }));
+            setProjects(convertedProjects);
+            console.log(`[ProjectsSection] Loaded ${convertedProjects.length} projects from Google Sheets API`);
+          } else {
+            console.warn('[ProjectsSection] No projects found in Google Sheet');
+          }
+        } catch (error) {
+          console.error('[ProjectsSection] Failed to load projects from Google Sheets API:', error);
         }
-      } catch (error) {
-        console.error('[ProjectsSection] Failed to load projects from Google Sheets API:', error);
-        // Fallback to hardcoded projects on error
-      } finally {
-        setIsLoadingProjects(false);
+      } else {
+        console.warn('[ProjectsSection] No Google Sheets configuration found (neither CSV URL nor API credentials)');
       }
+      
+      setIsLoadingProjects(false);
     };
 
     loadProjectsFromSheet();
