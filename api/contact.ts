@@ -9,6 +9,9 @@ const defaultOrigins = [
   "http://127.0.0.1:5173",
   "http://[::1]:5173",
   "http://localhost:3000",
+  "https://jairedddy.in",
+  "https://www.jairedddy.in",
+  "https://jairedddy.vercel.app",
 ];
 
 const normalizeOrigin = (value = "") => value.replace(/\/+$/, "");
