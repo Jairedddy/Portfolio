@@ -132,9 +132,99 @@ const ProjectCard = ({ project, colors, isInteractive, className = "" }: Project
   );
 };
 
-// Projects are now loaded from Google Sheets via API
-// Fallback empty array - will be populated from Google Sheets or remain empty if API fails
-const PROJECTS: Project[] = [];
+// Hardcoded fallback projects - used if Google Sheets fails
+const FALLBACK_PROJECTS: Project[] = [
+  {
+    title: "Photography Portfolio",
+    description: "Modern photography portfolio with dual-theme system, smooth animations, and contact form integration.",
+    tech: ["React", "Vite", "Typescript", "Tailwind CSS", "Lucide-React", "GSAP", "Lenis", "Nodemailer", "Vercel"],
+    category: "Web Development",
+    color: "purple",
+    github: "https://github.com/Jairedddy/Photography-Portfolio",
+    live: "https://jaireddyphotography.vercel.app/",
+  },
+  {
+    title: "Noir Ink Tattoo Studio",
+    description: "Monochrome tattoo studio platform with AI-powered design generation and booking system.",
+    tech: ["React", "Vite", "Typescript", "Tailwind CSS", "Lucide-React", "Pollinations.ai"],
+    category: "Web Development",
+    color: "green",
+    github: "https://github.com/Jairedddy/Noir-Ink-Tattoo-Studio",
+    live: "https://noir-ink.netlify.app/",
+  },
+  {
+    title: "Golden Barell Brewery",
+    description: "Premium brewery website showcasing craft beer culture with rich content and responsive design.",
+    tech: ["React", "Vite", "Tailwind CSS", "Radix", "TanStack Query", "Lucide-React"],
+    category: "Web Development",
+    color: "cyan",
+    github: "https://github.com/Jairedddy/Golden-Barell-Brewery",
+    live: "https://goldenbarell.netlify.app/",
+  },
+  {
+    title: "Vastu Interior Designing Studio",
+    description: "A premium interior design studio showcase built with React, TypeScript, and Vite. Features a cinematic dark theme, elegant animations, and a sophisticated project exhibition system tailored for luxury interior design portfolios.",
+    tech: ["React", "Vite", "Tailwind CSS", "Framer Motion", "Leaflet", "Nodemailer", "Vercel"],
+    category: "Web Development",
+    color: "purple",
+    github: "https://github.com/Jairedddy/Vastu-Interior-Designing-Studio",
+    live: "https://vastudesignstudio.vercel.app/",
+  },
+  {
+    title: "Obsidian Eye",
+    description: "Dystopian surveillance simulator with AI-generated drone captures and interactive control-room UI.",
+    tech: ["React", "Tailwind CSS", "Lucide-React", "JSON and JS", "JSZip", "Pollinations.ai"],
+    category: "Imaginative AI",
+    color: "green",
+    github: "https://github.com/Jairedddy/Obsidian-Eye",
+    live: "https://obsidian-eye.netlify.app/",
+  },
+  {
+    title: "Code Nebula",
+    description: "3D visualization tool that transforms GitHub repositories into interactive galaxy visualizations.",
+    tech: ["React", "Vite", "Three.js", "D3-Force-3D", "Radix UI", "TanStack Query", "React Router", "Supabase", "Github API", "OpenAI API"],
+    category: "Visualisation",
+    color: "cyan",
+    github: "https://github.com/Jairedddy/CodeNebula",
+    live: "https://codenebulaa.netlify.app/",
+  },
+  {
+    title: "Spotify Dash-Bored",
+    description: "Interactive dashboard for visualizing Spotify listening data with charts and analytics.",
+    tech: ["Javascript", "React", "Tailwind CSS", "Spotify API"],
+    category: "Visualisation",
+    color: "purple",
+    github: "https://github.com/Jairedddy/Spotify-Dashboard",
+    live: "https://spotify-dashbored.netlify.app/",
+  },
+  {
+    title: "Amul Scraper",
+    description: "Automation tool for monitoring product availability on Amul e-commerce with multi-browser support.",
+    tech: ["Python", "Selenium WebDriver", "Selenium Manager", "ChromDriver", "EdgeDriver", "FirefoxDriver"],
+    category: "Automation",
+    color: "green",
+    github: "https://github.com/Jairedddy/Amul-Scraper",
+    live: undefined,
+  },
+  {
+    title: "Instagram Follower Tracker",
+    description: "Automation tool that identifies accounts you follow that don't follow you back.",
+    tech: ["Python", "Selenium WebDriver", "Selenium Manager", "ChromDriver", "EdgeDriver", "FirefoxDriver"],
+    category: "Bot",
+    color: "cyan",
+    github: "https://github.com/Jairedddy/Instagram-Follower-Tracker",
+    live: undefined,
+  },
+  {
+    title: "ClockIn Automation",
+    description: "Automation tool for automated attendance logging with scheduling intelligence and session management.",
+    tech: ["Python", "Playwright", "Chromium", "Brave", "Google Gmail API", "Telegram Bot API"],
+    category: "Automation",
+    color: "purple",
+    github: "https://github.com/Jairedddy/ClockIn-Automation",
+    live: undefined,
+  },
+];
 
 // Projects Section with Interactive Cards
 const ProjectsSection = () => {
@@ -161,6 +251,7 @@ const ProjectsSection = () => {
   useEffect(() => {
     const loadProjectsFromSheet = async () => {
       setIsLoadingProjects(true);
+      let projectsLoaded = false;
       
       // Try CSV approach first (more reliable, no API key needed)
       const csvUrl = (import.meta as ImportMeta & { env?: { VITE_GOOGLE_SHEETS_PROJECTS_URL?: string } }).env?.VITE_GOOGLE_SHEETS_PROJECTS_URL;
@@ -180,6 +271,7 @@ const ProjectsSection = () => {
             }));
             setProjects(convertedProjects);
             console.log(`[ProjectsSection] Loaded ${convertedProjects.length} projects from Google Sheets CSV`);
+            projectsLoaded = true;
             setIsLoadingProjects(false);
             return;
           }
@@ -189,32 +281,41 @@ const ProjectsSection = () => {
       }
 
       // Fallback to API approach if CSV fails or not configured
-      const apiKey = (import.meta as ImportMeta & { env?: { VITE_GOOGLE_SHEETS_API?: string } }).env?.VITE_GOOGLE_SHEETS_API;
-      const sheetId = (import.meta as ImportMeta & { env?: { VITE_GOOGLE_SHEETS_ID?: string } }).env?.VITE_GOOGLE_SHEETS_ID;
-      
-      if (apiKey && sheetId) {
-        try {
-          const sheetProjects = await fetchProjectsFromGoogleSheetsAPI(sheetId, apiKey);
-          if (sheetProjects && sheetProjects.length > 0) {
-            const convertedProjects: Project[] = sheetProjects.map((p) => ({
-              title: p.title,
-              description: p.description,
-              tech: p.tech,
-              category: p.category,
-              color: p.color,
-              github: p.github,
-              live: p.live,
-            }));
-            setProjects(convertedProjects);
-            console.log(`[ProjectsSection] Loaded ${convertedProjects.length} projects from Google Sheets API`);
-          } else {
-            console.warn('[ProjectsSection] No projects found in Google Sheet');
+      if (!projectsLoaded) {
+        const apiKey = (import.meta as ImportMeta & { env?: { VITE_GOOGLE_SHEETS_API?: string } }).env?.VITE_GOOGLE_SHEETS_API;
+        const sheetId = (import.meta as ImportMeta & { env?: { VITE_GOOGLE_SHEETS_ID?: string } }).env?.VITE_GOOGLE_SHEETS_ID;
+        
+        if (apiKey && sheetId) {
+          try {
+            const sheetProjects = await fetchProjectsFromGoogleSheetsAPI(sheetId, apiKey);
+            if (sheetProjects && sheetProjects.length > 0) {
+              const convertedProjects: Project[] = sheetProjects.map((p) => ({
+                title: p.title,
+                description: p.description,
+                tech: p.tech,
+                category: p.category,
+                color: p.color,
+                github: p.github,
+                live: p.live,
+              }));
+              setProjects(convertedProjects);
+              console.log(`[ProjectsSection] Loaded ${convertedProjects.length} projects from Google Sheets API`);
+              projectsLoaded = true;
+            } else {
+              console.warn('[ProjectsSection] No projects found in Google Sheet');
+            }
+          } catch (error) {
+            console.error('[ProjectsSection] Failed to load projects from Google Sheets API:', error);
           }
-        } catch (error) {
-          console.error('[ProjectsSection] Failed to load projects from Google Sheets API:', error);
+        } else {
+          console.warn('[ProjectsSection] No Google Sheets configuration found (neither CSV URL nor API credentials)');
         }
-      } else {
-        console.warn('[ProjectsSection] No Google Sheets configuration found (neither CSV URL nor API credentials)');
+      }
+      
+      // Final fallback: Use hardcoded projects if all methods failed
+      if (!projectsLoaded) {
+        console.log(`[ProjectsSection] Using hardcoded fallback projects (${FALLBACK_PROJECTS.length} projects)`);
+        setProjects(FALLBACK_PROJECTS);
       }
       
       setIsLoadingProjects(false);
