@@ -1,23 +1,57 @@
 import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
+import { useThemeMode } from '@/hooks/useThemeMode';
 
 interface CyberSceneProps {
   className?: string;
 }
 
 // Cyberpunk Three.js Scene Component
+const CYBER_VIBRANT = {
+  fog: 0x0f0f23,
+  clearColor: 0x0f0f23,
+  ambient: 0x00ffff,
+  light1: 0x00ffff,
+  light2: 0xbd5bff,
+  grid: 0x00ffff,
+  cubeEven: 0x00ffff,
+  cubeOdd: 0xbd5bff,
+  emissiveEven: 0x004444,
+  emissiveOdd: 0x440044,
+  ring: 0x39ff14,
+  ringEmissive: 0x002200,
+};
+
+const CYBER_MONO = {
+  fog: 0x0d0d0d,
+  clearColor: 0x0d0d0d,
+  ambient: 0xd9d9d9,
+  light1: 0xd9d9d9,
+  light2: 0xa6a6a6,
+  grid: 0xd9d9d9,
+  cubeEven: 0xd9d9d9,
+  cubeOdd: 0xa6a6a6,
+  emissiveEven: 0x1a1a1a,
+  emissiveOdd: 0x1a1a1a,
+  ring: 0xb8b8b8,
+  ringEmissive: 0x1a1a1a,
+};
+
 const CyberScene = ({ className = "" }: CyberSceneProps) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene>();
   const rendererRef = useRef<THREE.WebGLRenderer>();
   const animationRef = useRef<number>();
+  const { isMonochrome } = useThemeMode();
 
   useEffect(() => {
     if (!mountRef.current) return;
 
+    const c = isMonochrome ? CYBER_MONO : CYBER_VIBRANT;
+
     // Scene setup
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0x0f0f23, 10, 50);
+    scene.fog = new THREE.Fog(c.fog, 10, 50);
     sceneRef.current = scene;
 
     // Camera setup
@@ -35,26 +69,26 @@ const CyberScene = ({ className = "" }: CyberSceneProps) => {
       alpha: true 
     });
     renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-    renderer.setClearColor(0x0f0f23, 0.1);
+    renderer.setClearColor(c.clearColor, 0.1);
     rendererRef.current = renderer;
     mountRef.current.appendChild(renderer.domElement);
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0x00ffff, 0.3);
+    const ambientLight = new THREE.AmbientLight(c.ambient, 0.3);
     scene.add(ambientLight);
 
-    const pointLight1 = new THREE.PointLight(0x00ffff, 1, 50);
+    const pointLight1 = new THREE.PointLight(c.light1, 1, 50);
     pointLight1.position.set(10, 10, 10);
     scene.add(pointLight1);
 
-    const pointLight2 = new THREE.PointLight(0xbd5bff, 1, 50);
+    const pointLight2 = new THREE.PointLight(c.light2, 1, 50);
     pointLight2.position.set(-10, -10, 10);
     scene.add(pointLight2);
 
     // Cyberpunk Grid Floor
     const gridGeometry = new THREE.PlaneGeometry(40, 40, 20, 20);
     const gridMaterial = new THREE.MeshBasicMaterial({
-      color: 0x00ffff,
+      color: c.grid,
       wireframe: true,
       transparent: true,
       opacity: 0.3
@@ -71,10 +105,10 @@ const CyberScene = ({ className = "" }: CyberSceneProps) => {
     for (let i = 0; i < 8; i++) {
       const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
       const cubeMaterial = new THREE.MeshPhongMaterial({
-        color: i % 2 === 0 ? 0x00ffff : 0xbd5bff,
+        color: i % 2 === 0 ? c.cubeEven : c.cubeOdd,
         transparent: true,
         opacity: 0.8,
-        emissive: i % 2 === 0 ? 0x004444 : 0x440044
+        emissive: i % 2 === 0 ? c.emissiveEven : c.emissiveOdd
       });
       const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
       
@@ -100,10 +134,10 @@ const CyberScene = ({ className = "" }: CyberSceneProps) => {
     for (let i = 0; i < 4; i++) {
       const ringGeometry = new THREE.TorusGeometry(2, 0.1, 8, 100);
       const ringMaterial = new THREE.MeshPhongMaterial({
-        color: 0x39ff14,
+        color: c.ring,
         transparent: true,
         opacity: 0.7,
-        emissive: 0x002200
+        emissive: c.ringEmissive
       });
       const ring = new THREE.Mesh(ringGeometry, ringMaterial);
       
@@ -162,7 +196,7 @@ const CyberScene = ({ className = "" }: CyberSceneProps) => {
       }
       renderer.dispose();
     };
-  }, []);
+  }, [isMonochrome]);
 
   return (
     <div 

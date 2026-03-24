@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-type EasterEggId = "logoOracle" | "viceLegend" | "dragonShadow" | "gothamSignal" | "kryptonEcho";
+type EasterEggId = "logoOracle" | "viceLegend" | "dragonShadow" | "gothamSignal" | "wakandaRise";
 
 type EasterEggEffect = "particles" | "aurora" | "pulse";
 
@@ -18,13 +18,13 @@ interface ActiveEasterEgg extends EasterEggConfig {
 
 type DiscoveryState = Record<EasterEggId, boolean>;
 
-const STORY_ORDER: EasterEggId[] = ["logoOracle", "viceLegend", "dragonShadow", "gothamSignal", "kryptonEcho"];
+const STORY_ORDER: EasterEggId[] = ["logoOracle", "viceLegend", "dragonShadow", "gothamSignal", "wakandaRise"];
 
 const SECRET_WORDS: Partial<Record<EasterEggId, string>> = {
   viceLegend: "vercetti",
   dragonShadow: "tailung",
   gothamSignal: "wayne",
-  kryptonEcho: "krypton",
+  wakandaRise: "wakanda",
 };
 
 const HINTS: Record<EasterEggId, string> = {
@@ -32,10 +32,10 @@ const HINTS: Record<EasterEggId, string> = {
   viceLegend: "Chapter 2 • Vice City dispatch: type Tommy's last name to tune in.",
   dragonShadow: "Chapter 3 • Jade Palace whispers: recall the snow leopard villain.",
   gothamSignal: "Chapter 4 • Gotham signal: type the knight’s surname to light the sky.",
-  kryptonEcho: "Finale • Krypton echo: type the planet Clark calls home.",
+  wakandaRise: "Finale • Vibranium pulse: type the hidden nation T'Challa protects.",
 };
 
-const COMPLETION_HINT = "Saga complete • Vercetti, Tai Lung, Wayne, and Krypton all logged.";
+const COMPLETION_HINT = "Saga complete • Vercetti, Tai Lung, Wayne, and Wakanda all logged.";
 
 const EGG_CONFIG: Record<EasterEggId, EasterEggConfig> = {
   logoOracle: {
@@ -66,11 +66,11 @@ const EGG_CONFIG: Record<EasterEggId, EasterEggConfig> = {
     description: "Typing Wayne charged the skyline spotlight.",
     effect: "particles",
   },
-  kryptonEcho: {
-    id: "kryptonEcho",
-    label: "Finale · Krypton Echo",
-    message: "Krypton hums again. The House of El honors you.",
-    description: "Invoking the lost planet closes the saga with cosmic light.",
+  wakandaRise: {
+    id: "wakandaRise",
+    label: "Finale · Wakanda Forever",
+    message: "The vibranium heart glows. Wakanda opens its borders to you.",
+    description: "Speaking the nation's name sealed the saga with ancestral power.",
     effect: "pulse",
   },
 };
@@ -80,7 +80,7 @@ const INITIAL_DISCOVERY: DiscoveryState = {
   viceLegend: false,
   dragonShadow: false,
   gothamSignal: false,
-  kryptonEcho: false,
+  wakandaRise: false,
 };
 
 export const useEasterEggs = () => {

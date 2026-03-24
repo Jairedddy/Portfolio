@@ -26,7 +26,7 @@ const SkillsSection = () => {
           bg: 'bg-neon-cyan/10',
           progress: 'stroke-neon-cyan',
           progressBg: 'stroke-neon-cyan/20',
-          hoverShadow: 'hover:shadow-[0_0_25px_rgba(79,209,197,0.45)]'
+          hoverShadow: 'hover:shadow-[0_0_25px_hsl(var(--neon-cyan)/0.45)]'
         };
       case 'neon-purple':
         return {
@@ -36,7 +36,7 @@ const SkillsSection = () => {
           bg: 'bg-neon-purple/10',
           progress: 'stroke-neon-purple',
           progressBg: 'stroke-neon-purple/20',
-          hoverShadow: 'hover:shadow-[0_0_25px_rgba(192,132,252,0.45)]'
+          hoverShadow: 'hover:shadow-[0_0_25px_hsl(var(--neon-purple)/0.45)]'
         };
       case 'neon-green':
         return {
@@ -46,7 +46,7 @@ const SkillsSection = () => {
           bg: 'bg-neon-green/10',
           progress: 'stroke-neon-green',
           progressBg: 'stroke-neon-green/20',
-          hoverShadow: 'hover:shadow-[0_0_25px_rgba(163,230,53,0.45)]'
+          hoverShadow: 'hover:shadow-[0_0_25px_hsl(var(--neon-green)/0.45)]'
         };
       case 'neon-orange':
         return {
@@ -56,7 +56,7 @@ const SkillsSection = () => {
           bg: 'bg-orange-400/10',
           progress: 'stroke-orange-400',
           progressBg: 'stroke-orange-400/20',
-          hoverShadow: 'hover:shadow-[0_0_25px_rgba(251,146,60,0.45)]'
+          hoverShadow: 'hover:shadow-[0_0_25px_hsl(var(--neon-cyan)/0.45)]'
         };
       case 'neon-pink':
         return {
@@ -66,7 +66,7 @@ const SkillsSection = () => {
           bg: 'bg-pink-400/10',
           progress: 'stroke-pink-400',
           progressBg: 'stroke-pink-400/20',
-          hoverShadow: 'hover:shadow-[0_0_25px_rgba(244,114,182,0.45)]'
+          hoverShadow: 'hover:shadow-[0_0_25px_hsl(var(--neon-purple)/0.45)]'
         };
       case 'neon-red':
         return {
@@ -76,7 +76,7 @@ const SkillsSection = () => {
           bg: 'bg-red-400/10',
           progress: 'stroke-red-400',
           progressBg: 'stroke-red-400/20',
-          hoverShadow: 'hover:shadow-[0_0_25px_rgba(248,113,113,0.45)]'
+          hoverShadow: 'hover:shadow-[0_0_25px_hsl(var(--neon-purple)/0.45)]'
         };
       case 'neon-yellow':
         return {
@@ -86,7 +86,7 @@ const SkillsSection = () => {
           bg: 'bg-yellow-400/10',
           progress: 'stroke-yellow-400',
           progressBg: 'stroke-yellow-400/20',
-          hoverShadow: 'hover:shadow-[0_0_25px_rgba(250,204,21,0.45)]'
+          hoverShadow: 'hover:shadow-[0_0_25px_hsl(var(--neon-green)/0.45)]'
         };
       default:
         return {
@@ -96,7 +96,7 @@ const SkillsSection = () => {
           bg: 'bg-neon-cyan/10',
           progress: 'stroke-neon-cyan',
           progressBg: 'stroke-neon-cyan/20',
-          hoverShadow: 'hover:shadow-[0_0_25px_rgba(79,209,197,0.45)]'
+          hoverShadow: 'hover:shadow-[0_0_25px_hsl(var(--neon-cyan)/0.45)]'
         };
     }
   };

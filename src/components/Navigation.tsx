@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Menu, X, Github, Linkedin, Mail, Download, Home, User, Code, FolderOpen, MessageCircle } from "lucide-react";
 import { gsap } from "gsap";
+import ThemeToggle from "./ThemeToggle";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -235,7 +236,7 @@ const Navigation = () => {
                 <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
                   <div
                     ref={progressRef}
-                    className="h-full rounded-full bg-gradient-to-r from-neon-purple via-neon-cyan to-neon-green shadow-[0_0_12px_rgba(56,189,248,0.4)]"
+                    className="h-full rounded-full bg-gradient-to-r from-neon-purple via-neon-cyan to-neon-green shadow-[0_0_12px_hsl(var(--neon-cyan)/0.4)]"
                     style={{ width: "0%" }}
                   />
                 </div>
@@ -268,6 +269,11 @@ const Navigation = () => {
                     </motion.span>
                   </motion.a>
                 ))}
+              </div>
+
+              {/* Theme Toggle */}
+              <div className="hidden md:flex">
+                <ThemeToggle activeTheme={currentTheme} />
               </div>
 
               {/* Resume Download Button */}
@@ -314,7 +320,7 @@ const Navigation = () => {
               className="md:hidden bg-surface-dark rounded-lg m-4 border border-neon-purple"
             >
               {/* Social Links in Mobile Menu */}
-              <div className="flex justify-center space-x-4 p-4 border-b border-border">
+              <div className="flex justify-center items-center space-x-4 p-4 border-b border-border">
                 {socialLinks.map(({ icon: Icon, href, label }) => (
                   <motion.a
                     key={label}

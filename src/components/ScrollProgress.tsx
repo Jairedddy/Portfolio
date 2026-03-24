@@ -206,7 +206,7 @@ const ScrollProgress = () => {
       ref={containerRef}
       onPointerDown={handlePointerDown}
       className={`fixed z-[45] pointer-events-auto select-none transition-shadow touch-none ${
-        isDragging ? "cursor-grabbing shadow-[0_0_30px_rgba(139,92,246,0.45)]" : "cursor-grab"
+        isDragging ? "cursor-grabbing shadow-[0_0_30px_hsl(var(--neon-purple)/0.45)]" : "cursor-grab"
       }`}
       style={{ left: position.x, top: position.y }}
     >
@@ -216,7 +216,7 @@ const ScrollProgress = () => {
             <div className="h-2 w-full rounded-full bg-white/10">
               <div
                 ref={progressRef}
-                className="h-2 rounded-full bg-gradient-to-r from-neon-purple via-neon-cyan to-neon-green shadow-[0_0_18px_rgba(56,189,248,0.35)]"
+                className="h-2 rounded-full bg-gradient-to-r from-neon-purple via-neon-cyan to-neon-green shadow-[0_0_18px_hsl(var(--neon-cyan)/0.35)]"
                 style={{ width: "0%" }}
               />
             </div>

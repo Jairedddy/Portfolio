@@ -5,6 +5,7 @@ import { Float, Html, OrbitControls, Sparkles, Stars, useCursor } from "@react-t
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ExternalLink, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useThemeMode } from "@/hooks/useThemeMode";
 import type { Project } from "./ProjectsSection";
 
 type Project3DShowcaseProps = {
@@ -14,16 +15,32 @@ type Project3DShowcaseProps = {
 
 const CARD_RING_RADIUS = 6;
 
-const NeonRing = () => (
+const VIBRANT_3D = {
+  ring: "#38bdf8", grid1: "#38bdf8", grid2: "#0f172a",
+  plate: "#0f172a", emissive: "#38bdf8", wireframe: "#38bdf8",
+  sparkle: "#67e8f9", dirLight1: "#93c5fd", dirLight2: "#22d3ee",
+  bg: "#010313", fog: "#01020b",
+  cardShadow: "rgba(56,189,248,0.35)", radialGlow: "rgba(59,130,246,0.15)",
+};
+
+const MONO_3D = {
+  ring: "#cccccc", grid1: "#cccccc", grid2: "#0a0a0a",
+  plate: "#0a0a0a", emissive: "#cccccc", wireframe: "#cccccc",
+  sparkle: "#d0d0d0", dirLight1: "#d0d0d0", dirLight2: "#b0b0b0",
+  bg: "#050505", fog: "#040404",
+  cardShadow: "rgba(200,200,200,0.25)", radialGlow: "rgba(200,200,200,0.1)",
+};
+
+const NeonRing = ({ color }: { color: string }) => (
   <mesh rotation-x={-Math.PI / 2} position={[0, 0, 0]}>
     <ringGeometry args={[CARD_RING_RADIUS - 0.2, CARD_RING_RADIUS + 0.2, 128]} />
-    <meshBasicMaterial color="#38bdf8" opacity={0.25} transparent />
+    <meshBasicMaterial color={color} opacity={0.25} transparent />
   </mesh>
 );
 
-const NeonGrid = () => (
+const NeonGrid = ({ color1, color2 }: { color1: string; color2: string }) => (
   <group rotation-x={-Math.PI / 2} position={[0, -0.01, 0]}>
-    <gridHelper args={[24, 24, "#38bdf8", "#0f172a"]} />
+    <gridHelper args={[24, 24, color1, color2]} />
   </group>
 );
 
@@ -34,6 +51,7 @@ type ShowcaseCardProps = {
   activeIndex: number;
   onSelect: () => void;
   onInteract: () => void;
+  colors: typeof VIBRANT_3D;
 };
 
 const ShowcaseCard = ({
@@ -43,6 +61,7 @@ const ShowcaseCard = ({
   activeIndex,
   onSelect,
   onInteract,
+  colors,
 }: ShowcaseCardProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const plateRef = useRef<THREE.Mesh>(null);
@@ -99,8 +118,8 @@ const ShowcaseCard = ({
         <mesh ref={plateRef} rotation={[-Math.PI / 10, 0, 0]}>
           <planeGeometry args={[2.8, 3.8, 16, 16]} />
           <meshStandardMaterial
-            color="#0f172a"
-            emissive="#38bdf8"
+            color={colors.plate}
+            emissive={colors.emissive}
             emissiveIntensity={0.4}
             roughness={0.35}
             metalness={0.15}
@@ -111,7 +130,7 @@ const ShowcaseCard = ({
         </mesh>
         <mesh rotation={[-Math.PI / 10, 0, 0]}>
           <planeGeometry args={[2.82, 3.82, 1, 1]} />
-          <meshBasicMaterial color="#38bdf8" wireframe opacity={0.4} transparent />
+          <meshBasicMaterial color={colors.wireframe} wireframe opacity={0.4} transparent />
         </mesh>
         <Html
           transform
@@ -120,7 +139,7 @@ const ShowcaseCard = ({
           position={[0, 0, 0.02]}
           style={{ pointerEvents: "none" }}
         >
-          <div className="w-48 rounded-2xl border border-white/20 bg-background/80 p-3 text-left shadow-[0_0_25px_rgba(56,189,248,0.35)] backdrop-blur">
+          <div className="w-48 rounded-2xl border border-white/20 bg-background/80 p-3 text-left backdrop-blur" style={{ boxShadow: `0 0 25px ${colors.cardShadow}` }}>
             <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
               {project.category}
             </p>
@@ -149,9 +168,10 @@ type CardsRingProps = {
   activeIndex: number;
   setActiveIndex: (index: number) => void;
   onInteract: () => void;
+  colors: typeof VIBRANT_3D;
 };
 
-const CardsRing = ({ projects, activeIndex, setActiveIndex, onInteract }: CardsRingProps) => {
+const CardsRing = ({ projects, activeIndex, setActiveIndex, onInteract, colors }: CardsRingProps) => {
   const ringRef = useRef<THREE.Group>(null);
   const angleStep = projects.length > 0 ? (Math.PI * 2) / projects.length : 0;
 
@@ -177,6 +197,7 @@ const CardsRing = ({ projects, activeIndex, setActiveIndex, onInteract }: CardsR
           activeIndex={activeIndex}
           onSelect={() => setActiveIndex(index)}
           onInteract={onInteract}
+          colors={colors}
         />
       ))}
     </group>
@@ -196,6 +217,8 @@ const Project3DShowcase = ({ projects, onProjectFocus }: Project3DShowcaseProps)
   const [activeIndex, setActiveIndex] = useState(0);
   const [autoRotate, setAutoRotate] = useState(true);
   const interactionTimeout = useRef<number>();
+  const { isMonochrome } = useThemeMode();
+  const c = isMonochrome ? MONO_3D : VIBRANT_3D;
 
   useEffect(() => {
     setActiveIndex(0);
@@ -244,24 +267,24 @@ const Project3DShowcase = ({ projects, onProjectFocus }: Project3DShowcaseProps)
 
   return (
     <div className="relative min-h-[640px] w-full overflow-hidden rounded-[36px] border border-white/5 bg-gradient-to-br from-[#020617] via-[#030617] to-[#040014] shadow-[0_30px_120px_rgba(2,6,23,0.65)]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.15),_transparent)]" />
+      <div className="pointer-events-none absolute inset-0" style={{ background: `radial-gradient(circle at top, ${c.radialGlow}, transparent)` }} />
       <Canvas
         camera={{ position: [0, 3.5, 11], fov: 45, near: 0.1, far: 60 }}
         dpr={[1, 1.75]}
         className="h-[520px]"
       >
-        <color attach="background" args={["#010313"]} />
-        <fog attach="fog" args={["#01020b", 14, 32]} />
+        <color attach="background" args={[c.bg]} />
+        <fog attach="fog" args={[c.fog, 14, 32]} />
         <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 8, 2]} intensity={1.4} color="#93c5fd" />
-        <directionalLight position={[-5, 5, -2]} intensity={0.6} color="#22d3ee" />
+        <directionalLight position={[5, 8, 2]} intensity={1.4} color={c.dirLight1} />
+        <directionalLight position={[-5, 5, -2]} intensity={0.6} color={c.dirLight2} />
 
-        <Sparkles count={180} size={2} speed={0.4} opacity={0.3} scale={12} color="#67e8f9" />
+        <Sparkles count={180} size={2} speed={0.4} opacity={0.3} scale={12} color={c.sparkle} />
         <Stars radius={60} depth={40} count={2000} factor={4} saturation={0} fade />
 
-        <NeonGrid />
-        <NeonRing />
-        <CardsRing projects={projects} activeIndex={activeIndex} setActiveIndex={setActiveIndex} onInteract={handleInteract} />
+        <NeonGrid color1={c.grid1} color2={c.grid2} />
+        <NeonRing color={c.ring} />
+        <CardsRing projects={projects} activeIndex={activeIndex} setActiveIndex={setActiveIndex} onInteract={handleInteract} colors={c} />
 
         <OrbitControls
           makeDefault

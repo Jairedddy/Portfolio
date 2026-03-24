@@ -25,6 +25,10 @@
   </head>
 
   <body>
+    <script>
+      // Prevent flash of wrong theme on load
+      (function(){var t=localStorage.getItem('portfolio-theme-mode');if(t==='monochrome'||t==='vibrant')document.documentElement.setAttribute('data-theme',t);else document.documentElement.setAttribute('data-theme','vibrant')})();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

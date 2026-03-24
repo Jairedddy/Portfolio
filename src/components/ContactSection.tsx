@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, type CSSProperties } from "react";
+import { useState, useEffect, useRef, useMemo, type CSSProperties } from "react";
+import { useThemeMode } from "@/hooks/useThemeMode";
 import {
   Mail,
   MapPin,
@@ -37,56 +38,57 @@ const CONTACT_ENDPOINT =
   (import.meta as ImportMeta & { env?: { VITE_CONTACT_ENDPOINT?: string } }).env
     ?.VITE_CONTACT_ENDPOINT ?? "/api/contact";
 
-const getColorClasses = (color: string) => {
+const getColorClasses = (color: string, mono = false) => {
+  const monoScrollbar = "#aaaaaa";
   switch (color) {
     case "neon-cyan":
       return {
         border: "border-neon-cyan",
         bg: "bg-neon-cyan/10",
         text: "text-neon-cyan",
-        scrollbar: "#00fff0",
+        scrollbar: mono ? monoScrollbar : "#00fff0",
       };
     case "neon-purple":
       return {
         border: "border-neon-purple",
         bg: "bg-neon-purple/10",
         text: "text-neon-purple",
-        scrollbar: "#bd5bff",
+        scrollbar: mono ? monoScrollbar : "#bd5bff",
       };
     case "neon-green":
       return {
         border: "border-neon-green",
         bg: "bg-neon-green/10",
         text: "text-neon-green",
-        scrollbar: "#7cfb4c",
+        scrollbar: mono ? monoScrollbar : "#7cfb4c",
       };
     case "neon-orange":
       return {
         border: "border-orange-400",
         bg: "bg-orange-400/10",
         text: "text-orange-400",
-        scrollbar: "#ffb347",
+        scrollbar: mono ? monoScrollbar : "#ffb347",
       };
     case "neon-pink":
       return {
         border: "border-pink-400",
         bg: "bg-pink-400/10",
         text: "text-pink-400",
-        scrollbar: "#ff6ad5",
+        scrollbar: mono ? monoScrollbar : "#ff6ad5",
       };
     case "neon-red":
       return {
         border: "border-red-400",
         bg: "bg-red-400/10",
         text: "text-red-400",
-        scrollbar: "#ff6a6a",
+        scrollbar: mono ? monoScrollbar : "#ff6a6a",
       };
     default:
       return {
         border: "border-neon-cyan",
         bg: "bg-neon-cyan/10",
         text: "text-neon-cyan",
-        scrollbar: "#00fff0",
+        scrollbar: mono ? monoScrollbar : "#00fff0",
       };
   }
 };
@@ -106,6 +108,7 @@ const stripTechBlock = (message: string) => {
 const ContactSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const isMobile = useIsMobile();
+  const { isMonochrome } = useThemeMode();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -263,7 +266,7 @@ const ContactSection = () => {
     techCategories.find((category) => category.id === activeTechCategory) ?? techCategories[0];
   const activeSkills = activeCategory?.skills ?? [];
   const CategoryIcon = activeCategory?.icon;
-  const activeColors = getColorClasses(activeCategory?.color ?? "neon-cyan");
+  const activeColors = getColorClasses(activeCategory?.color ?? "neon-cyan", isMonochrome);
 
   const processSteps = [
     {
@@ -475,7 +478,7 @@ const ContactSection = () => {
                             key={step.title}
                             className="group relative flex flex-col items-center text-center flex-1 min-w-[120px]"
                           >
-                            <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-border/70 bg-card/70 shadow-[0_0_30px_rgba(0,255,255,0.08)]">
+                            <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-border/70 bg-card/70 shadow-[0_0_30px_hsl(var(--neon-cyan)/0.08)]">
                               <Icon className="h-5 w-5 text-neon-cyan" />
                               <div className="absolute -inset-1 rounded-full border border-neon-cyan/40 opacity-0 group-hover:opacity-100 transition-opacity" />
                             </div>
@@ -601,7 +604,7 @@ const ContactSection = () => {
                           <div className="flex flex-wrap gap-2">
                             {techCategories.map((category) => {
                               const Icon = category.icon;
-                              const colors = getColorClasses(category.color);
+                              const colors = getColorClasses(category.color, isMonochrome);
                               const isActive = activeTechCategory === category.id;
                               return (
                                 <button

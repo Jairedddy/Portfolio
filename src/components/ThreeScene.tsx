@@ -1,12 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useThemeMode } from '@/hooks/useThemeMode';
 
 /**
  * Animated 3D Sphere Component with mouse interaction
  * Creates a morphing, glowing sphere that follows mouse movement
  */
-const AnimatedSphere = ({ mousePosition }: { mousePosition: { x: number; y: number } }) => {
+const AnimatedSphere = ({ mousePosition, mono }: { mousePosition: { x: number; y: number }; mono: boolean }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
@@ -39,10 +40,10 @@ const AnimatedSphere = ({ mousePosition }: { mousePosition: { x: number; y: numb
     >
       <sphereGeometry args={[0.8, 32, 32]} />
       <meshStandardMaterial
-        color={hovered ? "#8b5cf6" : "#6d28d9"}
+        color={mono ? (hovered ? "#b0b0b0" : "#999999") : (hovered ? "#8b5cf6" : "#6d28d9")}
         roughness={0.1}
         metalness={0.9}
-        emissive={hovered ? "#7c3aed" : "#5b21b6"}
+        emissive={mono ? (hovered ? "#a0a0a0" : "#808080") : (hovered ? "#7c3aed" : "#5b21b6")}
         emissiveIntensity={0.3}
       />
     </mesh>
@@ -55,6 +56,7 @@ const AnimatedSphere = ({ mousePosition }: { mousePosition: { x: number; y: numb
  */
 const ThreeScene = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const { isMonochrome } = useThemeMode();
 
   // Track mouse movement for sphere interaction
   const handleMouseMove = (event: MouseEvent) => {
@@ -77,10 +79,10 @@ const ThreeScene = () => {
       >
         <ambientLight intensity={0.3} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
-        <pointLight position={[-10, -10, -10]} intensity={0.4} color="#8b5cf6" />
-        <pointLight position={[0, 0, 5]} intensity={0.6} color="#6d28d9" />
-        
-        <AnimatedSphere mousePosition={mousePosition} />
+        <pointLight position={[-10, -10, -10]} intensity={0.4} color={isMonochrome ? "#b0b0b0" : "#8b5cf6"} />
+        <pointLight position={[0, 0, 5]} intensity={0.6} color={isMonochrome ? "#999999" : "#6d28d9"} />
+
+        <AnimatedSphere mousePosition={mousePosition} mono={isMonochrome} />
       </Canvas>
     </div>
   );

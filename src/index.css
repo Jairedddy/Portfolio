@@ -76,6 +76,66 @@ All colors MUST be HSL.
     --navbar-height: 4.5rem;
 
   }
+
+  /* Monochrome Theme Overrides */
+  [data-theme="monochrome"] {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 88%;
+
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 88%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 88%;
+
+    --primary: 0 0% 80%;
+    --primary-foreground: 0 0% 5%;
+    --primary-glow: 0 0% 90%;
+
+    --secondary: 0 0% 65%;
+    --secondary-foreground: 0 0% 5%;
+    --secondary-glow: 0 0% 75%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 55%;
+
+    --accent: 0 0% 72%;
+    --accent-foreground: 0 0% 5%;
+    --accent-glow: 0 0% 82%;
+
+    --destructive: 0 0% 55%;
+    --destructive-foreground: 0 0% 95%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 12%;
+    --ring: 0 0% 80%;
+
+    /* Monochrome Neon → Grey */
+    --neon-cyan: 0 0% 85%;
+    --neon-purple: 0 0% 65%;
+    --neon-green: 0 0% 72%;
+    --dark-surface: 0 0% 8%;
+    --darker-surface: 0 0% 5%;
+
+    /* Gradients: dark-to-light grey */
+    --gradient-primary: linear-gradient(135deg, hsl(0 0% 70%), hsl(0 0% 90%));
+    --gradient-secondary: linear-gradient(135deg, hsl(0 0% 55%), hsl(0 0% 75%));
+    --gradient-accent: linear-gradient(135deg, hsl(0 0% 62%), hsl(0 0% 82%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 5%), hsl(0 0% 8%));
+
+    /* Shadows: white/grey glows */
+    --shadow-neon-cyan: 0 0 30px hsl(0 0% 85% / 0.4);
+    --shadow-neon-purple: 0 0 30px hsl(0 0% 65% / 0.4);
+    --shadow-neon-green: 0 0 30px hsl(0 0% 72% / 0.4);
+    --shadow-elevated: 0 25px 50px -12px hsl(0 0% 5% / 0.8);
+
+    /* Scrollbar & Cursor */
+    --scrollbar-start: 0 0% 45%;
+    --scrollbar-end: 0 0% 45%;
+    --cursor-color: 0 0% 85%;
+    --focus-ring-color: 0 0% 85%;
+    --focus-ring-alt: 0 0% 70%;
+  }
 }
 
 @layer base {
@@ -275,10 +335,16 @@ All colors MUST be HSL.
   }
 
   .cyber-grid {
-    background-image: 
+    background-image:
       linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
     background-size: 50px 50px;
+  }
+
+  [data-theme="monochrome"] .cyber-grid {
+    background-image:
+      linear-gradient(rgba(200, 200, 200, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200, 200, 200, 0.1) 1px, transparent 1px);
   }
 
   .neon-grid {
@@ -427,4 +493,63 @@ All colors MUST be HSL.
   100% {
     box-shadow: var(--focus-ring-core), 0 0 24px hsl(var(--focus-ring-color) / 0.4);
   }
+}
+
+/* Monochrome overrides for standard Tailwind color classes used across components */
+[data-theme="monochrome"] {
+  /* Orange-400 variants */
+  .text-orange-400 { color: hsl(0 0% 70%) !important; }
+  .border-orange-400 { border-color: hsl(0 0% 70%) !important; }
+  .bg-orange-400\/10 { background-color: hsl(0 0% 70% / 0.1) !important; }
+  .stroke-orange-400 { stroke: hsl(0 0% 70%) !important; }
+  .stroke-orange-400\/20 { stroke: hsl(0 0% 70% / 0.2) !important; }
+
+  /* Pink-400 variants */
+  .text-pink-400 { color: hsl(0 0% 68%) !important; }
+  .border-pink-400 { border-color: hsl(0 0% 68%) !important; }
+  .bg-pink-400\/10 { background-color: hsl(0 0% 68% / 0.1) !important; }
+  .stroke-pink-400 { stroke: hsl(0 0% 68%) !important; }
+  .stroke-pink-400\/20 { stroke: hsl(0 0% 68% / 0.2) !important; }
+
+  /* Red-400 variants */
+  .text-red-400 { color: hsl(0 0% 62%) !important; }
+  .border-red-400 { border-color: hsl(0 0% 62%) !important; }
+  .bg-red-400\/10 { background-color: hsl(0 0% 62% / 0.1) !important; }
+  .stroke-red-400 { stroke: hsl(0 0% 62%) !important; }
+  .stroke-red-400\/20 { stroke: hsl(0 0% 62% / 0.2) !important; }
+
+  /* Yellow-400 / yellow-300 variants */
+  .text-yellow-400 { color: hsl(0 0% 75%) !important; }
+  .text-yellow-300 { color: hsl(0 0% 78%) !important; }
+  .border-yellow-400 { border-color: hsl(0 0% 75%) !important; }
+  .bg-yellow-400\/10 { background-color: hsl(0 0% 75% / 0.1) !important; }
+  .stroke-yellow-400 { stroke: hsl(0 0% 75%) !important; }
+  .stroke-yellow-400\/20 { stroke: hsl(0 0% 75% / 0.2) !important; }
+  .border-yellow-500\/40 { border-color: hsl(0 0% 70% / 0.4) !important; }
+
+  /* Amber variants (EasterEggs) */
+  .text-amber-300 { color: hsl(0 0% 78%) !important; }
+  .text-amber-100\/70 { color: hsl(0 0% 85% / 0.7) !important; }
+  .text-amber-100\/90 { color: hsl(0 0% 85% / 0.9) !important; }
+
+  /* Rose variants (EasterEggs) */
+  .text-rose-300 { color: hsl(0 0% 68%) !important; }
+  .text-rose-200\/70 { color: hsl(0 0% 75% / 0.7) !important; }
+  .text-rose-100\/90 { color: hsl(0 0% 85% / 0.9) !important; }
+
+  /* Blue variants (EasterEggs) */
+  .text-blue-300 { color: hsl(0 0% 72%) !important; }
+  .text-blue-100\/70 { color: hsl(0 0% 85% / 0.7) !important; }
+  .text-blue-100\/90 { color: hsl(0 0% 85% / 0.9) !important; }
+
+  /* Emerald variants (EasterEggs) */
+  .text-emerald-300 { color: hsl(0 0% 70%) !important; }
+  .text-emerald-100\/70 { color: hsl(0 0% 85% / 0.7) !important; }
+  .text-emerald-50\/90 { color: hsl(0 0% 90% / 0.9) !important; }
+
+  /* Cyan-500 shadow (SkillRadarChart tooltip) */
+  .shadow-cyan-500\/10 { box-shadow: 0 0 10px hsl(0 0% 80% / 0.1) !important; }
+
+  /* EasterEggs modals - apply grayscale filter */
+  [data-easter-modal] { filter: grayscale(1); }
 }

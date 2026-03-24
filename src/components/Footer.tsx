@@ -93,7 +93,7 @@ const Footer = () => {
               <div className="flex items-start gap-3 text-base text-white">
                 <MapPin size={18} className="text-neon-purple mt-0.5" />
                 <p className="leading-relaxed">
-                  {hint ?? "All chapters complete. Gotham and Krypton glow in sync."}
+                  {hint ?? "All chapters complete. Gotham and Wakanda glow in sync."}
                 </p>
               </div>
             </div>

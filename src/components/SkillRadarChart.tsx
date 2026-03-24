@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useThemeMode } from "@/hooks/useThemeMode";
 import {
   PolarAngleAxis,
   PolarGrid,
@@ -74,7 +75,21 @@ const neonPalette: Record<
   },
 };
 
+const monoPalette: Record<
+  string,
+  { stroke: string; fill: string; glow: string; grid: string; text: string }
+> = {
+  "neon-cyan":   { stroke: "#d9d9d9", fill: "rgba(217,217,217,0.45)", glow: "rgba(217,217,217,0.55)", grid: "rgba(217,217,217,0.18)", text: "text-neon-cyan" },
+  "neon-purple": { stroke: "#a6a6a6", fill: "rgba(166,166,166,0.45)", glow: "rgba(166,166,166,0.55)", grid: "rgba(166,166,166,0.25)", text: "text-neon-purple" },
+  "neon-green":  { stroke: "#b8b8b8", fill: "rgba(184,184,184,0.45)", glow: "rgba(184,184,184,0.55)", grid: "rgba(184,184,184,0.25)", text: "text-neon-green" },
+  "neon-orange": { stroke: "#c0c0c0", fill: "rgba(192,192,192,0.45)", glow: "rgba(192,192,192,0.55)", grid: "rgba(192,192,192,0.25)", text: "text-orange-400" },
+  "neon-yellow": { stroke: "#cccccc", fill: "rgba(204,204,204,0.45)", glow: "rgba(204,204,204,0.55)", grid: "rgba(204,204,204,0.25)", text: "text-yellow-400" },
+  "neon-pink":   { stroke: "#b3b3b3", fill: "rgba(179,179,179,0.45)", glow: "rgba(179,179,179,0.55)", grid: "rgba(179,179,179,0.25)", text: "text-pink-400" },
+  "neon-red":    { stroke: "#a8a8a8", fill: "rgba(168,168,168,0.45)", glow: "rgba(168,168,168,0.55)", grid: "rgba(168,168,168,0.25)", text: "text-red-400" },
+};
+
 const defaultPalette = neonPalette["neon-cyan"];
+const defaultMonoPalette = monoPalette["neon-cyan"];
 
 const CustomTooltip = ({
   active,
@@ -98,13 +113,17 @@ const SkillRadarChart = ({
   activeCategoryId,
   onCategoryChange,
 }: SkillRadarChartProps) => {
+  const { isMonochrome } = useThemeMode();
+  const activePalettes = isMonochrome ? monoPalette : neonPalette;
+  const defaultPal = isMonochrome ? defaultMonoPalette : defaultPalette;
+
   const activeCategory =
     useMemo(
       () => categories.find((category) => category.id === activeCategoryId),
       [categories, activeCategoryId]
     ) ?? categories[0];
 
-  const palette = neonPalette[activeCategory.color] ?? defaultPalette;
+  const palette = activePalettes[activeCategory.color] ?? defaultPal;
 
   const chartData = useMemo(
     () =>
@@ -127,7 +146,7 @@ const SkillRadarChart = ({
   return (
     <motion.div
       layout
-      className="relative overflow-hidden rounded-3xl border border-border/70 bg-gradient-to-b from-background/80 via-background/60 to-background/80 p-6 shadow-[0_0_40px_rgba(0,255,255,0.08)]"
+      className="relative overflow-hidden rounded-3xl border border-border/70 bg-gradient-to-b from-background/80 via-background/60 to-background/80 p-6 shadow-[0_0_40px_hsl(var(--neon-cyan)/0.08)]"
     >
       <div className="pointer-events-none absolute inset-0 opacity-40">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_60%)]" />
@@ -158,7 +177,7 @@ const SkillRadarChart = ({
         <div className="flex flex-wrap gap-2">
           {categories.map((category) => {
             const isActive = category.id === activeCategory.id;
-            const buttonPalette = neonPalette[category.color] ?? defaultPalette;
+            const buttonPalette = activePalettes[category.color] ?? defaultPal;
 
             return (
               <motion.button
@@ -227,7 +246,7 @@ const SkillRadarChart = ({
                   <PolarAngleAxis
                     dataKey="name"
                     tick={{
-                      fill: "#e2e8f0",
+                      fill: isMonochrome ? "#cccccc" : "#e2e8f0",
                       fontSize: 12,
                     }}
                   />

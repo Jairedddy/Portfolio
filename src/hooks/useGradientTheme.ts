@@ -1,7 +1,8 @@
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useContext } from "react";
 import type { RefObject } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ThemeContext } from "@/context/ThemeContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,6 +14,11 @@ type ThemeColors = {
 const FALLBACK_COLORS: ThemeColors = {
   start: "hsl(228 70% 8%)",
   end: "hsl(258 60% 18%)",
+};
+
+const MONO_FALLBACK: ThemeColors = {
+  start: "hsl(0 0% 8%)",
+  end: "hsl(0 0% 12%)",
 };
 
 const readThemeColors = (theme: string): ThemeColors => {
@@ -34,11 +40,26 @@ const readThemeColors = (theme: string): ThemeColors => {
 };
 
 export const useGradientTheme = (ref: RefObject<HTMLElement | null>, theme: string) => {
+  const themeCtx = useContext(ThemeContext);
+  const isMono = themeCtx?.isMonochrome ?? false;
+
   useLayoutEffect(() => {
     const element = ref.current;
     if (!element) return undefined;
 
     const root = document.documentElement;
+
+    if (isMono) {
+      // In monochrome, set uniform grey gradients and skip scroll animation
+      gsap.to(root, {
+        "--gradient-start": MONO_FALLBACK.start,
+        "--gradient-end": MONO_FALLBACK.end,
+        duration: 0.5,
+        ease: "power2.out",
+      });
+      return undefined;
+    }
+
     const animateToTheme = () => {
       const { start, end } = readThemeColors(theme);
       gsap.to(root, {
@@ -60,5 +81,5 @@ export const useGradientTheme = (ref: RefObject<HTMLElement | null>, theme: stri
     return () => {
       trigger.kill();
     };
-  }, [ref, theme]);
+  }, [ref, theme, isMono]);
 };

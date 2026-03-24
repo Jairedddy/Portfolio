@@ -23,6 +23,7 @@ const EasterEggs = () => {
       {activeEgg && (
         <motion.div
           key={activeEgg.triggeredAt}
+          data-easter-modal
           className="pointer-events-none fixed inset-0 z-[65] flex items-center justify-center bg-black/30 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -241,26 +242,26 @@ const questLayouts: Record<EasterEggId, QuestRenderer> = {
       <ParticleBurst seed={egg.triggeredAt} gradientClass="from-blue-400 via-indigo-500 to-purple-600" />
     </motion.div>
   ),
-  kryptonEcho: ({ egg, discoveredCount, totalEggs, dismiss }) => (
+  wakandaRise: ({ egg, discoveredCount, totalEggs, dismiss }) => (
     <motion.div
-      className="pointer-events-auto relative w-full max-w-xl overflow-hidden rounded-[36px] border border-emerald-200/50 bg-gradient-to-br from-[#01040c] via-[#031026] to-[#03050a] px-8 py-8 text-left shadow-[0_0_75px_rgba(52,211,153,0.35)]"
+      className="pointer-events-auto relative w-full max-w-xl overflow-hidden rounded-[36px] border border-violet-400/50 bg-gradient-to-br from-[#0a0015] via-[#150028] to-[#06000f] px-8 py-8 text-left shadow-[0_0_75px_rgba(139,92,246,0.4)]"
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -30 }}
       onClick={dismiss}
     >
       <div className="relative z-10">
-        <div className="mb-4 flex items-center gap-3 text-emerald-300">
-          <Globe size={22} />
-          <p className="text-xs uppercase tracking-[0.4em] text-emerald-100/70">Krypton Finale</p>
+        <div className="mb-4 flex items-center gap-3 text-violet-300">
+          <Shield size={22} />
+          <p className="text-xs uppercase tracking-[0.4em] text-violet-100/70">Wakanda Finale</p>
         </div>
-        <h2 className="font-cyber text-3xl text-emerald-100">{egg.label}</h2>
-        <p className="mt-2 text-lg text-emerald-50/90">{egg.message}</p>
+        <h2 className="font-cyber text-3xl text-violet-100">{egg.label}</h2>
+        <p className="mt-2 text-lg text-violet-50/90">{egg.message}</p>
         <p className="mt-1 text-sm text-muted-foreground">{egg.description}</p>
 
-        <div className="mt-5 grid gap-3 text-sm text-emerald-100/80">
-          <QuestListBullet text="Fortress crystals synced to neon archives." />
-          <QuestListBullet text="Gotham + Krypton alliance filed in legend." />
+        <div className="mt-5 grid gap-3 text-sm text-violet-100/80">
+          <QuestListBullet text="Vibranium reserves synced to neon archives." />
+          <QuestListBullet text="Gotham + Wakanda alliance filed in legend." />
         </div>
 
         <div className="mt-6 flex items-center justify-between text-xs text-muted-foreground">
@@ -268,13 +269,13 @@ const questLayouts: Record<EasterEggId, QuestRenderer> = {
             Chapters cleared {discoveredCount} / {totalEggs}
           </span>
           <button
-            className="rounded-full border border-emerald-300/60 px-4 py-1 text-[11px] uppercase tracking-[0.3em] text-emerald-100 transition hover:bg-emerald-300/10"
+            className="rounded-full border border-violet-300/60 px-4 py-1 text-[11px] uppercase tracking-[0.3em] text-violet-100 transition hover:bg-violet-300/10"
             onClick={(event) => {
               event.stopPropagation();
               dismiss();
             }}
           >
-            Seal chronicles
+            Wakanda Forever
           </button>
         </div>
       </div>
@@ -348,7 +349,7 @@ const Starfield = ({ seed }: { seed: number }) => {
       {stars.map((star) => (
         <motion.span
           key={star.id}
-          className="absolute rounded-full bg-emerald-200/80 shadow-[0_0_6px_rgba(16,185,129,0.6)]"
+          className="absolute rounded-full bg-violet-200/80 shadow-[0_0_6px_rgba(139,92,246,0.6)]"
           style={{ left: star.left, top: star.top, width: star.size, height: star.size }}
           animate={{ opacity: [0.2, 1, 0.2] }}
           transition={{ duration: 2.4, repeat: Infinity, delay: star.delay }}

@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
+import { useThemeMode } from '@/hooks/useThemeMode';
 
 interface ParticleBackgroundProps {
   id?: string;
@@ -86,7 +87,18 @@ const ParticleBackground = ({
   id = 'tsparticles',
   variant = 'hero',
 }: ParticleBackgroundProps) => {
-  const config = VARIANT_CONFIG[variant] ?? VARIANT_CONFIG.default;
+  const baseConfig = VARIANT_CONFIG[variant] ?? VARIANT_CONFIG.default;
+  const { isMonochrome } = useThemeMode();
+
+  const config = useMemo(() => {
+    if (!isMonochrome) return baseConfig;
+    return {
+      ...baseConfig,
+      particleRGBA: baseConfig.particleRGBA ? '200, 200, 200' : undefined,
+      accentRGBA: baseConfig.accentRGBA ? '160, 160, 160' : undefined,
+    };
+  }, [baseConfig, isMonochrome]);
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 

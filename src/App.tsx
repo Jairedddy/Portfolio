@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import LoadingScreen from "./components/LoadingScreen";
 import EasterEggs from "./components/EasterEggs";
 import { EasterEggsProvider } from "./context/EasterEggsContext";
+import { ThemeProvider } from "./context/ThemeContext";
 
 const queryClient = new QueryClient();
 
@@ -81,23 +82,25 @@ const App = () => {
   }, []);
 
   return (
-    <EasterEggsProvider>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <AnimatePresence>{isLoading && <LoadingScreen progress={progress} />}</AnimatePresence>
-          <EasterEggs />
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </EasterEggsProvider>
+    <ThemeProvider>
+      <EasterEggsProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <AnimatePresence>{isLoading && <LoadingScreen progress={progress} />}</AnimatePresence>
+            <EasterEggs />
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </QueryClientProvider>
+      </EasterEggsProvider>
+    </ThemeProvider>
   );
 };
 

@@ -399,7 +399,7 @@ const AboutSection = () => {
                         </p>
                         {item.location && (
                           <p className="text-[0.65rem] sm:text-xs text-muted-foreground font-cyber mb-1.5">
-                            📍 {item.location}
+                            {item.location}
                           </p>
                         )}
                       </div>
@@ -427,7 +427,7 @@ const AboutSection = () => {
                         </p>
                         {item.location && (
                           <p className="text-[0.65rem] sm:text-xs text-muted-foreground font-cyber mb-1.5">
-                            📍 {item.location}
+                            {item.location}
                           </p>
                         )}
                       </div>

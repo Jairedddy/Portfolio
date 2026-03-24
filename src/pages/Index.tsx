@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import useLenis from "@/hooks/useLenis";
+import { useThemeMode } from "@/hooks/useThemeMode";
 import Navigation from "@/components/Navigation"
 import HeroSection from "@/components/HeroSection"
 import AboutSection from "@/components/AboutSection"
@@ -30,8 +31,12 @@ const sectionAccentColors: Record<string, string> = {
     contact: "189 100% 60%", // neon cyan
 };
 
+const MONO_GREY = "0 0% 45%";
+const MONO_CURSOR = "0 0% 85%";
+
 const Index = () => {
     useLenis();
+    const { isMonochrome } = useThemeMode();
     useEffect(() => {
         // Initialize smooth scrolling and section animations
         const sections = document.querySelectorAll('section');
@@ -79,6 +84,14 @@ const Index = () => {
 
     useEffect(() => {
         const root = document.documentElement;
+
+        // In monochrome mode, set uniform grey and skip per-section logic
+        if (isMonochrome) {
+            root.style.setProperty("--scrollbar-start", MONO_GREY);
+            root.style.setProperty("--scrollbar-end", MONO_GREY);
+            root.style.setProperty("--cursor-color", MONO_CURSOR);
+            return;
+        }
 
         const trackedSections = Object.entries(sectionColorStops)
             .map(([id, colors]) => {
@@ -134,7 +147,7 @@ const Index = () => {
             window.removeEventListener("scroll", updateScrollbar);
             window.removeEventListener("resize", updateScrollbar);
         };
-    }, []);
+    }, [isMonochrome]);
 
     return (
         <div className="relative bg-background text-foreground overflow-x-hidden min-h-screen">
