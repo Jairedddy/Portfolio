@@ -135,13 +135,13 @@ const ProjectCard = ({ project, colors, isInteractive, className = "" }: Project
 // Hardcoded fallback projects - used if Google Sheets fails
 const FALLBACK_PROJECTS: Project[] = [
   {
-    title: "Photography Portfolio",
-    description: "Modern photography portfolio with dual-theme system, smooth animations, and contact form integration.",
-    tech: ["React", "Vite", "Typescript", "Tailwind CSS", "Lucide-React", "GSAP", "Lenis", "Nodemailer", "Vercel"],
+    title: "Rating Vault",
+    description: "RatingVault turns raw episode and season ratings into rich, interactive visualizations. Search any movie or TV series, explore rating arcs across episodes and seasons, and compare two titles side-by-side — all backed by TMDB's free, public API.",
+    tech: ["React", "Vite", "Tailwind CSS", "Framer Motion", "Vercel", "API Integration", "TMDB API"],
     category: "Web Development",
     color: "purple",
-    github: "https://github.com/Jairedddy/Photography-Portfolio",
-    live: "https://jaireddyphotography.vercel.app/",
+    github: "https://github.com/Jairedddy/Rating-Vault",
+    live: "https://rating-vault.vercel.app/",
   },
   {
     title: "Noir Ink Tattoo Studio",
@@ -162,13 +162,13 @@ const FALLBACK_PROJECTS: Project[] = [
     live: "https://vastudesignstudio.vercel.app/",
   },
   {
-    title: "Rating Vault",
-    description: "RatingVault turns raw episode and season ratings into rich, interactive visualizations. Search any movie or TV series, explore rating arcs across episodes and seasons, and compare two titles side-by-side — all backed by TMDB's free, public API.",
-    tech: ["React", "Vite", "Tailwind CSS", "Framer Motion", "Vercel", "API Integration", "TMDB API"],
+    title: "Photography Portfolio",
+    description: "Modern photography portfolio with dual-theme system, smooth animations, and contact form integration.",
+    tech: ["React", "Vite", "Typescript", "Tailwind CSS", "Lucide-React", "GSAP", "Lenis", "Nodemailer", "Vercel"],
     category: "Web Development",
     color: "purple",
-    github: "https://github.com/Jairedddy/Rating-Vault",
-    live: "https://rating-vault.vercel.app/",
+    github: "https://github.com/Jairedddy/Photography-Portfolio",
+    live: "https://jaireddyphotography.vercel.app/",
   },
   {
     title: "Golden Barell Brewery",
